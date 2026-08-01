@@ -1,0 +1,7 @@
+﻿  Game.cpp
+C:\Users\Caleb Hitt (School)\Documents\raylib-projects\LOWREZJAM-2026-REPO\src\Game.cpp(42,134): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
+C:\Users\Caleb Hitt (School)\Documents\raylib-projects\LOWREZJAM-2026-REPO\src\Game.cpp(42,134): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  NullObject.cpp
+  Object.cpp
+  Generating Code...
+  lowrez.vcxproj -> C:\Users\Caleb Hitt (School)\Documents\raylib-projects\LOWREZJAM-2026-REPO\build\Debug\lowrez.exe

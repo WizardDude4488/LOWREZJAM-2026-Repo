@@ -1,0 +1,3 @@
+C:/Users/Caleb Hitt (School)/Documents/raylib-projects/LOWREZJAM-2026-REPO/build/CMakeFiles/lowrez.dir
+C:/Users/Caleb Hitt (School)/Documents/raylib-projects/LOWREZJAM-2026-REPO/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/Caleb Hitt (School)/Documents/raylib-projects/LOWREZJAM-2026-REPO/build/CMakeFiles/ZERO_CHECK.dir
