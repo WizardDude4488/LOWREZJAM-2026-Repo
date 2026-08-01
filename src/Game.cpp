@@ -39,6 +39,9 @@ void Game::update() {
 void Game::draw() {
     // Render to 64 x 64 canvas
     BeginTextureMode(canvas);
+
+    ClearBackground(BLACK);
+
     // Draw lowest objects first
     // So that objects with a lower draw_layer render underneath other objects
     for (int i = 0; i < LAYER_COUNT; i++) {
@@ -53,6 +56,8 @@ void Game::draw() {
 
     // Render canvas to screen
     BeginDrawing();
+
+    ClearBackground(BLACK);
 
     Rectangle canvas_source_rect = { 0.0f, 0.0f, static_cast<float>(canvas.texture.width), static_cast<float>(canvas.texture.height) * -1.0f };
 
