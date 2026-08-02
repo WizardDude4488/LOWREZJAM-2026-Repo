@@ -6,11 +6,12 @@
 
 class Player : public Character {
 protected:
+    float speed;
     
 
 public:
     void die() override;
-    void move() override;
+    void update(float dt) override;
 
 
 
