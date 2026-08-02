@@ -23,6 +23,7 @@ target_sources(lowrez PRIVATE
     src/Tilemap.cpp
     src/Animation.cpp
     src/Entity.cpp
+    src/Helper.cpp
     
     src/Game.hpp
     src/Object.hpp
@@ -30,6 +31,7 @@ target_sources(lowrez PRIVATE
     src/Tilemap.hpp
     src/Animation.hpp
     src/Entity.hpp
+    src/Helper.hpp
 )
 
 target_include_directories(lowrez PRIVATE src)
