@@ -21,11 +21,15 @@ target_sources(lowrez PRIVATE
     src/Object.cpp
     src/NullObject.cpp
     src/Tilemap.cpp
+    src/Animation.cpp
+    src/Entity.cpp
     
     src/Game.hpp
     src/Object.hpp
     src/NullObject.hpp
     src/Tilemap.hpp
+    src/Animation.hpp
+    src/Entity.hpp
 )
 
 target_include_directories(lowrez PRIVATE src)

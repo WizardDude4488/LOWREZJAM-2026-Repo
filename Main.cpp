@@ -14,15 +14,15 @@ int main(void) {
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
 
-    Game* game = new Game();
+    begin_game();
 
-    game->load_image("black-tile", "black-tile.png");
+    current_game->load_image("black-tile", "black-tile.png");
 
-    game->set_tile(0, "black-tile");
+    current_game->set_tile(0, "black-tile");
 
-    game->load_image("white-tile", "white-tile.png");
+    current_game->load_image("white-tile", "white-tile.png");
 
-    game->set_tile(1, "white-tile");
+    current_game->set_tile(1, "white-tile");
 
     Tilemap* tilemap = new Tilemap("Tilemap", 0);
 
@@ -36,11 +36,11 @@ int main(void) {
 
     // Do not call delete on tilemap; game handles this automatically
 
-    game->add_object(tilemap);
+    current_game->add_object(tilemap);
 
     // Main game loop
     while (!WindowShouldClose()) {
-        game->draw();
+        current_game->draw();
         //----------------------------------------------------------------------------------
     }
 
@@ -49,7 +49,7 @@ int main(void) {
     CloseWindow();        // Close window and OpenGL context
     //--------------------------------------------------------------------------------------
 
-    delete game;
+    end_game();
 
     return 0;
 }

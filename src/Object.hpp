@@ -21,6 +21,8 @@ public:
     const std::string& get_name() const;
 
     // Provide functions access to current game object
-    virtual void update(const Game* g, float dt) = 0;
-    virtual void draw(const Game* g) = 0;
+    //virtual void update(const Game* g, float dt) = 0; // Do away with passing g; access the game object by including Game.hpp
+                                                        // and accessing current_game
+    virtual void update(float dt) = 0;
+    virtual void draw() = 0;
 };

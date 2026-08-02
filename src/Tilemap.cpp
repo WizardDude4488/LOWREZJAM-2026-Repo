@@ -10,16 +10,16 @@ Tilemap::Tilemap(const std::string& n, int layer) {
 	}
 }
 
-void Tilemap::update(const Game* g, float dt) {
+void Tilemap::update(float dt) {
 	return; // Tilemap is not updateable
 }
 
-void Tilemap::draw(const Game* g) {
+void Tilemap::draw() {
 	// Increment through all tiles
 	for (int x = 0; x < TRUE_WIDTH; x++) {
 		for (int y = 0; y < TRUE_WIDTH; y++) {
 			if (tiles[x][y] != -1) {
-				DrawTexture(g->get_image(g->get_tile(tiles[x][y])), (x * TILE_WIDTH) - TILE_WIDTH, (y * TILE_WIDTH) - TILE_WIDTH, WHITE);
+				DrawTexture(current_game->get_texture(current_game->get_tile(tiles[x][y])), (x * TILE_WIDTH) - TILE_WIDTH, (y * TILE_WIDTH) - TILE_WIDTH, WHITE);
 			}
 		}
 	}
