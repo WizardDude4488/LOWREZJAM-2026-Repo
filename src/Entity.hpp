@@ -15,6 +15,8 @@ protected:
 public:
 	virtual ~Entity() = default;
 
+	virtual const std::string& get_class() const = 0;
+
 	void set_position(Vector2 position);
 	Vector2 get_position();
 
