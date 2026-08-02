@@ -9,7 +9,7 @@ class Game;
 // Abstract class; cannot be directly instanced
 class Object {
 protected:
-    int draw_layer;
+    int draw_layer = 0;
     std::string name;
 public:
     virtual ~Object() = default;
