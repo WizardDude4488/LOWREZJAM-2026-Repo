@@ -33,6 +33,7 @@ target_include_directories(lowrez PRIVATE src)
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
     target_link_libraries(lowrez PRIVATE 
             raylib
+            X11
             )
 endif()
 

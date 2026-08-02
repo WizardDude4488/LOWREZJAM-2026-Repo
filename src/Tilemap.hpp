@@ -29,4 +29,6 @@ public:
 	void set_tile(int x, int y, int id);
 	void set_square(int start_x, int start_y, int end_x, int end_y, int id);
 	void set_square_filled(int start_x, int start_y, int end_x, int end_y, int id);
+
+	int get_tile(int x, int y);
 };
