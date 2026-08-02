@@ -61,11 +61,7 @@ int main(void) {
 
     // Load level
 
-    std::cout << "Before\n";
-
     current_game->load_level(test_level);
-
-    std::cout << "After\n";
 
     // Main game loop
     while (!WindowShouldClose()) {

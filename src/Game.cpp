@@ -10,7 +10,7 @@
 #include "Object.hpp"
 #include "NullObject.hpp"
 
-#define LAYER_COUNT 3
+#define LAYER_COUNT 5 // See Object.hpp for layer assignments
 
 Game* current_game;
 
@@ -40,6 +40,44 @@ Game::~Game() {
 }
 
 void Game::unload_level() {
+    // No longer owns these objects -- just drop references to them
+    objects.clear();
+    player_object = nullptr;
+    collision_object = nullptr;
+    // Don't unload assets
+}
+
+void Game::load_level(Level* level) {
+    // Unload current level (just clears references, doesn't delete)
+    unload_level();
+
+    // Reference the level's objects directly; no copying needed since we don't own them
+    player_object = level->player_object;
+    collision_object = level->collision_object;
+
+    if (player_object != nullptr) {
+        objects.push_back(player_object);
+    }
+
+    if (collision_object != nullptr) {
+        objects.push_back(collision_object);
+    }
+
+    // Add other objects, excluding player and collision
+    for (Object* object : level->objects) {
+
+        if (object == nullptr) { continue; } // Skip invalid objects
+
+        // Skip if this is the same object as player_object or collision_object
+        // (avoid adding it twice, since it may already be in level->objects too)
+        if (object == player_object) { continue; }
+        if (object == collision_object) { continue; }
+
+        objects.push_back(object);
+    }
+}
+
+void Game::delete_level() {
     // Pretty much the same as the deconstructor
     for (Object* obj : objects) {
         delete obj;
@@ -51,7 +89,7 @@ void Game::unload_level() {
 }
 
 
-void Game::load_level(Level* level) {
+void Game::copy_level(Level* level) {
     // Unload current level
     unload_level();
     
