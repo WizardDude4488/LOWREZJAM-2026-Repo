@@ -13,6 +13,7 @@ protected:
     std::string name;
 public:
     virtual ~Object() = default;
+    virtual const std::string& get_class() const = 0;
 
     // Return draw_layer of this object
     int get_draw_layer() const;

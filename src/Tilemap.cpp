@@ -1,3 +1,4 @@
+#include "Game.hpp"
 #include "Tilemap.hpp"
 
 Tilemap::Tilemap(const std::string& n, int layer) {
@@ -8,6 +9,10 @@ Tilemap::Tilemap(const std::string& n, int layer) {
 			tiles[x][y] = -1;
 		}
 	}
+}
+
+const std::string& Tilemap::get_class() const {
+	return "Tilemap";
 }
 
 void Tilemap::update(float dt) {

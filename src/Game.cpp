@@ -1,6 +1,7 @@
 #include <string>
 #include <memory>
 #include <algorithm>
+#include <cstring>
 
 #include "raylib.h"
 
@@ -22,7 +23,7 @@ void end_game() {
 Game::Game() {
     canvas = LoadRenderTexture(64, 64); // Create 64 x 64 canvas
     player_object = nullptr;
-    tilemap_object = nullptr;
+    collision_object = nullptr;
     dt = 0.0;
     current_layer = 0;
 }
@@ -36,6 +37,70 @@ Game::~Game() {
         UnloadTexture(text.second);
     }
 }
+
+void Game::unload_level() {
+    // Pretty much the same as the deconstructor
+    for (Object* obj : objects) {
+        delete obj;
+    }
+    // Ensure that pointers are invalidated
+    player_object = nullptr;
+    collision_object = nullptr;
+    // Don't unload assets
+}
+
+
+void Game::load_level(Level* level) {
+    // Unload current level
+    unload_level();
+    
+    // Copy values; don't move
+    // This becomes a little more complicated than using the copy constructor because
+    // we need to make new pointers for collision_object and player_object
+    NullObject* new_player_object = new NullObject(*(level->player_object)); // Change from Object* to Player* when impl.
+    Tilemap* new_collision_object = new Tilemap(*(level->collision_object));
+
+    objects.push_back(new_player_object);
+    objects.push_back(new_collision_object); // Add to vectors
+
+    player_object = new_player_object;
+    collision_object = new_collision_object;
+
+    // Add other objects, excluding player and collision
+    for (Object* object : level->objects) {
+
+        if (object == nullptr) { break; } // Skip invalid objects
+
+        NullObject* try_player = (object->get_class() == "NullObject") ? static_cast<NullObject*>(object) : nullptr;
+        Tilemap* try_collision = (object->get_class() == "Tilemap") ? static_cast<Tilemap*>(object) : nullptr;
+
+        if (try_player != nullptr) {
+            // Maybe add a proper compare function if / when player is implemented
+            if (std::memcmp(try_player, player_object, sizeof(NullObject))) { // Change to Player later
+                break; // Don't add the same player object twice
+            }
+        }
+
+        if (try_collision != nullptr) {
+            if (std::memcmp(try_collision, collision_object, sizeof(Tilemap))) {
+                break;
+            }
+        }
+
+        // If duplication checks passed, add the object
+        std::string obj_class = object->get_class();
+        // Add new condition for each derived class we add
+        if (obj_class == "NullObject") {
+            NullObject* copy = new NullObject(*(static_cast<NullObject*>(object)));
+            objects.push_back(copy); // Copy
+        }
+        else if (obj_class == "Tilemap") {
+            Tilemap* copy = new Tilemap(*(static_cast<Tilemap*>(object)));
+            objects.push_back(copy);
+        }
+    }
+}
+
 
 void Game::update() {
     update_dt();

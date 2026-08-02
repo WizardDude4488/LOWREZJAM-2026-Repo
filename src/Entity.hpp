@@ -13,6 +13,7 @@ protected:
 	Rectangle bounds; // Store position and size
 	Animation animation; // Store ref to texture and current frame
 public:
+	virtual const std::string& get_class() const = 0;
 
 	void set_position(Vector2 position);
 	Vector2 get_position();

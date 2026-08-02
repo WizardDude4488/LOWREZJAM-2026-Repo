@@ -1,3 +1,4 @@
+#include "Game.hpp"
 #include "Animation.hpp"
 
 void Animation::set_frame(int curr_frame) {
