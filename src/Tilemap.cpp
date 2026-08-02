@@ -5,7 +5,7 @@ Tilemap::Tilemap(const std::string& n, int layer) {
 	draw_layer = layer;
 	for (int x = 0; x < TRUE_WIDTH; x++) {
 		for (int y = 0; y < TRUE_WIDTH; y++) {
-			tiles[x][y] = 0; // Set to -1 later
+			tiles[x][y] = -1;
 		}
 	}
 }
@@ -63,4 +63,14 @@ void Tilemap::set_square_filled(int start_x, int start_y, int end_x, int end_y, 
 			this->set_tile(x, y, id);
 		}
 	}
+}
+
+int Tilemap::get_tile(int x, int y) {
+	if (x > -1 && x < TRUE_WIDTH) {
+		if (y > -1 && y < TRUE_WIDTH) {
+			return tiles[x][y];
+		}
+	}
+
+	return -1;
 }
