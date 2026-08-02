@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "Game.hpp"
 #include "Tilemap.hpp"
 
@@ -24,19 +26,42 @@ int main(void) {
 
     current_game->set_tile(1, "white-tile");
 
-    Tilemap* tilemap = new Tilemap("Tilemap", 0);
+    // Create test level
+    // Game doesn't handle Level's memory so we need to delete it at application close
+    struct TestLevel : public Level {
+        void init() override {
+            collision_object = nullptr; // Change this with a real level
+            player_object = nullptr;
 
-    for (int x = 0; x <= TRUE_WIDTH; x++) {
-        for (int y = 0; y <= TRUE_WIDTH; y++) {
-            if ((x + y) % 2 == 0) {
-                tilemap->set_tile(x, y, 1);
+            Tilemap* tilemap = new Tilemap("Tilemap", 0);
+
+            // Create checkerboard pattern
+            for (int x = 0; x < TRUE_WIDTH; x++) {
+                for (int y = 0; y < TRUE_WIDTH; y++) {
+                    if ((x + y) % 2 == 0) {
+                        tilemap->set_tile(x, y, 1);
+                    }
+                    else {
+                        tilemap->set_tile(x, y, 0);
+                    }
+                }
             }
+
+            objects.push_back(tilemap);
         }
-    }
+    };
+
+    Level* test_level = new TestLevel();
+
+    test_level->init();
 
     // Do not call delete on tilemap; game handles this automatically
 
-    current_game->add_object(tilemap);
+    //current_game->add_object(tilemap);
+
+    // Load level
+
+    current_game->load_level(test_level);
 
     // Main game loop
     while (!WindowShouldClose()) {

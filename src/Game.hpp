@@ -8,6 +8,10 @@
 #include "raylib.h"
 
 #include "Object.hpp"
+#include "NullObject.hpp"
+#include "Tilemap.hpp"
+
+// NOTE TO SELF: Don't include Game.hpp in other .hpp files unless it needs it. This can cause circular dependencies.
 
 extern Game* current_game;
 
@@ -18,8 +22,8 @@ class Game {
 protected:
     // Objects
     std::vector<Object*> objects;
-    Object* player_object;
-    Object* tilemap_object;
+    NullObject* player_object; // Change to Player* when Player is implemented
+    Tilemap* collision_object; // Current layer considered for wall collision
     float dt;
 
     // Assets
@@ -32,6 +36,15 @@ protected:
 public:
     Game();
     ~Game();
+
+    void unload_level();
+    // Can only be implemented fully when Player is implemented
+    void load_level(Level* level);
+
+    void delete_level(); // Level in locally stored memory, not other level
+                         // Should not be called when loading a level using load_level
+                         // Use copy_level instead
+    void copy_level(Level* level); // Need to explicitly call delete_level afterwards (IF NEEDED)
 
     void update();
     void draw();
@@ -47,6 +60,9 @@ public:
 
     Object* get_object(const std::string& name) const;
     Object* get_object(int index) const;
+
+    Object* get_player_object() const; // Change to Player* later
+    Tilemap* get_collision_object() const;
 
     int get_current_layer() const;
 

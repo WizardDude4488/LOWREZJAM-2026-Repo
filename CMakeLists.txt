@@ -24,6 +24,9 @@ target_sources(lowrez PRIVATE
     src/Animation.cpp
     src/Entity.cpp
     src/Helper.cpp
+    src/Door.cpp
+    src/Character.cpp
+    src/Player.cpp
     
     src/Game.hpp
     src/Object.hpp
@@ -32,6 +35,9 @@ target_sources(lowrez PRIVATE
     src/Animation.hpp
     src/Entity.hpp
     src/Helper.hpp
+    src/Door.hpp
+    src/Character.hpp
+    src/Player.hpp
 )
 
 target_include_directories(lowrez PRIVATE src)

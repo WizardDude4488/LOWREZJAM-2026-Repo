@@ -5,8 +5,6 @@
 
 #include "raylib.h"
 
-#include "Game.hpp"
-
 // NOTE: Each entity object should own their Animation object, instead of it being a part of the Game object
 class Animation {
 protected:
@@ -16,6 +14,7 @@ protected:
     int current_frame = 0;
 public:
     // texture, frame
+    Animation() = default;
     Animation(const std::string& t, const std::vector<Rectangle>& f) : texture(t), frame(f) {}
 
     // Creating a Texture2D is difficult because we have to load it to the cpu, get the sub-region, and load is back on the cpu
