@@ -41,6 +41,11 @@ public:
     // Can only be implemented fully when Player is implemented
     void load_level(Level* level);
 
+    void delete_level(); // Level in locally stored memory, not other level
+                         // Should not be called when loading a level using load_level
+                         // Use copy_level instead
+    void copy_level(Level* level); // Need to explicitly call delete_level afterwards (IF NEEDED)
+
     void update();
     void draw();
 

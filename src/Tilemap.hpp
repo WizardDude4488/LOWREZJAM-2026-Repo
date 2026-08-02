@@ -36,6 +36,15 @@ public:
 	int get_tile(int x, int y);
 };
 
+// NOTE: This deserves a bit of explanation
+// In our project ideas, we have ideas for a number of levels.
+// The levels in our ideas are not the same as the Level class.
+// One level that we want to make might have multiple Level
+// instances corresponding to different rooms.
+// This simplifies the implementation of doors, because then
+// we don't have to have a different implementation of a door
+// depending on if we are going to a different room or a new level
+
 struct Level {
 	std::vector<Object*> objects;
 	NullObject* player_object;
