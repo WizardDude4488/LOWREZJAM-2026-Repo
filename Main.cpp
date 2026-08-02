@@ -30,6 +30,8 @@ int main(void) {
         for (int y = 0; y <= TRUE_WIDTH; y++) {
             if ((x + y) % 2 == 0) {
                 tilemap->set_tile(x, y, 1);
+            } else {
+                tilemap->set_tile(x, y, 0);
             }
         }
     }

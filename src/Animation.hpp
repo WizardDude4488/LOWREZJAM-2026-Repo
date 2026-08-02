@@ -5,8 +5,6 @@
 
 #include "raylib.h"
 
-#include "Game.hpp"
-
 // NOTE: Each entity object should own their Animation object, instead of it being a part of the Game object
 class Animation {
 protected:

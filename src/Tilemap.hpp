@@ -5,7 +5,8 @@
 #include "raylib.h"
 
 #include "Object.hpp"
-#include "Game.hpp"
+#include "Entity.hpp"
+#include "NullObject.hpp" // Replace with Player.hpp when impl.
 
 #define TILE_WIDTH 4
 #define TILEMAP_WIDTH (64 / TILE_WIDTH) // 64 / tile_width
@@ -22,6 +23,7 @@ protected:
 
 public:
 	Tilemap(const std::string& n, int layer);
+	const std::string& get_class() const override;
 
 	void update(float dt) override;
 	void draw() override;
@@ -31,4 +33,12 @@ public:
 	void set_square_filled(int start_x, int start_y, int end_x, int end_y, int id);
 
 	int get_tile(int x, int y);
+};
+
+struct Level {
+	std::vector<Object*> objects;
+	NullObject* player_object;
+	Tilemap* collision_object;
+
+	virtual void init(); // Make specific level here
 };
