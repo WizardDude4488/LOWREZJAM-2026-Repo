@@ -1,6 +1,8 @@
 #include "Game.hpp"
 #include "Tilemap.hpp"
 
+const std::string Tilemap::class_name = "Tilemap";
+
 Tilemap::Tilemap(const std::string& n, int layer) {
 	name = n;
 	draw_layer = layer;
@@ -12,7 +14,7 @@ Tilemap::Tilemap(const std::string& n, int layer) {
 }
 
 const std::string& Tilemap::get_class() const {
-	return "Tilemap";
+	return class_name;
 }
 
 void Tilemap::update(float dt) {
@@ -78,4 +80,14 @@ int Tilemap::get_tile(int x, int y) {
 	}
 
 	return -1;
+}
+
+Level::~Level() {
+	// Make sure we deallocate objects
+	for (Object* object : objects) {
+		delete object;
+	}
+
+	player_object = nullptr;
+	collision_object = nullptr;
 }
