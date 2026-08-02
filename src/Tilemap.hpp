@@ -14,6 +14,7 @@
 
 class Tilemap : public Object {
 protected:
+	static const std::string class_name;
 	// Add 2 so we can have border / wall tiles outside screen that don't render
 	int tiles[TRUE_WIDTH][TRUE_WIDTH]; // x, then y
 	// NOTE:
@@ -40,5 +41,6 @@ struct Level {
 	NullObject* player_object;
 	Tilemap* collision_object;
 
-	virtual void init(); // Make specific level here
+	~Level();
+	virtual void init() = 0; // Make specific level here
 };

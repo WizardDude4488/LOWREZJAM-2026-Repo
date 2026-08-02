@@ -2,6 +2,7 @@
 #include <memory>
 #include <algorithm>
 #include <cstring>
+#include <iostream>
 
 #include "raylib.h"
 
@@ -57,11 +58,16 @@ void Game::load_level(Level* level) {
     // Copy values; don't move
     // This becomes a little more complicated than using the copy constructor because
     // we need to make new pointers for collision_object and player_object
-    NullObject* new_player_object = new NullObject(*(level->player_object)); // Change from Object* to Player* when impl.
-    Tilemap* new_collision_object = new Tilemap(*(level->collision_object));
+    NullObject* new_player_object = (level->player_object != nullptr) ? new NullObject(*(level->player_object)) : nullptr; // Change from Object* to Player* when impl.
+    Tilemap* new_collision_object = (level->collision_object != nullptr) ? new Tilemap(*(level->collision_object)) : nullptr;
 
-    objects.push_back(new_player_object);
-    objects.push_back(new_collision_object); // Add to vectors
+    if (new_player_object != nullptr) {
+        objects.push_back(new_player_object);
+    }
+    
+    if (new_collision_object != nullptr) {
+        objects.push_back(new_collision_object); // Add to vectors
+    }
 
     player_object = new_player_object;
     collision_object = new_collision_object;
@@ -69,21 +75,21 @@ void Game::load_level(Level* level) {
     // Add other objects, excluding player and collision
     for (Object* object : level->objects) {
 
-        if (object == nullptr) { break; } // Skip invalid objects
+        if (object == nullptr) { continue; } // Skip invalid objects
 
         NullObject* try_player = (object->get_class() == "NullObject") ? static_cast<NullObject*>(object) : nullptr;
         Tilemap* try_collision = (object->get_class() == "Tilemap") ? static_cast<Tilemap*>(object) : nullptr;
 
-        if (try_player != nullptr) {
-            // Maybe add a proper compare function if / when player is implemented
-            if (std::memcmp(try_player, player_object, sizeof(NullObject))) { // Change to Player later
-                break; // Don't add the same player object twice
+        // NOTE: should add nullptr check everywhere player_object and collision_object is referenced
+        if (try_player != nullptr && player_object != nullptr) {
+            if (try_player == player_object) {
+                continue; // Don't add the same player object twice, and don't add a nullptr object
             }
         }
 
-        if (try_collision != nullptr) {
-            if (std::memcmp(try_collision, collision_object, sizeof(Tilemap))) {
-                break;
+        if (try_collision != nullptr && collision_object != nullptr) {
+            if (try_collision == collision_object) {
+                continue;
             }
         }
 
