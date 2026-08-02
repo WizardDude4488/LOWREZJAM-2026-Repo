@@ -9,6 +9,11 @@
 
 #include "Object.hpp"
 
+extern Game* current_game;
+
+void begin_game();
+void end_game();
+
 class Game {
 protected:
     // Objects
@@ -48,7 +53,7 @@ public:
     void remove_object(int index);
 
     void load_image(const std::string& hash, const std::string& local_path);
-    Texture2D get_image(const std::string& hash) const;
+    Texture2D get_texture(const std::string& hash) const;
 
     void set_tile(int index, const std::string& texture);
     const std::string& get_tile(int index) const;

@@ -2,15 +2,15 @@
 
 #include "NullObject.hpp"
 
-NullObject::NullObject(const char* name) {
-    this->name = std::string(name);
-    this->draw_layer = 0;
+NullObject::NullObject(const std::string& n) {
+    name = n;
+    draw_layer = 0;
 }
 
-void NullObject::update(const Game* g, float dt) {
+void NullObject::update(float dt) {
     return; // Do nothing
 }
 
-void NullObject::draw(const Game* g) {
+void NullObject::draw() {
     return; // Do nothing
 }

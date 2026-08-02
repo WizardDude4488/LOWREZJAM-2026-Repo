@@ -10,6 +10,15 @@
 
 #define LAYER_COUNT 3
 
+Game* current_game;
+
+void begin_game() {
+    current_game = new Game;
+}
+void end_game() {
+    delete current_game;
+}
+
 Game::Game() {
     canvas = LoadRenderTexture(64, 64); // Create 64 x 64 canvas
     player_object = nullptr;
@@ -32,7 +41,7 @@ void Game::update() {
     update_dt();
 
     for (Object* obj : objects) {
-        obj->update(this, dt);
+        obj->update(dt);
     }
 }
 
@@ -47,7 +56,7 @@ void Game::draw() {
     for (int i = 0; i < LAYER_COUNT; i++) {
         for (Object* obj : objects) {
             if (obj->get_draw_layer() == i) {
-                obj->draw(this);
+                obj->draw();
             } 
         }
     }
@@ -134,7 +143,7 @@ void Game::load_image(const std::string& hash, const std::string& local_path) {
     textures[hash] = LoadTexture(path.c_str());
 }
 
-Texture2D Game::get_image(const std::string& hash) const {
+Texture2D Game::get_texture(const std::string& hash) const {
     return textures.at(hash);
 }
 

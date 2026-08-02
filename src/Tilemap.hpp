@@ -23,8 +23,8 @@ protected:
 public:
 	Tilemap(const std::string& n, int layer);
 
-	void update(const Game* g, float dt) override;
-	void draw(const Game* g) override;
+	void update(float dt) override;
+	void draw() override;
 
 	void set_tile(int x, int y, int id);
 	void set_square(int start_x, int start_y, int end_x, int end_y, int id);
