@@ -249,9 +249,7 @@ void Game::remove_object(int index) {
 
 void Game::load_image(const std::string& hash, const std::string& local_path) {
     std::string path = "assets/" + local_path;
-    std::cout << "A\n";
     textures[hash] = LoadTexture(path.c_str());
-    std::cout << "B\n";
 }
 
 // TODO: add hash checking so we don't return a nonexistant hash
