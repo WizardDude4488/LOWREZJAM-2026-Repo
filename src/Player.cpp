@@ -6,11 +6,11 @@
 #include "Helper.hpp"
 using namespace Helper;
 
-Player::Player(const std::string& n) {
+Player::Player(const std::string& n, Vector2 Pos) {
 
     name = n;
     draw_layer = 4;
-    bounds = {0, 0, 8, 8};
+    bounds = {Pos.x, Pos.y, 8, 8};
     animation = Animation("yellow-guy", create_spritesheet_frames(5, 8, 64, 64, 4));
     max_health = 20;
     health = max_health;
@@ -72,7 +72,9 @@ void Player::draw() {
 
 // TODO: hurt player when something like an enemy or spike calls this function
 void Player::touch(const Object* from) {
-
+    if (from->get_class() == "Crab") {
+        hurt(5);
+    }
 }
 
 void Player::die() {
@@ -89,8 +91,12 @@ void Player::die() {
 }
 
 void Player::hurt(int amount) {
-    health -= amount;
-    hurt_time = 5.0f; // Wait 5 seconds before being able to be hurt again
+    
+    // ONLY hurt if not in i frame
+    if (hurt_time <= 0.0f) {
+        health -= amount;
+        hurt_time = 5.0f; // Wait 5 seconds before being able to be hurt again
+    }
 
     if (health <= 0) {
         die();
