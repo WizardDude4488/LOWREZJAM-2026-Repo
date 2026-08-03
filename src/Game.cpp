@@ -31,16 +31,10 @@ Game::Game() {
 
 Game::~Game() {
     for (Object* obj : objects) {
-        std::cout << obj->get_name() << "\n";
         delete obj;
     }
 
     for (const auto& text : textures) {
-        // Make sure we clear texture-name associations before we delete the textures
-        Texture2D second = text.second;
-        // Clear association
-        textures.erase(text.first);
-
         UnloadTexture(text.second);
     }
 }
@@ -156,7 +150,6 @@ void Game::update() {
     update_dt();
 
     for (Object* obj : objects) {
-        std::cout << obj->get_name() << "\n";
         obj->update(dt);
     }
 }
