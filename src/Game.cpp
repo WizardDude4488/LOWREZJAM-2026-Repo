@@ -8,7 +8,7 @@
 
 #include "Game.hpp"
 #include "Object.hpp"
-#include "NullObject.hpp"
+#include "Player.hpp"
 
 #define LAYER_COUNT 5 // See Object.hpp for layer assignments
 
@@ -31,10 +31,16 @@ Game::Game() {
 
 Game::~Game() {
     for (Object* obj : objects) {
+        std::cout << obj->get_name() << "\n";
         delete obj;
     }
 
     for (const auto& text : textures) {
+        // Make sure we clear texture-name associations before we delete the textures
+        Texture2D second = text.second;
+        // Clear association
+        textures.erase(text.first);
+
         UnloadTexture(text.second);
     }
 }
@@ -96,7 +102,7 @@ void Game::copy_level(Level* level) {
     // Copy values; don't move
     // This becomes a little more complicated than using the copy constructor because
     // we need to make new pointers for collision_object and player_object
-    NullObject* new_player_object = (level->player_object != nullptr) ? new NullObject(*(level->player_object)) : nullptr; // Change from Object* to Player* when impl.
+    Player* new_player_object = (level->player_object != nullptr) ? new Player(*(level->player_object)) : nullptr; // Change from Object* to Player* when impl.
     Tilemap* new_collision_object = (level->collision_object != nullptr) ? new Tilemap(*(level->collision_object)) : nullptr;
 
     if (new_player_object != nullptr) {
@@ -115,7 +121,7 @@ void Game::copy_level(Level* level) {
 
         if (object == nullptr) { continue; } // Skip invalid objects
 
-        NullObject* try_player = (object->get_class() == "NullObject") ? static_cast<NullObject*>(object) : nullptr;
+        Player* try_player = (object->get_class() == "Player") ? static_cast<Player*>(object) : nullptr;
         Tilemap* try_collision = (object->get_class() == "Tilemap") ? static_cast<Tilemap*>(object) : nullptr;
 
         // NOTE: should add nullptr check everywhere player_object and collision_object is referenced
@@ -134,8 +140,8 @@ void Game::copy_level(Level* level) {
         // If duplication checks passed, add the object
         std::string obj_class = object->get_class();
         // Add new condition for each derived class we add
-        if (obj_class == "NullObject") {
-            NullObject* copy = new NullObject(*(static_cast<NullObject*>(object)));
+        if (obj_class == "Player") {
+            Player* copy = new Player(*(static_cast<Player*>(object)));
             objects.push_back(copy); // Copy
         }
         else if (obj_class == "Tilemap") {
@@ -150,6 +156,7 @@ void Game::update() {
     update_dt();
 
     for (Object* obj : objects) {
+        std::cout << obj->get_name() << "\n";
         obj->update(dt);
     }
 }
@@ -249,9 +256,12 @@ void Game::remove_object(int index) {
 
 void Game::load_image(const std::string& hash, const std::string& local_path) {
     std::string path = "assets/" + local_path;
+    std::cout << "A\n";
     textures[hash] = LoadTexture(path.c_str());
+    std::cout << "B\n";
 }
 
+// TODO: add hash checking so we don't return a nonexistant hash
 Texture2D Game::get_texture(const std::string& hash) const {
     return textures.at(hash);
 }

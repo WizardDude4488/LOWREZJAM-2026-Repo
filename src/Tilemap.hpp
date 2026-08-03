@@ -6,7 +6,7 @@
 
 #include "Object.hpp"
 #include "Entity.hpp"
-#include "NullObject.hpp" // Replace with Player.hpp when impl.
+#include "Player.hpp" // Replace with Player.hpp when impl.
 
 #define TILE_WIDTH 4
 #define TILEMAP_WIDTH (64 / TILE_WIDTH) // 64 / tile_width
@@ -47,7 +47,7 @@ public:
 
 struct Level {
 	std::vector<Object*> objects;
-	NullObject* player_object;
+	Player* player_object;
 	Tilemap* collision_object;
 
 	~Level();
