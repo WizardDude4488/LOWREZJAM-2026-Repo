@@ -42,7 +42,7 @@ int main(void) {
         void init() override {
             collision_object = nullptr; // Change this with a real level
 
-            Vector2 initial = {32.0f, 32.0f};
+            Vector2 initial = {27.0f, 27.0f};
 
             player_object = new Player("Bob", initial);
 

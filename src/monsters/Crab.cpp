@@ -4,6 +4,7 @@
 #include <string>
 
 #include "raylib.h"
+#include "raymath.h"
 
 #include "Game.hpp"
 #include "Helper.hpp"
@@ -30,29 +31,37 @@ const std::string& Crab::get_class() const {
 
 void Crab::update(float dt) {
 
-    Vector2 point1 = {0, 32};
-    Vector2 point2 = {56, 32};
+    int buffer = 2;
 
     if (dir.x == 0.0f && dir.y == 0.0f) {
-        dir = Vector2Normalize(point2 - point1);
+        dir = Vector2Normalize(Vector2Subtract(point2, point1));
     }
 
-    if (get_position().x > point2.x) {
-        dir = Vector2Normalize(point1 - point2);
-        std::cout << "\nLeft";
-    } else if (get_position().x < point1.x + 1) {
-        dir = Vector2Normalize(point2 - point1);
-        std::cout << "\nRight";
-    }
     
     velocity = Vector2Scale(dir, speed);
 
     Vector2 delta = {0.0f, 0.0f};
     delta = Vector2Scale(velocity, dt);
 
-    std::cout << "\n" << velocity.x;
+    std::cout << "\n" << Vector2Distance(get_position(), point2);
 
     set_position(delta + get_position());
+
+    if (Vector2Distance(get_position(), point1) <= buffer && 
+        (dir.x < Vector2Normalize(Vector2Subtract(point2, point1)).x ||
+         dir.y < Vector2Normalize(Vector2Subtract(point2, point1)).y)) {
+        set_position(point1);
+        dir.x = -dir.x;
+        dir.y = -dir.y;
+        std::cout << "\nFlip";
+    } else if (Vector2Distance(get_position(), point2) <= buffer && 
+        (dir.x > Vector2Normalize(Vector2Subtract(point1, point2)).x ||
+         dir.y > Vector2Normalize(Vector2Subtract(point1, point2)).y)) {
+        set_position(point2);
+        dir.x = -dir.x;
+        dir.y = -dir.y;
+        std::cout << "\nFlip";
+    }
 
     anim_time += dt;
 
