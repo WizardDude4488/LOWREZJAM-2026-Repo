@@ -10,18 +10,19 @@ class Animation {
 protected:
 
     std::string texture;
-    std::vector<Rectangle> frame;
+    std::vector<Rectangle> frames;
     int current_frame = 0;
 public:
     // texture, frame
     Animation() = default;
-    Animation(const std::string& t, const std::vector<Rectangle>& f) : texture(t), frame(f) {}
+    Animation(const std::string& t, const std::vector<Rectangle>& f) : texture(t), frames(f) {}
 
     // Creating a Texture2D is difficult because we have to load it to the cpu, get the sub-region, and load is back on the cpu
     //Texture2D get_frame(int index);
     //Rectangle get_frame_rect(int index);
 
     // Instead, we can set the frame and render it with a position
+    int get_frame();
     void set_frame(int curr_frame);
     void draw_frame(Vector2 position); // add rotation, scale later if we need it
 };

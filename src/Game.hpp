@@ -8,6 +8,7 @@
 #include "raylib.h"
 
 #include "Object.hpp"
+#include "Player.hpp"
 #include "NullObject.hpp"
 #include "Tilemap.hpp"
 
@@ -22,7 +23,7 @@ class Game {
 protected:
     // Objects
     std::vector<Object*> objects;
-    NullObject* player_object; // Change to Player* when Player is implemented
+    Player* player_object; // Change to Player* when Player is implemented
     Tilemap* collision_object; // Current layer considered for wall collision
     float dt;
 

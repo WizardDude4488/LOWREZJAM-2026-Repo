@@ -18,6 +18,8 @@ int main(void) {
 
     begin_game();
 
+    std::cout << "bruh\n";
+
     current_game->load_image("black-tile", "black-tile.png");
 
     current_game->set_tile(0, "black-tile");
@@ -26,12 +28,18 @@ int main(void) {
 
     current_game->set_tile(1, "white-tile");
 
+    current_game->load_image("yellow-guy", "yellow-guy.png");
+
+    // HERE
+    // Game hangs right here
+
     // Create test level
     // Game doesn't handle Level's memory so we need to delete it at application close
     struct TestLevel : public Level {
         void init() override {
             collision_object = nullptr; // Change this with a real level
-            player_object = nullptr;
+
+            player_object = new Player("Bob");
 
             Tilemap* tilemap = new Tilemap("Tilemap", 0);
 
@@ -46,7 +54,7 @@ int main(void) {
                     }
                 }
             }
-
+            objects.push_back(player_object);
             objects.push_back(tilemap);
         }
     };
@@ -65,16 +73,21 @@ int main(void) {
 
     // Main game loop
     while (!WindowShouldClose()) {
+        current_game->update();
         current_game->draw();
         //----------------------------------------------------------------------------------
     }
 
     // De-Initialization
     //--------------------------------------------------------------------------------------
-    CloseWindow();        // Close window and OpenGL context
-    //--------------------------------------------------------------------------------------
+    
+    // TODO: game seg-faults when closing, determine cause
+    // (something to do with clearing textures)
 
     end_game();
+    
+    CloseWindow();        // Close window and OpenGL context
+    //--------------------------------------------------------------------------------------
 
     return 0;
 }
