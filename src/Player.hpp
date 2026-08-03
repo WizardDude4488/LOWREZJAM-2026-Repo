@@ -19,6 +19,7 @@ protected:
 
     float speed = 10.0f;
     float anim_time = 0.0f;
+    float hurt_time = 0.0f;
 
     Vector2 velocity = {0.0f, 0.0f};
 
