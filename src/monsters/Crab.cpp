@@ -30,23 +30,35 @@ const std::string& Crab::get_class() const {
 
 void Crab::update(float dt) {
 
-    if (flip) {
-        velocity.x = -0.5f;
-    } else {
-        velocity.x = 0.5f;
+    Vector2 point1 = {0, 32};
+    Vector2 point2 = {56, 32};
+
+    if (dir.x == 0.0f && dir.y == 0.0f) {
+        dir = Vector2Normalize(point2 - point1);
     }
 
-    if (flip && bounds.x == 0) {
-        flip = false;
-    } 
-
-    if (!flip && bounds.x == 56) {
-        flip = true;
+    if (get_position().x > point2.x) {
+        dir = Vector2Normalize(point1 - point2);
+        std::cout << "\nLeft";
+    } else if (get_position().x < point1.x + 1) {
+        dir = Vector2Normalize(point2 - point1);
+        std::cout << "\nRight";
     }
+    
+    velocity = Vector2Scale(dir, speed);
 
-    while (anim_time >= 0.1) {
+    Vector2 delta = {0.0f, 0.0f};
+    delta = Vector2Scale(velocity, dt);
+
+    std::cout << "\n" << velocity.x;
+
+    set_position(delta + get_position());
+
+    anim_time += dt;
+
+    while (anim_time >= 1 / speed) {
         animation.set_frame((animation.get_frame() + 1) % 2);
-        anim_time -= 0.25;
+        anim_time = 0;
     }
 
     // Check for collision with player
@@ -61,6 +73,7 @@ void Crab::update(float dt) {
             }
         }
     }
+
 }
 
 void Crab::draw() {

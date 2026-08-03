@@ -40,10 +40,10 @@ void Player::update(float dt) {
 
     Vector2 delta = {0.0f, 0.0f};
 
-    delta.x = get_position().x + velocity.x*dt;
-    delta.y = get_position().y + velocity.y*dt;
+    delta.x = velocity.x*dt;
+    delta.y = velocity.y*dt;
 
-    set_position(delta);
+    set_position(delta + get_position());
 
     // Add friction
     velocity = Vector2Scale(velocity, 0.8f);

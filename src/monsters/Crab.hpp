@@ -15,6 +15,7 @@ protected:
     float anim_time = 0.0f;
 
     Vector2 velocity = {0.0f, 0.0f};
+    Vector2 dir = {0.0f, 0.0f};
 
     bool flip = false;
 
