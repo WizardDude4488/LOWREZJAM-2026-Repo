@@ -1,9 +1,10 @@
 #include <iostream>
 
+#include "raylib.h"
+
 #include "Game.hpp"
 #include "Tilemap.hpp"
-
-#include "raylib.h"
+#include "monsters/Crab.hpp"
 
 int main(void) {
     const int screenWidth = 1024;
@@ -30,6 +31,8 @@ int main(void) {
 
     current_game->load_image("yellow-guy", "yellow-guy.png");
 
+    current_game->load_image("crab", "crab.png");
+
     // HERE
     // Game hangs right here
 
@@ -39,9 +42,13 @@ int main(void) {
         void init() override {
             collision_object = nullptr; // Change this with a real level
 
-            player_object = new Player("Bob");
+            Vector2 initial = {32.0f, 32.0f};
+
+            player_object = new Player("Bob", initial);
 
             Tilemap* tilemap = new Tilemap("Tilemap", 0);
+
+            Crab* crab_object = new Crab("Krabs", initial);
 
             // Create checkerboard pattern
             for (int x = 0; x < TRUE_WIDTH; x++) {
@@ -56,6 +63,7 @@ int main(void) {
             }
             objects.push_back(player_object);
             objects.push_back(tilemap);
+            objects.push_back(crab_object);
         }
     };
 

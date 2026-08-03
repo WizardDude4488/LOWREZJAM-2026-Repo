@@ -74,4 +74,6 @@ public:
 
     void set_tile(int index, const std::string& texture);
     const std::string& get_tile(int index) const;
+
+    std::vector<Object*> get_list();
 };
