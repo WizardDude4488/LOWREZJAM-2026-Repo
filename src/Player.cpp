@@ -54,6 +54,15 @@ void Player::update(float dt) {
         animation.set_frame((animation.get_frame() + 1) % 4);
         anim_time -= 0.25;
     }
+
+    hurt_time -= dt;
+
+    // Handle player hurt
+    if (hurt_time <= 0.0f) {
+        if (IsKeyDown(KEY_X)) { hurt(10); }
+    }
+
+    std::cout << "Player: Health:" << health << ", hurt_time:" << hurt_time << "\n";
 }
 
 // TODO: draw animation object here
@@ -81,6 +90,7 @@ void Player::die() {
 
 void Player::hurt(int amount) {
     health -= amount;
+    hurt_time = 5.0f; // Wait 5 seconds before being able to be hurt again
 
     if (health <= 0) {
         die();
