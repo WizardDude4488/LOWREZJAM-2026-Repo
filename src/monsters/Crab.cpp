@@ -1,3 +1,4 @@
+#include <iostream>
 #include <vector>
 
 #include <string>
@@ -47,6 +48,19 @@ void Crab::update(float dt) {
         animation.set_frame((animation.get_frame() + 1) % 2);
         anim_time -= 0.25;
     }
+
+    // Check for collision with player
+
+    std::vector<Object*> list = current_game->get_list();
+
+    for (Object* i : list) {
+        if (i->get_class() == "Player") {
+            Player* player = static_cast<Player*>(i);
+            if (CheckCollisionRecs(bounds, player->get_bounds())) {
+                player->touch(this);
+            }
+        }
+    }
 }
 
 void Crab::draw() {
@@ -54,16 +68,7 @@ void Crab::draw() {
 }
 
 void Crab::touch(const Object* from) {
-    std::vector<Object*> list = current_game->get_list();
-
-    for (Object* i : list) {
-        if (i->get_class() == "Player") {
-            Player* player = static_cast<Player*>(i);
-            if (CheckCollisionRecs(bounds, player->get_bounds())) {
-                player->hurt(5);
-            }
-        }
-    }
+    return;
 }
 
 void Crab::die() {
