@@ -9,6 +9,7 @@
 #include "Game.hpp"
 #include "Object.hpp"
 #include "Player.hpp"
+#include "monsters/Crab.hpp"
 
 #define LAYER_COUNT 5 // See Object.hpp for layer assignments
 
@@ -263,4 +264,8 @@ void Game::set_tile(int index, const std::string& texture) {
 
 const std::string& Game::get_tile(int index) const {
     return tiles.at(index);
+}
+
+std::vector<Object*> Game::get_list() {
+    return std::vector<Object*>(objects);
 }
