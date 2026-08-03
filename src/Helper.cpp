@@ -39,4 +39,6 @@ std::vector<Rectangle> Helper::create_spritesheet_frames(int frame_width, int fr
 			}
 		}
 	}
+
+	return rectangles;
 }
