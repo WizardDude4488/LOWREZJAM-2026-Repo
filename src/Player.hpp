@@ -1,19 +1,30 @@
 #pragma once
 
+#include <string>
+
+#include <vector>
+
 #include "raylib.h"
+
+#include "raymath.h"
+
+#include "Animation.hpp"
 
 #include "Character.hpp"
 
-#include <vector>
 
 class Player : public Character {
 protected:
     static const std::string class_name;
 
-    float speed;
+    float speed = 10.0f;
+    float anim_time = 0.0f;
+
+    Vector2 velocity = {0.0f, 0.0f};
 
 
 public:
+    Player(const std::string& n);
 
     // From Object.hpp
     const std::string& get_class() const override;
