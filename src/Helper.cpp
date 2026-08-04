@@ -1,5 +1,7 @@
 #include <cmath>
+#include <algorithm>
 
+#include "Tilemap.hpp"
 #include "Helper.hpp"
 
 std::vector<Rectangle> Helper::create_spritesheet_frames(int frame_width, int frame_height, int image_width, int image_height) {
@@ -41,4 +43,76 @@ std::vector<Rectangle> Helper::create_spritesheet_frames(int frame_width, int fr
 	}
 
 	return rectangles;
+}
+
+Vector2 Helper::game_pos_to_tile_pos(Vector2 pos) {
+	return Vector2{
+		std::max(std::min(static_cast<float>(static_cast<int>(std::floor(pos.x)) / TILE_WIDTH) + 1.0f, TRUE_WIDTH - 1.0f), 0.0f),
+		std::max(std::min(static_cast<float>(static_cast<int>(std::floor(pos.y)) / TILE_WIDTH) + 1.0f, TRUE_WIDTH - 1.0f), 0.0f)
+	};
+}
+
+Vector2 Helper::tile_pos_to_game_pos(Vector2 tile_pos) {
+	return Vector2{
+		(tile_pos.x * static_cast<float>(TILE_WIDTH)) - static_cast<float>(TILE_WIDTH),
+		(tile_pos.y * static_cast<float>(TILE_WIDTH)) - static_cast<float>(TILE_WIDTH)
+	};
+}
+
+Vector2 Helper::calculate_tile_collision(Rectangle object_bounds, Tilemap* tilemap) {
+    Vector2 tile_tl = { object_bounds.x, object_bounds.y };
+    Vector2 tile_tr = { object_bounds.x + object_bounds.width, object_bounds.y };
+    Vector2 tile_bl = { object_bounds.x, object_bounds.y + object_bounds.height };
+    Vector2 tile_br = { object_bounds.x + object_bounds.width, object_bounds.y + object_bounds.height };
+
+    Vector2 final_tl = game_pos_to_tile_pos(Vector2Add(tile_tl, Vector2{ -1.0f, -1.0f }));
+    Vector2 final_tr = game_pos_to_tile_pos(Vector2Add(tile_tr, Vector2{ 1.0f, -1.0f }));
+    Vector2 final_bl = game_pos_to_tile_pos(Vector2Add(tile_bl, Vector2{ -1.0f, 1.0f }));
+    Vector2 final_br = game_pos_to_tile_pos(Vector2Add(tile_br, Vector2{ 1.0f, 1.0f }));
+
+    Vector2 object_center = { object_bounds.x + object_bounds.width / 2.0f, object_bounds.y + object_bounds.height / 2.0f };
+
+    float min_x = -std::numeric_limits<float>::infinity();
+    float max_x = std::numeric_limits<float>::infinity();
+    float min_y = -std::numeric_limits<float>::infinity();
+    float max_y = std::numeric_limits<float>::infinity();
+
+    for (int x = static_cast<int>(final_tl.x); x <= static_cast<int>(final_tr.x); x++) {
+        for (int y = static_cast<int>(final_tl.y); y <= static_cast<int>(final_bl.y); y++) {
+            if (tilemap->get_tile(x, y) != -1) {
+                Vector2 world_pos = tile_pos_to_game_pos(Vector2{ (float)x, (float)y });
+                Rectangle tile_rect = { world_pos.x, world_pos.y, static_cast<float>(TILE_WIDTH), static_cast<float>(TILE_WIDTH) };
+                Rectangle collision = GetCollisionRec(object_bounds, tile_rect);
+
+                if (collision.width <= 0.0f || collision.height <= 0.0f) { continue; }
+
+                Vector2 tile_center = { tile_rect.x + tile_rect.width / 2.0f, tile_rect.y + tile_rect.height / 2.0f };
+
+                // Only let this tile constrain the axis it's actually blocking --
+                // the one with the shallower overlap. A tile barely grazed on one
+                // axis shouldn't be able to clamp the other axis.
+                if (collision.width < collision.height) {
+                    if (object_center.x < tile_center.x) {
+                        max_x = std::min(max_x, tile_rect.x - object_bounds.width);
+                    }
+                    else {
+                        min_x = std::max(min_x, tile_rect.x + tile_rect.width);
+                    }
+                }
+                else {
+                    if (object_center.y < tile_center.y) {
+                        max_y = std::min(max_y, tile_rect.y - object_bounds.height);
+                    }
+                    else {
+                        min_y = std::max(min_y, tile_rect.y + tile_rect.height);
+                    }
+                }
+            }
+        }
+    }
+
+    float new_x = (min_x <= max_x) ? std::max(min_x, std::min(object_bounds.x, max_x)) : object_bounds.x;
+    float new_y = (min_y <= max_y) ? std::max(min_y, std::min(object_bounds.y, max_y)) : object_bounds.y;
+
+    return Vector2{ new_x, new_y };
 }

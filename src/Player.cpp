@@ -2,6 +2,7 @@
 
 #include "raylib.h"
 
+#include "Game.hpp"
 #include "Player.hpp"
 #include "Helper.hpp"
 using namespace Helper;
@@ -10,7 +11,7 @@ Player::Player(const std::string& n, Vector2 Pos) {
 
     name = n;
     draw_layer = 4;
-    bounds = {Pos.x, Pos.y, 8, 8};
+    bounds = {Pos.x, Pos.y, 5, 8};
     animation = Animation("yellow-guy", create_spritesheet_frames(5, 8, 64, 64, 4));
     max_health = 20;
     health = max_health;
@@ -40,10 +41,21 @@ void Player::update(float dt) {
 
     Vector2 delta = {0.0f, 0.0f};
 
+    // Set intended position
     delta.x = get_position().x + velocity.x*dt;
     delta.y = get_position().y + velocity.y*dt;
 
     set_position(delta);
+
+    // Calculate collision; try on each axis (TODO: Move this functionality into calculate_tile_collision)
+
+    // X first
+    Vector2 collision = Helper::calculate_tile_collision(get_bounds(), current_game->get_collision_object());
+    bounds.x = collision.x;
+
+    // Then Y
+    collision = Helper::calculate_tile_collision(get_bounds(), current_game->get_collision_object());
+    bounds.y = collision.y;
 
     // Add friction
     velocity = Vector2Scale(velocity, 0.8f);
@@ -61,19 +73,20 @@ void Player::update(float dt) {
     if (hurt_time <= 0.0f) {
         if (IsKeyDown(KEY_X)) { hurt(10); }
     }
-
-    std::cout << "Player: Health:" << health << ", hurt_time:" << hurt_time << "\n";
 }
 
 // TODO: draw animation object here
 void Player::draw() {
     animation.draw_frame(get_position());
+
+    // Draw rectangle for health bar
+    DrawRectangle(0, 0, get_health(), 5, RED);
 }
 
 // TODO: hurt player when something like an enemy or spike calls this function
 void Player::touch(const Object* from) {
     if (from->get_class() == "Crab") {
-        hurt(5);
+        hurt(5); // Set damage from each class
     }
 }
 
