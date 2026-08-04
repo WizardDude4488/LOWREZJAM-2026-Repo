@@ -11,16 +11,17 @@ class Crab : public Character {
 protected:
     static const std::string class_name;
 
-    float speed = 25.0f;
+    float speed = 300.0f;
     float anim_time = 0.0f;
 
     Vector2 velocity = {0.0f, 0.0f};
     Vector2 dir = {0.0f, 0.0f};
 
-    Vector2 point1 = {27, 12};
-    Vector2 point2 = {27, 52};
+    Vector2 point1 = {27, 52};
+    Vector2 point2 = {27, 0};
 
-    bool flip = false;
+    bool x_flipped = false;
+    bool y_flipped = false;
 
 public:
     Crab(const std::string& n, Vector2 Pos);

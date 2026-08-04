@@ -21,6 +21,9 @@ Crab::Crab(const std::string& n, Vector2 Pos) {
     max_health = 20;
     health = max_health;
 
+    if (point1.x > point2.x) {x_flipped = true;}
+    if (point1.y > point2.y) {y_flipped = true;}
+
 }
 
 const std::string Crab::class_name = "Crab";
@@ -43,24 +46,48 @@ void Crab::update(float dt) {
     Vector2 delta = {0.0f, 0.0f};
     delta = Vector2Scale(velocity, dt);
 
-    std::cout << "\n" << Vector2Distance(get_position(), point2);
-
     set_position(delta + get_position());
 
-    if (Vector2Distance(get_position(), point1) <= buffer && 
-        (dir.x < Vector2Normalize(Vector2Subtract(point2, point1)).x ||
-         dir.y < Vector2Normalize(Vector2Subtract(point2, point1)).y)) {
+    if (x_flipped && y_flipped) { 
+        if (get_position().x > point1.x  || get_position().y > point1.y) {
         set_position(point1);
         dir.x = -dir.x;
         dir.y = -dir.y;
-        std::cout << "\nFlip";
-    } else if (Vector2Distance(get_position(), point2) <= buffer && 
-        (dir.x > Vector2Normalize(Vector2Subtract(point1, point2)).x ||
-         dir.y > Vector2Normalize(Vector2Subtract(point1, point2)).y)) {
+        } else if (get_position().x < point2.x || get_position().y < point2.y) {
         set_position(point2);
         dir.x = -dir.x;
         dir.y = -dir.y;
-        std::cout << "\nFlip";
+        }  
+    } else if (x_flipped && !y_flipped) {
+        if (get_position().x > point1.x  || get_position().y < point1.y) {
+        set_position(point1);
+        dir.x = -dir.x;
+        dir.y = -dir.y;
+    } else if (get_position().x < point2.x || get_position().y > point2.y) {
+        set_position(point2);
+        dir.x = -dir.x;
+        dir.y = -dir.y;
+    }
+    } else if (!x_flipped && y_flipped) {
+        if (get_position().x < point1.x  || get_position().y > point1.y) {
+        set_position(point1);
+        dir.x = -dir.x;
+        dir.y = -dir.y;
+        } else if (get_position().x > point2.x || get_position().y < point2.y) {
+        set_position(point2);
+        dir.x = -dir.x;
+        dir.y = -dir.y;
+        }
+    } else {
+        if (get_position().x < point1.x  || get_position().y < point1.y) {
+        set_position(point1);
+        dir.x = -dir.x;
+        dir.y = -dir.y;
+        } else if (get_position().x > point2.x || get_position().y > point2.y) {
+        set_position(point2);
+        dir.x = -dir.x;
+        dir.y = -dir.y;
+        }
     }
 
     anim_time += dt;
