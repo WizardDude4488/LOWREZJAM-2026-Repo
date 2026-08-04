@@ -5,6 +5,7 @@
 #include "Game.hpp"
 #include "Tilemap.hpp"
 #include "monsters/Crab.hpp"
+#include "monsters/Seagull.hpp"
 
 int main(void) {
     const int screenWidth = 1024;
@@ -19,8 +20,6 @@ int main(void) {
 
     begin_game();
 
-    std::cout << "bruh\n";
-
     current_game->load_image("black-tile", "black-tile.png");
 
     current_game->set_tile(0, "black-tile");
@@ -32,6 +31,8 @@ int main(void) {
     current_game->load_image("yellow-guy", "yellow-guy.png");
 
     current_game->load_image("crab", "crab.png");
+
+    current_game->load_image("seagull", "seagull.png");
 
     // HERE
     // Game hangs right here
@@ -50,6 +51,10 @@ int main(void) {
 
             Crab* crab_object = new Crab("Krabs", { 32.0f, 32.0f });
 
+            Crab* crab_object = new Crab("Krabs", {27.0f, 27.0f});
+
+            Seagull* seagull_object = new Seagull("Seagull", {40.0f, 40.0f});
+
             // Create checkerboard pattern
             for (int x = 0; x < TRUE_WIDTH; x++) {
                 for (int y = 0; y < TRUE_WIDTH; y++) {
@@ -66,6 +71,7 @@ int main(void) {
             objects.push_back(collision_object);
             objects.push_back(tilemap);
             objects.push_back(crab_object);
+            objects.push_back(seagull_object);
         }
     };
 

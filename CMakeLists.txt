@@ -28,6 +28,7 @@ target_sources(lowrez PRIVATE
     src/Character.cpp
     src/Player.cpp
     src/monsters/Crab.cpp
+    src/monsters/Seagull.cpp
     
     src/Game.hpp
     src/Object.hpp
@@ -40,6 +41,7 @@ target_sources(lowrez PRIVATE
     src/Character.hpp
     src/Player.hpp
     src/monsters/Crab.hpp
+    src/monsters/Seagull.hpp
 )
 
 target_include_directories(lowrez PRIVATE src)

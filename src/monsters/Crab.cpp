@@ -4,6 +4,7 @@
 #include <string>
 
 #include "raylib.h"
+#include "raymath.h"
 
 #include "Game.hpp"
 #include "Helper.hpp"
@@ -20,6 +21,9 @@ Crab::Crab(const std::string& n, Vector2 Pos) {
     max_health = 20;
     health = max_health;
 
+    if (point1.x > point2.x) {x_flipped = true;}
+    if (point1.y > point2.y) {y_flipped = true;}
+
 }
 
 const std::string Crab::class_name = "Crab";
@@ -30,23 +34,67 @@ const std::string& Crab::get_class() const {
 
 void Crab::update(float dt) {
 
-    if (flip) {
-        velocity.x = -0.5f;
+    int buffer = 2;
+
+    if (dir.x == 0.0f && dir.y == 0.0f) {
+        dir = Vector2Normalize(Vector2Subtract(point2, point1));
+    }
+
+    
+    velocity = Vector2Scale(dir, speed);
+
+    Vector2 delta = {0.0f, 0.0f};
+    delta = Vector2Scale(velocity, dt);
+
+    set_position(delta + get_position());
+
+    if (x_flipped && y_flipped) { 
+        if (get_position().x > point1.x  || get_position().y > point1.y) {
+        set_position(point1);
+        dir.x = -dir.x;
+        dir.y = -dir.y;
+        } else if (get_position().x < point2.x || get_position().y < point2.y) {
+        set_position(point2);
+        dir.x = -dir.x;
+        dir.y = -dir.y;
+        }  
+    } else if (x_flipped && !y_flipped) {
+        if (get_position().x > point1.x  || get_position().y < point1.y) {
+        set_position(point1);
+        dir.x = -dir.x;
+        dir.y = -dir.y;
+    } else if (get_position().x < point2.x || get_position().y > point2.y) {
+        set_position(point2);
+        dir.x = -dir.x;
+        dir.y = -dir.y;
+    }
+    } else if (!x_flipped && y_flipped) {
+        if (get_position().x < point1.x  || get_position().y > point1.y) {
+        set_position(point1);
+        dir.x = -dir.x;
+        dir.y = -dir.y;
+        } else if (get_position().x > point2.x || get_position().y < point2.y) {
+        set_position(point2);
+        dir.x = -dir.x;
+        dir.y = -dir.y;
+        }
     } else {
-        velocity.x = 0.5f;
+        if (get_position().x < point1.x  || get_position().y < point1.y) {
+        set_position(point1);
+        dir.x = -dir.x;
+        dir.y = -dir.y;
+        } else if (get_position().x > point2.x || get_position().y > point2.y) {
+        set_position(point2);
+        dir.x = -dir.x;
+        dir.y = -dir.y;
+        }
     }
 
-    if (flip && bounds.x == 0) {
-        flip = false;
-    } 
+    anim_time += dt;
 
-    if (!flip && bounds.x == 56) {
-        flip = true;
-    }
-
-    while (anim_time >= 0.1) {
+    while (anim_time >= 1 / speed) {
         animation.set_frame((animation.get_frame() + 1) % 2);
-        anim_time -= 0.25;
+        anim_time = 0;
     }
 
     // Check for collision with player
@@ -61,6 +109,7 @@ void Crab::update(float dt) {
             }
         }
     }
+
 }
 
 void Crab::draw() {
