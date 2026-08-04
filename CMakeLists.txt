@@ -28,6 +28,7 @@ list(APPEND src_files
     src/monsters/Seagull.cpp
     src/monsters/Bullet.cpp
     
+    Load.hpp
     src/Game.hpp
     src/Object.hpp
     src/NullObject.hpp

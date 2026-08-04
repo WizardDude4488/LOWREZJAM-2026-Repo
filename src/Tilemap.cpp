@@ -103,3 +103,7 @@ Level::~Level() {
 	player_object = nullptr;
 	collision_object = nullptr;
 }
+
+void Level::add_object(Object* obj) {
+	objects.push_back(obj);
+}
