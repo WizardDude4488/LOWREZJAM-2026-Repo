@@ -63,6 +63,7 @@ public:
     Object* get_object(int index) const;
 
     Player* get_player_object() const; // Change to Player* later
+    Player* get_player() const;
     Tilemap* get_collision_object() const;
 
     int get_current_layer() const;

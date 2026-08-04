@@ -272,3 +272,7 @@ const std::string& Game::get_tile(int index) const {
 std::vector<Object*> Game::get_list() {
     return std::vector<Object*>(objects);
 }
+
+Player* Game::get_player() const {
+    return player_object;
+}

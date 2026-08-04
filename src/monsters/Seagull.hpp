@@ -5,9 +5,9 @@
 
 #include "raylib.h"
 
-#include "Character.hpp"
+#include "Character.hpp" 
 
-class Crab : public Character {
+class Seagull : public Character {
 protected:
     static const std::string class_name;
 
@@ -15,16 +15,20 @@ protected:
     float anim_time = 0.0f;
 
     Vector2 velocity = {0.0f, 0.0f};
+    Vector2 dive_path = {0.0f, 0.0f};
+    Vector2 endpoint = {0.0f, 0.0f};
     Vector2 dir = {0.0f, 0.0f};
-
-    Vector2 point1 = {27, 52};
-    Vector2 point2 = {27, 0};
 
     bool x_flipped = false;
     bool y_flipped = false;
 
+    bool hover = false;
+    bool dive = false;
+
+    float hover_time = 0.0f;
+
 public:
-    Crab(const std::string& n, Vector2 Pos);
+    Seagull(const std::string& n, Vector2 Pos);
 
     const std::string& get_class() const override;
     void update(float dt) override;
