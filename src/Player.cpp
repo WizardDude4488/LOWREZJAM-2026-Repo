@@ -10,7 +10,7 @@ Player::Player(const std::string& n, Vector2 Pos) {
 
     name = n;
     draw_layer = 4;
-    bounds = {Pos.x, Pos.y, 8, 8};
+    bounds = {Pos.x, Pos.y, 5, 8};
     animation = Animation("yellow-guy", create_spritesheet_frames(5, 8, 64, 64, 4));
     max_health = 20;
     health = max_health;
