@@ -22,7 +22,8 @@ public:
     //Rectangle get_frame_rect(int index);
 
     // Instead, we can set the frame and render it with a position
-    int get_frame();
+    int get_frame() const;
+    const Rectangle& get_frame_rect(int frame) const;
     void set_frame(int curr_frame);
     void draw_frame(Vector2 position); // add rotation, scale later if we need it
 };

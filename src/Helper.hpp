@@ -3,6 +3,8 @@
 #include <vector>
 
 #include "raylib.h"
+#include "Tilemap.hpp"
+#include "Animation.hpp"
 
 namespace Helper {
 	// Go left to right, top to bottom creating rects representing regions of the spritesheet
@@ -14,6 +16,9 @@ namespace Helper {
 
 	Vector2 tile_pos_to_game_pos(Vector2 tile_pos);
 
+	bool colliding_with_tile(Rectangle object_bounds, Tilemap* tilemap);
+
 	Vector2 calculate_tile_collision(Rectangle object_bounds, Tilemap* tilemap);
 
+	Vector2 get_animation_center(const Animation& anim);
 }
