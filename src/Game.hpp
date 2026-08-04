@@ -68,6 +68,7 @@ public:
     int get_current_layer() const;
 
     void remove_object(int index);
+    void remove_object(Object* obj);
 
     void load_image(const std::string& hash, const std::string& local_path);
     Texture2D get_texture(const std::string& hash) const;

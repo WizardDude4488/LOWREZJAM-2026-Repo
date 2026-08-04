@@ -251,6 +251,21 @@ void Game::remove_object(int index) {
     }
 }
 
+void Game::remove_object(Object* obj) {
+    try {
+        auto index = std::find(objects.begin(), objects.end(), obj);
+        if (index != objects.end()) {
+            int num = std::distance(objects.begin(), index);
+            delete objects.at(num); // Deallocate
+            objects.erase(index); // Delete pointer
+        }
+        
+    }
+    catch (...) {
+        return;
+    }
+}
+
 void Game::load_image(const std::string& hash, const std::string& local_path) {
     std::string path = "assets/" + local_path;
     textures[hash] = LoadTexture(path.c_str());
