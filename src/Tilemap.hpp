@@ -53,4 +53,5 @@ struct Level {
 
 	~Level();
 	virtual void init() = 0; // Make specific level here
+	void add_object(Object* obj);
 };

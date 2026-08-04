@@ -6,6 +6,7 @@
 #include "Game.hpp"
 #include "Tilemap.hpp"
 #include "Helper.hpp"
+#include "Load.hpp"
 #include "monsters/Crab.hpp"
 #include "monsters/Seagull.hpp"
 #include "monsters/Bullet.hpp"
@@ -31,24 +32,7 @@ int main(void) {
 
     current_game->set_tile(1, "white-tile");*/
 
-    std::vector<Rectangle> tileset_rects = Helper::create_spritesheet_frames(8, 8, 160, 88, 220);
-
-    int count = 0;
-    std::string tileset_name = "sandtest";
-
-    for (Rectangle rect : tileset_rects) {
-
-        std::string hash = tileset_name + std::to_string(count);
-        current_game->load_image_from_rect(hash, "sandtest.png", rect);
-        current_game->set_tile(count, hash);
-        count++;
-    }
-
-    current_game->load_image("yellow-guy", "yellow-guy.png");
-
-    current_game->load_image("crab", "crab.png");
-
-    current_game->load_image("seagull", "seagull.png");
+    load_assets();
 
     current_game->load_image("bullet", "bullet.png");
 

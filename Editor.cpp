@@ -6,6 +6,7 @@
 #include "Game.hpp"
 #include "Tilemap.hpp"
 #include "Helper.hpp"
+#include "Load.hpp"
 #include "monsters/Crab.hpp"
 #include "monsters/Seagull.hpp"
 #include "monsters/Bullet.hpp"
@@ -23,24 +24,17 @@ int main(void) {
 
     begin_game();
 
-    std::vector<Rectangle> tileset_rects = Helper::create_spritesheet_frames(8, 8, 160, 88, 220);
-
-    int count = 0;
-    std::string tileset_name = "sandtest";
-
-    for (Rectangle rect : tileset_rects) {
-
-        std::string hash = tileset_name + std::to_string(count);
-        current_game->load_image_from_rect(hash, "sandtest.png", rect);
-        current_game->set_tile(count, hash);
-        count++;
-    }
+    load_assets();
 
     // Create test level
     // Game doesn't handle Level's memory so we need to delete it at application close
+
+    Tilemap* select_tile = new Tilemap("Select", 1);
+
     struct TestLevel : public Level {
+
         void init() override {
-            collision_object = new Tilemap("Walls", 1);
+            collision_object = new Tilemap("Walls", 0);
             objects.push_back(collision_object);
         }
     };
@@ -48,6 +42,7 @@ int main(void) {
     Level* test_level = new TestLevel();
 
     test_level->init();
+    test_level->add_object(select_tile);
 
     // Do not call delete on tilemap; game handles this automatically
 
@@ -57,7 +52,13 @@ int main(void) {
 
     current_game->load_level(test_level);
 
+    enum EditorState {EDIT_TILEMAP = 0, EDIT_ENTITIES = 1, SELECT_TILEMAP = 2, SELECT_ENTITIES = 3};
+    EditorState current_state = EDIT_TILEMAP;
+
+    // EDIT_TILEMAP
     int copied_tile = -1;
+    // SELECT_TILEMAP
+    int view_position = 0;
 
     // Main game loop
     while (!WindowShouldClose()) {
@@ -70,35 +71,70 @@ int main(void) {
 
         Tilemap* tilemap = current_game->get_collision_object();
 
-        if (IsKeyPressed(KEY_W)) {
-            tilemap->set_tile(tile_x, tile_y, tilemap->get_tile(tile_x, tile_y) - 19);
+        if (IsKeyPressed(KEY_ONE)) {
+            current_state = EDIT_TILEMAP;
+            std::cout << "EDIT_TILEMAP\n";
         }
 
-        if (IsKeyPressed(KEY_S)) {
-            tilemap->set_tile(tile_x, tile_y, tilemap->get_tile(tile_x, tile_y) + 19);
+        if (IsKeyPressed(KEY_TWO)) {
+            current_state = EDIT_ENTITIES;
+            std::cout << "EDIT_ENTITIES\n";
         }
 
-        if (IsKeyPressed(KEY_A)) {
-            tilemap->set_tile(tile_x, tile_y, tilemap->get_tile(tile_x, tile_y) - 1);
+        if (IsKeyPressed(KEY_THREE)) {
+            current_state = SELECT_TILEMAP;
+            std::cout << "SELECT_TILEMAP\n";
         }
 
-        if (IsKeyPressed(KEY_D)) {
-            tilemap->set_tile(tile_x, tile_y, tilemap->get_tile(tile_x, tile_y) + 1);
+        if (IsKeyPressed(KEY_FOUR)) {
+            current_state = SELECT_ENTITIES;
+            std::cout << "SELECT_ENTITIES\n";
         }
 
-        if (IsMouseButtonPressed(MOUSE_BUTTON_MIDDLE)) {
-            copied_tile = tilemap->get_tile(tile_x, tile_y);
+        if (current_state == EDIT_TILEMAP) {
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) { // Set
+                tilemap->set_tile(tile_x, tile_y, copied_tile);
+            }
+
+            if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) { // Clear
+                tilemap->set_tile(tile_x, tile_y, -1);
+            }
+            // Make sure select tilemap is cleared
+            for (int x = 1; x < TRUE_WIDTH - 1; x++) {
+                for (int y = 1; y < TRUE_WIDTH - 1; y++) {
+                    select_tile->set_tile(x, y, -1);
+                }
+            }
+        } else if (current_state == SELECT_TILEMAP) {
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+                copied_tile = tile_x + (tile_y + view_position) * 19;
+            }
+
+            if (IsKeyPressed(KEY_S)) {
+                view_position += 1;
+            }
+
+            if (IsKeyPressed(KEY_W)) {
+                view_position -= 1;
+            }
+
+            // Arrange tiles into tilemap
+            // Only set in areas that are visible on screen
+            for (int x = 1; x < TRUE_WIDTH - 1; x++) {
+                for (int y = 1; y < TRUE_WIDTH - 1; y++) {
+                    select_tile->set_tile(x, y, x + 19 * (y + view_position));
+                }
+            }
         }
 
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-            tilemap->set_tile(tile_x, tile_y, copied_tile);
-        }
-
-        if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
-            tilemap->set_tile(tile_x, tile_y, -1);
-        }
-
+        // Draw tilemap
         current_game->draw();
+
+        if (current_state == SELECT_TILEMAP) {
+            Vector2 screen_tile_pos = Helper::tile_pos_to_game_pos(mouse_tile_pos);
+            DrawRectangle(screen_tile_pos.x, screen_tile_pos.y, 8, 8, MAGENTA);
+        }
+        
         //----------------------------------------------------------------------------------
     }
 
