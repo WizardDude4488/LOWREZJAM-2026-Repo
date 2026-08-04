@@ -13,10 +13,7 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
     link_directories(${CMAKE_SOURCE_DIR}/libs/windows/raylib/lib)
 endif()
 
-add_executable(lowrez Main.cpp)
-
-target_sources(lowrez PRIVATE
-    Main.cpp
+list(APPEND src_files
     src/Game.cpp
     src/Object.cpp
     src/NullObject.cpp
@@ -46,10 +43,24 @@ target_sources(lowrez PRIVATE
     src/monsters/Bullet.hpp
 )
 
+add_executable(lowrez Main.cpp)
+
+add_executable(lowrez-editor Editor.cpp)
+
+target_sources(lowrez PRIVATE ${src_files})
+
+target_sources(lowrez-editor PRIVATE ${src_files})
+
 target_include_directories(lowrez PRIVATE src)
+
+target_include_directories(lowrez-editor PRIVATE src)
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
     target_link_libraries(lowrez PRIVATE 
+            raylib
+            X11
+            )
+    target_link_libraries(lowrez-editor PRIVATE 
             raylib
             X11
             )
@@ -58,6 +69,12 @@ endif()
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
     target_link_libraries(lowrez PRIVATE 
+            raylib
+            opengl32
+            winmm
+            gdi32
+            )
+    target_link_libraries(lowrez-editor PRIVATE 
             raylib
             opengl32
             winmm

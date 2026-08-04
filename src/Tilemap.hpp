@@ -24,6 +24,7 @@ protected:
 
 public:
 	Tilemap(const std::string& n, int layer);
+	Tilemap(const std::string& n, int layer, const std::vector<int>& data);
 	const std::string& get_class() const override;
 
 	void update(float dt) override;
