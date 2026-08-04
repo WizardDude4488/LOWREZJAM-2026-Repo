@@ -28,6 +28,13 @@ Game::Game() {
     collision_object = nullptr;
     dt = 0.0;
     current_layer = 0;
+
+    // create default image
+
+    Image default = GenImageChecked(8, 8, 4, 4, MAGENTA, BLACK);
+
+    textures["default"] = LoadTextureFromImage(default);
+    UnloadImage(default);
 }
 
 Game::~Game() {
@@ -271,9 +278,26 @@ void Game::load_image(const std::string& hash, const std::string& local_path) {
     textures[hash] = LoadTexture(path.c_str());
 }
 
+void Game::load_image_from_rect(const std::string& hash, const std::string& local_path, const Rectangle& rect) {
+    std::string path = "assets/" + local_path;
+    Image img = LoadImage(path.c_str());
+
+    Image img_rect = ImageFromImage(img, rect);
+
+    textures[hash] = LoadTextureFromImage(img_rect);
+
+    UnloadImage(img);
+    UnloadImage(img_rect);
+}
+
 // TODO: add hash checking so we don't return a nonexistant hash
 Texture2D Game::get_texture(const std::string& hash) const {
-    return textures.at(hash);
+    if (textures.find(hash) != textures.end()) {
+        return textures.at(hash);
+    } else {
+        return textures.at("default");
+    }
+    
 }
 
 void Game::set_tile(int index, const std::string& texture) {
@@ -281,7 +305,11 @@ void Game::set_tile(int index, const std::string& texture) {
 }
 
 const std::string& Game::get_tile(int index) const {
-    return tiles.at(index);
+    if (tiles.find(index) != tiles.end()) {
+        return tiles.at(index);
+    } else {
+        return "default";
+    }
 }
 
 std::vector<Object*> Game::get_list() {

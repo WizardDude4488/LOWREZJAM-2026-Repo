@@ -1,9 +1,11 @@
 #include <iostream>
+#include <string>
 
 #include "raylib.h"
 
 #include "Game.hpp"
 #include "Tilemap.hpp"
+#include "Helper.hpp"
 #include "monsters/Crab.hpp"
 #include "monsters/Seagull.hpp"
 #include "monsters/Bullet.hpp"
@@ -21,13 +23,26 @@ int main(void) {
 
     begin_game();
 
-    current_game->load_image("black-tile", "black-tile.png");
+    /*current_game->load_image("black-tile", "black-tile.png");
 
     current_game->set_tile(0, "black-tile");
 
     current_game->load_image("white-tile", "white-tile.png");
 
-    current_game->set_tile(1, "white-tile");
+    current_game->set_tile(1, "white-tile");*/
+
+    std::vector<Rectangle> tileset_rects = Helper::create_spritesheet_frames(8, 8, 160, 88, 220);
+
+    int count = 0;
+    std::string tileset_name = "sandtest";
+
+    for (Rectangle rect : tileset_rects) {
+
+        std::string hash = tileset_name + std::to_string(count);
+        current_game->load_image_from_rect(hash, "sandtest.png", rect);
+        current_game->set_tile(count, hash);
+        count++;
+    }
 
     current_game->load_image("yellow-guy", "yellow-guy.png");
 
@@ -44,13 +59,36 @@ int main(void) {
     // Game doesn't handle Level's memory so we need to delete it at application close
     struct TestLevel : public Level {
         void init() override {
-            collision_object = new Tilemap("Walls", 1);
+
+            const std::vector<int>& wall_data = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                                             -1, 0, 19, 38, 38, 38, 38, 57, 0, -1,
+                                             -1, 1, -1, -1, -1, -1, -1, -1, 77, -1,
+                                             -1, 2, -1, -1, -1, -1, -1, -1, 78, -1,
+                                             -1, 2, -1, -1, -1, -1, -1, -1, 78, -1,
+                                             -1, 2, -1, -1, -1, -1, -1, -1, 78, -1,
+                                             -1, 2, -1, -1, -1, -1, -1, -1, 78, -1,
+                                             -1, 3, -1, -1, -1, -1, -1, -1, 79, -1,
+                                             -1, 0, 23, 42, 42, 42, 42, 61, 0, -1,
+                                             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, };
+
+            const std::vector<int>& floor_data = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                                                   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                                                   -1, -1, 20, 39, 39, 39, 39, 58, -1, -1,
+                                                   -1, -1, 21, 40, 40, 40, 40, 59, -1, -1,
+                                                   -1, -1, 21, 40, 40, 40, 40, 59, -1, -1,
+                                                   -1, -1, 21, 40, 40, 40, 40, 59, -1, -1,
+                                                   -1, -1, 21, 40, 40, 40, 40, 59, -1, -1,
+                                                   -1, -1, 22, 41, 41, 41, 41, 60, -1, -1,
+                                                   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                                                   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, };
+
+            collision_object = new Tilemap("Walls", 1, wall_data);
 
             // Give player and crab different positions
 
             player_object = new Player("Bob", { 32.0f, 32.0f });
 
-            Tilemap* tilemap = new Tilemap("Floor", 0);
+            Tilemap* tilemap = new Tilemap("Floor", 0, floor_data);
 
             Crab* crab_object = new Crab("Krabs", { 16.0f, 16.0f }, { 48.0f, 16.0f }, 30.0f);
 
@@ -58,17 +96,9 @@ int main(void) {
 
             Seagull* seagull_object = new Seagull("Seagull", {40.0f, 40.0f}, 50.0f);
 
-            // Fill with white tile
-            for (int x = 0; x < TRUE_WIDTH; x++) {
-                for (int y = 0; y < TRUE_WIDTH; y++) {
-                    tilemap->set_tile(x, y, 1);
-                }
-            }
-
             // Make border around map; Remember that there is an extra block border around the screen
 
             collision_object->set_square(0, 0, TRUE_WIDTH - 1, TRUE_WIDTH - 1, 0);
-            collision_object->set_square(1, 1, TRUE_WIDTH - 2, TRUE_WIDTH - 2, 0);
 
             objects.push_back(player_object);
             objects.push_back(collision_object);

@@ -59,6 +59,26 @@ Vector2 Helper::tile_pos_to_game_pos(Vector2 tile_pos) {
 	};
 }
 
+Vector2 Helper::screen_pos_to_game_pos(Vector2 screen_pos) {
+    float target_length = static_cast<float>(std::min(GetScreenWidth(), GetScreenHeight()));
+    Vector2 window_size = { static_cast<float>(GetScreenWidth()), static_cast<float>(GetScreenHeight()) };
+
+    Rectangle canvas_target_rect;
+    if (window_size.x >= window_size.y) {
+        canvas_target_rect = { (window_size.x - target_length) / 2.0f, 0.0f, target_length, target_length };
+    }
+    else {
+        canvas_target_rect = { 0.0f, (window_size.y - target_length) / 2.0f, target_length, target_length };
+    }
+
+    float scale = 64.0f / target_length; // e.g. 64 / target_length
+
+    return Vector2{
+        (screen_pos.x - canvas_target_rect.x) * scale,
+        (screen_pos.y - canvas_target_rect.y) * scale
+    };
+}
+
 bool Helper::colliding_with_tile(Rectangle object_bounds, Tilemap* tilemap) {
     Vector2 tile_tl = { object_bounds.x, object_bounds.y };
     Vector2 tile_tr = { object_bounds.x + object_bounds.width, object_bounds.y };
