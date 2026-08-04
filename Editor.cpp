@@ -4,6 +4,7 @@
 #include "raylib.h"
 
 #include "Game.hpp"
+#include "Entity.hpp"
 #include "Tilemap.hpp"
 #include "Helper.hpp"
 #include "Load.hpp"
@@ -31,6 +32,22 @@ int main(void) {
 
     Tilemap* select_tile = new Tilemap("Select", 1);
 
+    class HighlightTile : public Object {
+    protected:
+        std::string class_name = "HighlightTile";
+    public:
+        HighlightTile() { draw_layer = 3; name = "HighlightTile"; }
+
+        // From Object.hpp
+
+        const std::string& get_class() const override { return class_name; }
+        void update(float dt) override { return; }
+        void draw() override { 
+            Vector2 screen_tile_pos = Helper::tile_pos_to_game_pos(Helper::game_pos_to_tile_pos(Helper::screen_pos_to_game_pos(GetMousePosition())));
+            DrawRectangle(screen_tile_pos.x, screen_tile_pos.y, 8, 8, Color{ 255, 0, 255, 100 });
+        }
+    };
+
     struct TestLevel : public Level {
 
         void init() override {
@@ -41,8 +58,11 @@ int main(void) {
 
     Level* test_level = new TestLevel();
 
+    HighlightTile* highlight = new HighlightTile();
+
     test_level->init();
     test_level->add_object(select_tile);
+    test_level->add_object(highlight);
 
     // Do not call delete on tilemap; game handles this automatically
 
@@ -58,7 +78,8 @@ int main(void) {
     // EDIT_TILEMAP
     int copied_tile = -1;
     // SELECT_TILEMAP
-    int view_position = 0;
+    int view_position_x = 0;
+    int view_position_y = 0;
 
     // Main game loop
     while (!WindowShouldClose()) {
@@ -107,33 +128,36 @@ int main(void) {
             }
         } else if (current_state == SELECT_TILEMAP) {
             if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-                copied_tile = tile_x + (tile_y + view_position) * 19;
+                copied_tile = (tile_x + view_position_x) + (tile_y + view_position_y) * 20;
             }
 
             if (IsKeyPressed(KEY_S)) {
-                view_position += 1;
+                view_position_y += 1;
             }
 
             if (IsKeyPressed(KEY_W)) {
-                view_position -= 1;
+                view_position_y -= 1;
+            }
+
+            if (IsKeyPressed(KEY_A)) {
+                view_position_x -= 1;
+            }
+
+            if (IsKeyPressed(KEY_D)) {
+                view_position_x += 1;
             }
 
             // Arrange tiles into tilemap
             // Only set in areas that are visible on screen
             for (int x = 1; x < TRUE_WIDTH - 1; x++) {
                 for (int y = 1; y < TRUE_WIDTH - 1; y++) {
-                    select_tile->set_tile(x, y, x + 19 * (y + view_position));
+                    select_tile->set_tile(x, y, (x + view_position_x) + 20 * (y + view_position_y));
                 }
             }
         }
 
         // Draw tilemap
         current_game->draw();
-
-        if (current_state == SELECT_TILEMAP) {
-            Vector2 screen_tile_pos = Helper::tile_pos_to_game_pos(mouse_tile_pos);
-            DrawRectangle(screen_tile_pos.x, screen_tile_pos.y, 8, 8, MAGENTA);
-        }
         
         //----------------------------------------------------------------------------------
     }

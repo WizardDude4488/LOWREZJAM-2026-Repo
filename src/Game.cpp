@@ -304,7 +304,7 @@ void Game::set_tile(int index, const std::string& texture) {
     tiles[index] = texture;
 }
 
-const std::string& Game::get_tile(int index) const {
+std::string Game::get_tile(int index) const {
     if (tiles.find(index) != tiles.end()) {
         return tiles.at(index);
     } else {
