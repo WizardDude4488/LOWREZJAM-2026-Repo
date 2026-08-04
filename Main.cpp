@@ -10,6 +10,7 @@
 #include "monsters/Crab.hpp"
 #include "monsters/Seagull.hpp"
 #include "monsters/Bullet.hpp"
+#include "monsters/Pirate.hpp"
 
 int main(void) {
     const int screenWidth = 1024;
@@ -74,11 +75,13 @@ int main(void) {
 
             Tilemap* tilemap = new Tilemap("Floor", 0, floor_data);
 
-            Crab* crab_object = new Crab("Krabs", { 16.0f, 16.0f }, { 48.0f, 16.0f }, 30.0f);
+            //Crab* crab_object = new Crab("Krabs", { 16.0f, 16.0f }, { 48.0f, 16.0f }, 30.0f);
 
-            Bullet* bullet_object = new Bullet("Bullet", { 16.0f, 16.0f }, {0.0f, 1.0f}, 15.0f);
+            //Bullet* bullet_object = new Bullet("Bullet", { 16.0f, 16.0f }, {0.0f, 1.0f}, 15.0f);
 
-            Seagull* seagull_object = new Seagull("Seagull", {40.0f, 40.0f}, 50.0f);
+            //Seagull* seagull_object = new Seagull("Seagull", {40.0f, 40.0f}, 50.0f);
+
+            Pirate* pirate_object = new Pirate("Pirate", { 40.0f, 40.0f }, 50.0f);
 
             // Make border around map; Remember that there is an extra block border around the screen
 
@@ -87,9 +90,10 @@ int main(void) {
             objects.push_back(player_object);
             objects.push_back(collision_object);
             objects.push_back(tilemap);
-            objects.push_back(crab_object);
-            objects.push_back(seagull_object);
-            objects.push_back(bullet_object);
+            //objects.push_back(crab_object);
+            //objects.push_back(seagull_object);
+            //objects.push_back(bullet_object);
+            objects.push_back(pirate_object);
         }
     };
 
@@ -109,6 +113,7 @@ int main(void) {
     while (!WindowShouldClose()) {
         current_game->update();
         current_game->draw();
+        current_game->empty_queue();
         //----------------------------------------------------------------------------------
     }
 

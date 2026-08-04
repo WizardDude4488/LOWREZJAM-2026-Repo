@@ -27,4 +27,6 @@ void load_assets() {
 
     current_game->load_image("bullet", "bullet.png");
 
+    current_game->load_image("pirate", "pirate.png");
+
 }
