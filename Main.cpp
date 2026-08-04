@@ -41,11 +41,15 @@ int main(void) {
     // Game doesn't handle Level's memory so we need to delete it at application close
     struct TestLevel : public Level {
         void init() override {
-            collision_object = nullptr; // Change this with a real level
+            collision_object = new Tilemap("Walls", 1);
 
-            player_object = new Player("Bob", {27.0f, 27.0f});
+            // Give player and crab different positions
 
-            Tilemap* tilemap = new Tilemap("Tilemap", 0);
+            player_object = new Player("Bob", { 32.0f, 16.0f });
+
+            Tilemap* tilemap = new Tilemap("Floor", 0);
+
+            Crab* crab_object = new Crab("Krabs", { 32.0f, 32.0f });
 
             Crab* crab_object = new Crab("Krabs", {27.0f, 27.0f});
 
@@ -54,15 +58,17 @@ int main(void) {
             // Create checkerboard pattern
             for (int x = 0; x < TRUE_WIDTH; x++) {
                 for (int y = 0; y < TRUE_WIDTH; y++) {
-                    if ((x + y) % 2 == 0) {
-                        tilemap->set_tile(x, y, 1);
-                    }
-                    else {
-                        tilemap->set_tile(x, y, 0);
-                    }
+                    tilemap->set_tile(x, y, 1);
                 }
             }
+
+            // Make border around map; Remember that there is an extra block border around the screen
+
+            collision_object->set_square(0, 0, TRUE_WIDTH - 1, TRUE_WIDTH - 1, 0);
+            collision_object->set_square(1, 1, TRUE_WIDTH - 2, TRUE_WIDTH - 2, 0);
+
             objects.push_back(player_object);
+            objects.push_back(collision_object);
             objects.push_back(tilemap);
             objects.push_back(crab_object);
             objects.push_back(seagull_object);
