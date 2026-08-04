@@ -16,6 +16,8 @@ namespace Helper {
 
 	Vector2 tile_pos_to_game_pos(Vector2 tile_pos);
 
+	Vector2 screen_pos_to_game_pos(Vector2 screen_pos);
+
 	bool colliding_with_tile(Rectangle object_bounds, Tilemap* tilemap);
 
 	Vector2 calculate_tile_collision(Rectangle object_bounds, Tilemap* tilemap);

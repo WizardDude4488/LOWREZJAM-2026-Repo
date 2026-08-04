@@ -71,6 +71,7 @@ public:
     void remove_object(Object* obj);
 
     void load_image(const std::string& hash, const std::string& local_path);
+    void load_image_from_rect(const std::string& hash, const std::string& local_path, const Rectangle& rect);
     Texture2D get_texture(const std::string& hash) const;
 
     void set_tile(int index, const std::string& texture);

@@ -13,6 +13,18 @@ Tilemap::Tilemap(const std::string& n, int layer) {
 	}
 }
 
+Tilemap::Tilemap(const std::string& n, int layer, const std::vector<int>& data) {
+	name = n;
+	draw_layer = layer;
+	int data_index = 0;
+	for (int x = 0; x < TRUE_WIDTH; x++) {
+		for (int y = 0; y < TRUE_WIDTH; y++) {
+			tiles[x][y] = data[data_index];
+			data_index++;
+		}
+	}
+}
+
 const std::string& Tilemap::get_class() const {
 	return class_name;
 }
