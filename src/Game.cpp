@@ -233,6 +233,9 @@ Object* Game::get_object(const std::string& name) const {
     return nullobj;  // If no object found
 }
 
+Player* Game::get_player_object() const { return player_object; }
+Tilemap* Game::get_collision_object() const { return collision_object; }
+
 int Game::get_current_layer() const {
     return current_layer;
 }
