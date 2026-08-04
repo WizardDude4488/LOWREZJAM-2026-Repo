@@ -59,6 +59,32 @@ Vector2 Helper::tile_pos_to_game_pos(Vector2 tile_pos) {
 	};
 }
 
+bool Helper::colliding_with_tile(Rectangle object_bounds, Tilemap* tilemap) {
+    Vector2 tile_tl = { object_bounds.x, object_bounds.y };
+    Vector2 tile_tr = { object_bounds.x + object_bounds.width, object_bounds.y };
+    Vector2 tile_bl = { object_bounds.x, object_bounds.y + object_bounds.height };
+    Vector2 tile_br = { object_bounds.x + object_bounds.width, object_bounds.y + object_bounds.height };
+
+    Vector2 final_tl = game_pos_to_tile_pos(Vector2Add(tile_tl, Vector2{ -1.0f, -1.0f }));
+    Vector2 final_tr = game_pos_to_tile_pos(Vector2Add(tile_tr, Vector2{ 1.0f, -1.0f }));
+    Vector2 final_bl = game_pos_to_tile_pos(Vector2Add(tile_bl, Vector2{ -1.0f, 1.0f }));
+    Vector2 final_br = game_pos_to_tile_pos(Vector2Add(tile_br, Vector2{ 1.0f, 1.0f }));
+
+    for (int x = static_cast<int>(final_tl.x); x <= static_cast<int>(final_tr.x); x++) {
+        for (int y = static_cast<int>(final_tl.y); y <= static_cast<int>(final_bl.y); y++) {
+            if (tilemap->get_tile(x, y) != -1) {
+                Vector2 world_pos = tile_pos_to_game_pos(Vector2{ (float)x, (float)y });
+                Rectangle tile_rect = { world_pos.x, world_pos.y, static_cast<float>(TILE_WIDTH), static_cast<float>(TILE_WIDTH) };
+                bool collision = CheckCollisionRecs(object_bounds, tile_rect);
+
+                if (collision) { return true; }
+            }
+        }
+    }
+
+    return false;
+}
+
 Vector2 Helper::calculate_tile_collision(Rectangle object_bounds, Tilemap* tilemap) {
     Vector2 tile_tl = { object_bounds.x, object_bounds.y };
     Vector2 tile_tr = { object_bounds.x + object_bounds.width, object_bounds.y };
@@ -115,4 +141,9 @@ Vector2 Helper::calculate_tile_collision(Rectangle object_bounds, Tilemap* tilem
     float new_y = (min_y <= max_y) ? std::max(min_y, std::min(object_bounds.y, max_y)) : object_bounds.y;
 
     return Vector2{ new_x, new_y };
+}
+
+Vector2 get_animation_center(const Animation& anim) {
+    const Rectangle& rect = anim.get_frame_rect(0);
+    return Vector2{ rect.width / 2.0f, rect.height / 2.0f };
 }

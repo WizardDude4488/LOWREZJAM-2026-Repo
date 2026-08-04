@@ -6,6 +6,7 @@
 #include "Tilemap.hpp"
 #include "monsters/Crab.hpp"
 #include "monsters/Seagull.hpp"
+#include "monsters/Bullet.hpp"
 
 int main(void) {
     const int screenWidth = 1024;
@@ -34,6 +35,8 @@ int main(void) {
 
     current_game->load_image("seagull", "seagull.png");
 
+    current_game->load_image("bullet", "bullet.png");
+
     // HERE
     // Game hangs right here
 
@@ -50,6 +53,8 @@ int main(void) {
             Tilemap* tilemap = new Tilemap("Floor", 0);
 
             Crab* crab_object = new Crab("Krabs", { 16.0f, 16.0f }, { 48.0f, 16.0f }, 30.0f);
+
+            Bullet* bullet_object = new Bullet("Bullet", { 16.0f, 16.0f }, {0.0f, 1.0f}, 15.0f);
 
             Seagull* seagull_object = new Seagull("Seagull", {40.0f, 40.0f}, 50.0f);
 
@@ -70,6 +75,7 @@ int main(void) {
             objects.push_back(tilemap);
             objects.push_back(crab_object);
             objects.push_back(seagull_object);
+            objects.push_back(bullet_object);
         }
     };
 
