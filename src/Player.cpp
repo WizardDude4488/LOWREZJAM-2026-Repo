@@ -42,8 +42,8 @@ void Player::update(float dt) {
     Vector2 delta = {0.0f, 0.0f};
 
     // Set intended position
-    delta.x = get_position().x + velocity.x*dt;
-    delta.y = get_position().y + velocity.y*dt;
+
+    delta = get_position() + Vector2Scale( velocity, dt );
 
     set_position(delta);
 

@@ -11,20 +11,20 @@ class Crab : public Character {
 protected:
     static const std::string class_name;
 
-    float speed = 300.0f;
+    float speed;
     float anim_time = 0.0f;
 
-    Vector2 velocity = {0.0f, 0.0f};
-    Vector2 dir = {0.0f, 0.0f};
+    Vector2 start_position;
+    Vector2 end_position;
 
-    Vector2 point1 = {27, 52};
-    Vector2 point2 = {27, 0};
+    Vector2 direction = { 0.0f, 0.0f };
+    Vector2 velocity = { 0.0f, 0.0f };
 
-    bool x_flipped = false;
-    bool y_flipped = false;
+    enum CrabState {TO_START = 0, TO_END = 1};
+    CrabState current_state = TO_END;
 
 public:
-    Crab(const std::string& n, Vector2 Pos);
+    Crab(const std::string& n, Vector2 start_pos, Vector2 end_pos, float s);
 
     const std::string& get_class() const override;
     void update(float dt) override;
