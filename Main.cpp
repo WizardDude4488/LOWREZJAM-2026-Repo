@@ -36,6 +36,8 @@ int main(void) {
 
     current_game->load_image("bullet", "bullet.png");
 
+    current_game->load_image("bullet", "bullet.png");
+
     // HERE
     // Game hangs right here
 
