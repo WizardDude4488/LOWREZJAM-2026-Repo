@@ -11,24 +11,22 @@ class Seagull : public Character {
 protected:
     static const std::string class_name;
 
-    float speed = 300.0f;
+    float speed = 30.0f;
+    float target_radius;
+    float state_time = 0.0f;
     float anim_time = 0.0f;
 
-    Vector2 velocity = {0.0f, 0.0f};
-    Vector2 dive_path = {0.0f, 0.0f};
-    Vector2 endpoint = {0.0f, 0.0f};
-    Vector2 dir = {0.0f, 0.0f};
+    Vector2 perch_position;
+    Vector2 target_position;
 
-    bool x_flipped = false;
-    bool y_flipped = false;
+    Vector2 direction = { 0.0f, 0.0f };
+    Vector2 velocity = { 0.0f, 0.0f };
 
-    bool hover = false;
-    bool dive = false;
-
-    float hover_time = 0.0f;
+    enum SeagullState { IDLE = 0, DIVE = 1, PERCH = 2 };
+    SeagullState current_state = IDLE;
 
 public:
-    Seagull(const std::string& n, Vector2 Pos);
+    Seagull(const std::string& n, Vector2 perch_pos, float radius);
 
     const std::string& get_class() const override;
     void update(float dt) override;

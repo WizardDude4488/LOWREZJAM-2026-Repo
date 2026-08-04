@@ -45,17 +45,15 @@ int main(void) {
 
             // Give player and crab different positions
 
-            player_object = new Player("Bob", { 32.0f, 16.0f });
+            player_object = new Player("Bob", { 32.0f, 32.0f });
 
             Tilemap* tilemap = new Tilemap("Floor", 0);
 
-            Crab* crab_object = new Crab("Krabs", { 32.0f, 32.0f });
+            Crab* crab_object = new Crab("Krabs", { 16.0f, 16.0f }, { 48.0f, 16.0f }, 30.0f);
 
-            Crab* crab_object = new Crab("Krabs", {27.0f, 27.0f});
+            Seagull* seagull_object = new Seagull("Seagull", {40.0f, 40.0f}, 50.0f);
 
-            Seagull* seagull_object = new Seagull("Seagull", {40.0f, 40.0f});
-
-            // Create checkerboard pattern
+            // Fill with white tile
             for (int x = 0; x < TRUE_WIDTH; x++) {
                 for (int y = 0; y < TRUE_WIDTH; y++) {
                     tilemap->set_tile(x, y, 1);
