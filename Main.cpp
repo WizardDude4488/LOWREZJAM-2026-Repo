@@ -34,6 +34,8 @@ int main(void) {
 
     load_assets();
 
+    current_game->load_image("bullet", "bullet.png");
+
     // HERE
     // Game hangs right here
 
