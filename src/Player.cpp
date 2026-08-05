@@ -39,13 +39,11 @@ void Player::update(float dt) {
 
     velocity += direction;
 
-    Vector2 delta = {0.0f, 0.0f};
+    Vector2 delta = Vector2Scale(velocity, dt);
 
     // Set intended position
 
-    delta = get_position() + Vector2Scale( velocity, dt );
-
-    set_position(delta);
+    set_position(get_position() + delta);
 
     // Calculate collision; try on each axis (TODO: Move this functionality into calculate_tile_collision)
 
