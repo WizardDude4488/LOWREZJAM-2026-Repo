@@ -23,6 +23,8 @@ class Game {
 protected:
     // Objects
     std::vector<Object*> objects;
+    std::vector<Object*> object_add_queue;
+    std::vector<Object*> object_remove_queue;
     Player* player_object; // Change to Player* when Player is implemented
     Tilemap* collision_object; // Current layer considered for wall collision
     float dt;
@@ -56,6 +58,7 @@ public:
     // --Call player method-- dont
 
     void add_object(Object* obj); // Use std::make_shared<Object> to add object to Game
+    void empty_queue();
 
     int find_object(const std::string& name) const; // Return index of object
 

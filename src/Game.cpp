@@ -216,7 +216,23 @@ void Game::update_dt() {
 }
 
 void Game::add_object(Object* obj) {
-    objects.push_back(obj);
+    object_add_queue.push_back(obj);
+}
+
+void Game::empty_queue() {
+    // Append new objects
+    objects.reserve(objects.size() + object_add_queue.size());
+    objects.insert(objects.end(), object_add_queue.begin(), object_add_queue.end());
+    object_add_queue.clear();
+    // Remove old objects
+    for (Object* obj : object_remove_queue) {
+        auto at = std::find(objects.begin(), objects.end(), obj);
+
+        if (at != objects.end()) {
+             delete *at;
+             objects.erase(at);
+        }
+    }
 }
 
 int Game::find_object(const std::string& name) const {
@@ -249,28 +265,11 @@ int Game::get_current_layer() const {
 
 
 void Game::remove_object(int index) {
-    try {
-        delete objects.at(index); // Deallocate
-        objects.erase(objects.begin() + index); // Delete pointer
-    }
-    catch (...) {
-        return;
-    }
+    object_remove_queue.push_back(objects.at(index));
 }
 
 void Game::remove_object(Object* obj) {
-    try {
-        auto index = std::find(objects.begin(), objects.end(), obj);
-        if (index != objects.end()) {
-            int num = std::distance(objects.begin(), index);
-            delete objects.at(num); // Deallocate
-            objects.erase(index); // Delete pointer
-        }
-        
-    }
-    catch (...) {
-        return;
-    }
+    object_remove_queue.push_back(obj);
 }
 
 void Game::load_image(const std::string& hash, const std::string& local_path) {
