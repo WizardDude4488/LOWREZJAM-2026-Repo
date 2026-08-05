@@ -34,7 +34,7 @@ void Pirate::update(float dt) {
 	if (state_time >= 4.0f) {
 		// If player is close enough, shoot
 		if (distance_to_player <= target_radius) {
-			Bullet* bullet = new Bullet("PirateBullet", get_position(), direction, 30.0f);
+			Bullet* bullet = new Bullet("PirateBullet", get_position(), direction, 20.0f);
 			current_game->add_object(bullet);
 			state_time = 0.0f;
 		}
