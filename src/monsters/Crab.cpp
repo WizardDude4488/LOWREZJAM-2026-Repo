@@ -96,6 +96,7 @@ void Crab::draw() {
 }
 
 void Crab::touch(const Object* from) {
+    //add hurt() for rolling pin
     return;
 }
 

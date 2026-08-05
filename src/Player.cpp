@@ -96,6 +96,9 @@ void Player::touch(const Object* from) {
     }
     if (from->get_class() == "Weappon") {
         if (!from->is_held()) {
+            if (current_weapon != nullptr) {
+                current_weapon->drop();
+            }
             //change current_weapon to weapon being picked up
             current_weapon = from->pickup();
         }
