@@ -31,10 +31,10 @@ Game::Game() {
 
     // create default image
 
-    Image default = GenImageChecked(8, 8, 4, 4, MAGENTA, BLACK);
+    Image def = GenImageChecked(8, 8, 4, 4, MAGENTA, BLACK);
 
-    textures["default"] = LoadTextureFromImage(default);
-    UnloadImage(default);
+    textures["default"] = LoadTextureFromImage(def);
+    UnloadImage(def);
 }
 
 Game::~Game() {

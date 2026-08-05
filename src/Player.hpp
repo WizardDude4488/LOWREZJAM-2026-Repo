@@ -12,6 +12,8 @@
 
 #include "Character.hpp"
 
+#include "Weapon.hpp"
+
 
 class Player : public Character {
 protected:
@@ -22,6 +24,8 @@ protected:
     float hurt_time = 0.0f;
 
     Vector2 velocity = {0.0f, 0.0f};
+
+    Weapon* current_weapon = nullptr;
 
 
 public:

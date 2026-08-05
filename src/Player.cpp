@@ -73,6 +73,14 @@ void Player::update(float dt) {
     if (hurt_time <= 0.0f) {
         if (IsKeyDown(KEY_X)) { hurt(10); }
     }
+
+    //using weapons
+    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+        if (current_weapon != nullptr) {
+            //need to return pointer to weapon so draw layer, position, etc. can be modified based on player status
+            current_weapon.use(this);
+        }
+    }
 }
 
 // TODO: draw animation object here
@@ -87,6 +95,12 @@ void Player::draw() {
 void Player::touch(const Object* from) {
     if (from->get_class() == "Crab") {
         hurt(5); // Set damage from each class
+    }
+    if (from->get_class() == "Weappon") {
+        if (!from->is_held()) {
+            //change current_weapon to weapon being picked up
+            current_weapon = from->pickup();
+        }
     }
 }
 
