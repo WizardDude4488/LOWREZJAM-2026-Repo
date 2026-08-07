@@ -86,7 +86,9 @@ int main(void) {
 
             Pirate* pirate_object = new Pirate("Pirate", { 40.0f, 40.0f }, 50.0f);
 
-            RollingPin* rolling_pin_object = new RollingPin("RollingPin", 3, { 20.0f, 20.0f });
+            RollingPin* rolling_pin_object1 = new RollingPin("RollingPin", 3, { 15.0f, 15.0f });
+
+            RollingPin* rolling_pin_object2 = new RollingPin("RollingPin", 3, { 40.0f, 40.0f });
 
             // Make border around map; Remember that there is an extra block border around the screen
 
@@ -99,7 +101,8 @@ int main(void) {
             objects.push_back(seagull_object);
             //objects.push_back(bullet_object);
             objects.push_back(pirate_object);
-            objects.push_back(rolling_pin_object);
+            objects.push_back(rolling_pin_object1);
+            objects.push_back(rolling_pin_object2);
         }
     };
 
