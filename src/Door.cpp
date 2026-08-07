@@ -8,7 +8,7 @@ const std::string& Door::class_name = "Door";
 
 Door::Door(const std::string& n, Vector2 position) {
 	name = n;
-	bounds = {position.x, position.y, 4.0f, 4.0f}; // Make it 4x4 for now
+	bounds = {position.x, position.y, 8.0f, 8.0f}; // Make it 8x8 for now
 	animation = Animation("door", Helper::create_spritesheet_frames(4, 4, 4, 4));
 	animation.set_frame(0);
 }

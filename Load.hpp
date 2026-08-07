@@ -31,4 +31,5 @@ void load_assets() {
 
     current_game->load_image("rolling-pin", "rolling-pin.png");
 
+    current_game->load_image("door", "door-placeholder.png");
 }

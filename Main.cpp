@@ -4,6 +4,7 @@
 #include "raylib.h"
 
 #include "Game.hpp"
+#include "Door.hpp"
 #include "Tilemap.hpp"
 #include "Helper.hpp"
 #include "Load.hpp"
@@ -45,7 +46,7 @@ int main(void) {
 
     // Create test level
     // Game doesn't handle Level's memory so we need to delete it at application close
-    struct TestLevel : public Level {
+    struct Level1 : public Level {
         void init() override {
 
             const std::vector<int>& wall_data = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
@@ -55,8 +56,8 @@ int main(void) {
                                                   -1, 2, -1, -1, -1, -1, -1, -1, 82, -1,
                                                   -1, 2, -1, -1, -1, -1, -1, -1, 82, -1,
                                                   -1, 2, -1, -1, -1, -1, -1, -1, 82, -1,
-                                                  -1, 3, -1, -1, -1, -1, -1, -1, 83, -1,
-                                                  -1, 4, 24, 44, 44, 44, 44, 64, 84, -1,
+                                                  -1, 2, -1, -1, -1, -1, -1, -1, 82, -1,
+                                                  -1, 2, -1, -1, -1, -1, -1, -1, 83, -1,
                                                   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, };
 
             const std::vector<int>& floor_data = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
@@ -66,8 +67,8 @@ int main(void) {
                                                    -1, -1, 22, 42, 42, 42, 42, 62, -1, -1,
                                                    -1, -1, 22, 42, 42, 42, 42, 62, -1, -1,
                                                    -1, -1, 22, 42, 42, 42, 42, 62, -1, -1,
-                                                   -1, -1, 23, 43, 43, 43, 43, 63, -1, -1,
-                                                   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                                                   -1, -1, 22, 42, 42, 42, 42, 62, -1, -1,
+                                                   -1, -1, 22, 42, 42, 42, 42, 62, -1, -1,
                                                    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, };
 
             collision_object = new Tilemap("Walls", 1, wall_data);
@@ -78,34 +79,60 @@ int main(void) {
 
             Tilemap* tilemap = new Tilemap("Floor", 0, floor_data);
 
-            Crab* crab_object = new Crab("Krabs", { 16.0f, 16.0f }, { 48.0f, 16.0f }, 30.0f);
-
-            //Bullet* bullet_object = new Bullet("Bullet", { 16.0f, 16.0f }, {0.0f, 1.0f}, 15.0f);
-
-            Seagull* seagull_object = new Seagull("Seagull", {40.0f, 40.0f}, 50.0f);
-
-            Pirate* pirate_object = new Pirate("Pirate", { 40.0f, 40.0f }, 50.0f);
-
-            RollingPin* rolling_pin_object = new RollingPin("RollingPin", 3, { 20.0f, 20.0f });
-
-            // Make border around map; Remember that there is an extra block border around the screen
-
-            collision_object->set_square(0, 0, TRUE_WIDTH - 1, TRUE_WIDTH - 1, 0);
-
             objects.push_back(player_object);
             objects.push_back(collision_object);
-            //objects.push_back(tilemap);
-            objects.push_back(crab_object);
-            objects.push_back(seagull_object);
-            //objects.push_back(bullet_object);
-            objects.push_back(pirate_object);
-            objects.push_back(rolling_pin_object);
+            objects.push_back(tilemap);
         }
     };
 
-    Level* test_level = new TestLevel();
+    struct Level2 : public Level {
+        void init() override {
+            const std::vector<int>& wall_data = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                                                  -1, 2, -1, -1, -1, -1, -1, -1, 82, -1,
+                                                  -1, 2, -1, -1, -1, -1, -1, -1, 82, -1,
+                                                  -1, 2, -1, -1, -1, -1, -1, -1, 82, -1,
+                                                  -1, 2, -1, -1, -1, -1, -1, -1, 82, -1,
+                                                  -1, 2, -1, -1, -1, -1, -1, -1, 82, -1,
+                                                  -1, 2, -1, -1, -1, -1, -1, -1, 82, -1,
+                                                  -1, 3, -1, -1, -1, -1, -1, -1, 83, -1,
+                                                  -1, 4, 24, 44, 44, 44, 44, 64, 84, -1,
+                                                  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
 
-    test_level->init();
+            const std::vector<int>& floor_data = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                                                   -1, -1, 22, 42, 42, 42, 42, 62, -1, -1,
+                                                   -1, -1, 22, 42, 42, 42, 42, 62, -1, -1,
+                                                   -1, -1, 22, 42, 42, 42, 42, 62, -1, -1,
+                                                   -1, -1, 22, 42, 42, 42, 42, 62, -1, -1,
+                                                   -1, -1, 22, 42, 42, 42, 42, 62, -1, -1,
+                                                   -1, -1, 22, 42, 42, 42, 42, 62, -1, -1,
+                                                   -1, -1, 23, 43, 43, 43, 43, 63, -1, -1,
+                                                   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                                                   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,};
+
+            collision_object = new Tilemap("Walls", 1, wall_data);
+            Tilemap* floor = new Tilemap("Floor", 0, floor_data);
+            player_object = new Player("Bob", { 16.0f, 32.0f });
+
+            objects.push_back(player_object);
+            objects.push_back(collision_object);
+            objects.push_back(floor);
+        }
+    };
+
+    Level* level_1 = new Level1();
+    Level* level_2 = new Level2();
+
+    Door* to_lvl2 = new Door("to_lvl2", Vector2{ 56.0f, 32.0f });
+    Door* to_lvl1 = new Door("to_lvl1", Vector2{ 8.0f, 32.0f });
+
+    level_1->init();
+    level_2->init();
+
+    to_lvl2->set_target_level(level_2);
+    to_lvl1->set_target_level(level_1);
+
+    level_2->add_object(to_lvl1);
+    level_1->add_object(to_lvl2);
 
     // Do not call delete on tilemap; game handles this automatically
 
@@ -113,7 +140,7 @@ int main(void) {
 
     // Load level
 
-    current_game->load_level(test_level);
+    current_game->load_level(level_1);
 
     // Main game loop
     while (!WindowShouldClose()) {
