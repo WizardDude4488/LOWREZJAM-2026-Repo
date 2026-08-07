@@ -22,15 +22,9 @@ Weapon::Weapon(std::string& n, int melee_dmg, Vector2 position) {
 
 
 //not using touch directly since that would conflict with return type of method in Object.hpp
-Weapon* Weapon::pickup(Entity* from) {
-
-    if (from->get_class() == "Player") {
-        if (CheckCollisionRecs(bounds, from->get_bounds())) {
-            //would return a non-const Weapon*
-            held = true;
-            return this;
-        }
-    }
+Weapon* Weapon::pickup() {
+    held = true;
+    return this;
 }
 
 WeaponState Weapon::get_state() const {
@@ -45,14 +39,12 @@ bool Weapon::is_held() {
     return held;
 }
 
-void Weapon::drop(Entity* from) {
-    if (from->get_class() == "Player") {
+void Weapon::drop() {
         Vector2 final_pos = {0, 0};
         final_pos.x = (current_game->get_player_object())->get_position().x + 10;
         final_pos.y = (current_game->get_player_object())->get_position().y + 10;
         //will be at a location slightly outside player so they don't pick it up again immediately (for testing purposes)
         held = false;
-    }
 }
 
 void Weapon::touch(const Object* from) {

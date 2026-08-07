@@ -36,8 +36,8 @@ public:
     WeaponDirection get_weapon_direction() const;
 
     //change these
-    Weapon* pickup(Entity* from);
-    void drop(Entity* from);
+    Weapon* pickup();
+    void drop();
 
     bool is_held();
 
