@@ -91,7 +91,7 @@ void Player::update(float dt) {
             if (CheckCollisionRecs(bounds, weapon->get_bounds()) && !weapon->is_held()) {
                 std::cout << "\nTouching weapon.\n";
                 if (current_weapon != nullptr) {
-                current_weapon->drop(this);
+                    current_weapon->drop(this);
                 }
                 current_weapon = weapon->pickup(this);
             }
@@ -102,6 +102,7 @@ void Player::update(float dt) {
                 if (!door_lock) {
                     door_lock = true;
                     door->touch(this);
+                    std::cout << "Door touch called." << std::endl;
                 }
             } else {
                 door_lock = false;

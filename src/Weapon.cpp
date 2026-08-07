@@ -48,8 +48,8 @@ bool Weapon::is_held() {
 void Weapon::drop(Entity* from) {
     if (from->get_class() == "Player") {
         Vector2 final_pos = {0, 0};
-        final_pos.x = (current_game->get_player_object())->get_position().x + 5;
-        final_pos.y = (current_game->get_player_object())->get_position().y + 5;
+        final_pos.x = (current_game->get_player_object())->get_position().x + 10;
+        final_pos.y = (current_game->get_player_object())->get_position().y + 10;
         //will be at a location slightly outside player so they don't pick it up again immediately (for testing purposes)
         held = false;
     }

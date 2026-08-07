@@ -15,7 +15,8 @@ protected:
 
     int offset_frame = 0;
     int animation_frame = 0;
-    static const std::vector<int> attack_frames;
+    //static const std::vector<int> attack_frames;
+    std::vector<int> attack_frames;
 
 public:
     RollingPin(const std::string& n, int melee_dmg, Vector2 Pos);

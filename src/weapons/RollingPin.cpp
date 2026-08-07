@@ -12,7 +12,7 @@
 
 const std::string RollingPin::class_name = "RollingPin";
 
-const std::vector<int> RollingPin::attack_frames = {2, 1, 0};
+//const std::vector<int> RollingPin::attack_frames = {2, 1, 0};
 
 const std::string& RollingPin::get_class() const {
     return class_name;
@@ -21,8 +21,8 @@ const std::string& RollingPin::get_class() const {
 RollingPin::RollingPin(const std::string& n, int melee_dmg, Vector2 Pos) {
     name = n;
     draw_layer = 3;
-    bounds = {Pos.x, Pos.y, 12, 7};
-    animation = Animation("rolling-pin", Helper::create_spritesheet_frames(14, 7, 64, 64, 3));
+    bounds = {Pos.x, Pos.y, 8, 8};
+    animation = Animation("rolling-pin2", Helper::create_spritesheet_frames(8, 8, 24, 32, 12));
     melee_damage = melee_dmg; 
     
 }
@@ -54,32 +54,37 @@ void RollingPin::update(float dt) {
             case UP: //up
                 //std::cout << "Facing Up." << std::endl;
                 pos.x = (current_game->get_player_object())->get_position().x;
-                pos.y = (current_game->get_player_object())->get_position().y - 4;
+                pos.y = (current_game->get_player_object())->get_position().y - 5;
                 draw_layer = 4;
+                attack_frames = {8, 7, 6};
                 break;
             case RIGHT: //right
                 //std::cout << "Facing Right." << std::endl;
-                pos.x = (current_game->get_player_object())->get_position().x + 3;
-                pos.y = (current_game->get_player_object())->get_position().y;
+                pos.x = (current_game->get_player_object())->get_position().x + 5;
+                pos.y = (current_game->get_player_object())->get_position().y - 1;
                 draw_layer = 6; 
+                attack_frames = {5, 4, 3};
                 break;
             case DOWN:
                 //std::cout << "Facing Down." << std::endl;
                 pos.x = (current_game->get_player_object())->get_position().x;
-                pos.y = (current_game->get_player_object())->get_position().y + 5;
+                pos.y = (current_game->get_player_object())->get_position().y + 4;
                 draw_layer = 6;
+                attack_frames = {11, 10, 9};
                 break;
             case LEFT:
                 //std::cout << "Facing Left." << std::endl;
-                pos.x = (current_game->get_player_object())->get_position().x - 10;
-                pos.y = (current_game->get_player_object())->get_position().y;
+                pos.x = (current_game->get_player_object())->get_position().x - 8;
+                pos.y = (current_game->get_player_object())->get_position().y - 1;
                 draw_layer = 6; 
+                attack_frames = {2, 1, 0};
                 break;
             default: //default to right
                 //std::cout << "Default." << std::endl;
                 pos.x = (current_game->get_player_object())->get_position().x + 5;
                 pos.y = (current_game->get_player_object())->get_position().y;
                 draw_layer = 6; 
+                attack_frames = {5, 4, 3};
                 break;
         }
 
@@ -87,7 +92,7 @@ void RollingPin::update(float dt) {
 
         //handle attack buttons
 
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && current_state != ATTACKING) {
             std::vector<Object*> list = current_game->get_list();
             
             //setting state to attacking, setting animation frame to 0th index
@@ -114,7 +119,7 @@ void RollingPin::update(float dt) {
         //forgot to use == instead of = to evaluate equivalency 
         if (current_state == ATTACKING) {
             //figure out a way for the frames to start at the end and work backwards
-            while (anim_time >= 0.1 && animation_frame <= 2) {
+            while (anim_time >= 0.06 && animation_frame <= 2) {
                 animation.set_frame(attack_frames.at(animation_frame));
                 anim_time = 0;
                 std::cout << attack_frames.at(animation_frame) << std::endl;
@@ -124,11 +129,17 @@ void RollingPin::update(float dt) {
                 //this text should print three times per click
             }
             if (animation_frame >= 3) {
-                current_state = READY;
-                animation.set_frame(0);
+                current_state = COOLDOWN;
                 std::cout << "Idle animation." << std::endl;
                 //this part of the code is being reached even when the player isn't attacking
             }
+        } else if (current_state == COOLDOWN) {
+            while (anim_time >= 1) {
+                std::cout << "COOLDOWN" << std::endl;
+                break;
+            }
+        } else {
+            animation.set_frame(attack_frames.at(2));
         }
     } 
 }
