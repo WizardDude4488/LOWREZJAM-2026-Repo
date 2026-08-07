@@ -21,7 +21,7 @@ class Player : public Character {
 protected:
     static const std::string class_name;
 
-    float speed = 15.0f;
+    float speed = 30.0f;
     float anim_time = 0.0f;
     float hurt_time = 0.0f;
 
