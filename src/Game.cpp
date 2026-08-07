@@ -65,10 +65,12 @@ void Game::load_level(Level* level) {
 
     if (player_object != nullptr) {
         objects.push_back(player_object);
+        std::cout << "Added player object to level 2" << std::endl;
     }
 
     if (collision_object != nullptr) {
         objects.push_back(collision_object);
+        std::cout << "Added collision object to level 2" << std::endl;
     }
 
     // Add other objects, excluding player and collision
@@ -82,6 +84,7 @@ void Game::load_level(Level* level) {
         if (object == collision_object) { continue; }
 
         objects.push_back(object);
+        std::cout << object->get_class() << std::endl;
     }
 }
 

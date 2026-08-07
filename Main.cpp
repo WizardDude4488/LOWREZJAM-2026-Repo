@@ -79,9 +79,12 @@ int main(void) {
 
             Tilemap* tilemap = new Tilemap("Floor", 0, floor_data);
 
+            //RollingPin* rolling_pin_object1 = new RollingPin("rolling_pin_object1", 5, { 32.0f, 32.0f });
+
             objects.push_back(player_object);
             objects.push_back(collision_object);
             objects.push_back(tilemap);
+            //objects.push_back(rolling_pin_object1);
         }
     };
 
@@ -112,10 +115,13 @@ int main(void) {
             collision_object = new Tilemap("Walls", 1, wall_data);
             Tilemap* floor = new Tilemap("Floor", 0, floor_data);
             player_object = new Player("Bob", { 16.0f, 32.0f });
+            //the rolling pin object is the only object in level 2 not present in level 1
+            RollingPin* rolling_pin_object1 = new RollingPin("rolling_pin_object1", 5, { 32.0f, 32.0f });
 
             objects.push_back(player_object);
             objects.push_back(collision_object);
             objects.push_back(floor);
+            objects.push_back(rolling_pin_object1);
         }
     };
 

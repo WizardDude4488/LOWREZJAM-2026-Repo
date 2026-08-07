@@ -129,9 +129,14 @@ void RollingPin::update(float dt) {
                 //this text should print three times per click
             }
             if (animation_frame >= 3) {
-                current_state = READY;
+                current_state = COOLDOWN;
                 std::cout << "Idle animation." << std::endl;
                 //this part of the code is being reached even when the player isn't attacking
+            }
+        } else if (current_state == COOLDOWN) {
+            while (anim_time >= 1) {
+                std::cout << "COOLDOWN" << std::endl;
+                break;
             }
         } else {
             animation.set_frame(attack_frames.at(2));
