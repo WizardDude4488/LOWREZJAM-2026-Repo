@@ -87,22 +87,24 @@ void Player::update(float dt) {
 
     for (Object* i : list) {
         if (i->get_class() == "RollingPin") {
-            Weapon* weapon = static_cast<Weapon*>(i);
+            Weapon* weapon = dynamic_cast<Weapon*>(i);
+            //std::cout << "Found RollingPin in object list." << std::endl;
             if (CheckCollisionRecs(bounds, weapon->get_bounds()) && !weapon->is_held()) {
-                std::cout << "\nTouching weapon.\n";
+                //std::cout << "\nTouching weapon.\n";
                 if (current_weapon != nullptr) {
-                    current_weapon->drop(this);
+                    current_weapon->drop();
                 }
-                current_weapon = weapon->pickup(this);
+                current_weapon = weapon->pickup();
             }
         }
         if (i->get_class() == "Door") {
+            //std::cout << "Found door in object list." << std::endl;
             Door* door = static_cast<Door*>(i);
             if (CheckCollisionRecs(bounds, door->get_bounds())) {
                 if (!door_lock) {
                     door_lock = true;
                     door->touch(this);
-                    std::cout << "Door touch called." << std::endl;
+                    //std::cout << "Door touch called." << std::endl;
                 }
             } else {
                 door_lock = false;
@@ -127,7 +129,7 @@ void Player::touch(const Object* from) {
     }
 }
 
-void Player::pickup_weapon(Entity* from) {
+/*void Player::pickup_weapon(Entity* from) {
     if (from == nullptr) {
         return;
     } else if (from->get_class() == "Weapon") {
@@ -139,7 +141,7 @@ void Player::pickup_weapon(Entity* from) {
         current_weapon = next_weapon->pickup(this);
         std::cout << "\nPicked up weapon.";
     }
-}
+}*/
 
 void Player::die() {
     
