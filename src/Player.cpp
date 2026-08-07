@@ -5,6 +5,8 @@
 #include "Game.hpp"
 #include "Player.hpp"
 #include "Helper.hpp"
+#include "Weapon.hpp"
+
 using namespace Helper;
 
 Player::Player(const std::string& n, Vector2 Pos) {
@@ -73,10 +75,25 @@ void Player::update(float dt) {
     }
 
     //using weapons
-    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+    /*if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
         if (current_weapon != nullptr) {
             //need to return pointer to weapon so draw layer, position, etc. can be modified based on player status
-            current_weapon.use(this);
+            current_weapon->use(this);
+        }
+    }*/
+
+    std::vector<Object*> list = current_game->get_list();
+
+    for (Object* i : list) {
+        if (i->get_class() == "RollingPin") {
+            Weapon* weapon = static_cast<Weapon*>(i);
+            if (CheckCollisionRecs(bounds, weapon->get_bounds()) && !weapon->is_held()) {
+                std::cout << "\nTouching weapon.\n";
+                if (current_weapon != nullptr) {
+                current_weapon->drop(this);
+                }
+                current_weapon = weapon->pickup(this);
+            }
         }
     }
 }
@@ -94,14 +111,19 @@ void Player::touch(const Object* from) {
     if (from->get_class() == "Crab") {
         hurt(5); // Set damage from each class
     }
-    if (from->get_class() == "Weappon") {
-        if (!from->is_held()) {
-            if (current_weapon != nullptr) {
-                current_weapon->drop();
-            }
-            //change current_weapon to weapon being picked up
-            current_weapon = from->pickup();
+}
+
+void Player::pickup_weapon(Entity* from) {
+    if (from == nullptr) {
+        return;
+    } else if (from->get_class() == "Weapon") {
+        Weapon* next_weapon = static_cast<Weapon*>(from);
+        if (current_weapon != nullptr) {
+            current_weapon->drop(this);
         }
+        //change current_weapon to weapon being picked up
+        current_weapon = next_weapon->pickup(this);
+        std::cout << "\nPicked up weapon.";
     }
 }
 

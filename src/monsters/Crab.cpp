@@ -97,7 +97,10 @@ void Crab::draw() {
 
 void Crab::touch(const Object* from) {
     //add hurt() for rolling pin
-    return;
+    if (from->get_class() == "RollingPin") {
+        hurt(5);
+        std::cout << "\nCrab took five damage.";
+    }
 }
 
 void Crab::die() {

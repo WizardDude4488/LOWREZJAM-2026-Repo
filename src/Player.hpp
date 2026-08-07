@@ -13,6 +13,8 @@
 #include "Character.hpp"
 
 #include "Weapon.hpp"
+//avoid potential circular dependencies
+//class Weapon;
 
 
 class Player : public Character {
@@ -42,5 +44,8 @@ public:
     // From Character.hpp
     void die() override;
     void hurt(int amount) override;
+    
+    //needs to be non-const so player can modify item's state
+    void pickup_weapon(Entity* from);
 
 };

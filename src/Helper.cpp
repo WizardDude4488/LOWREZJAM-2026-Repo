@@ -1,6 +1,9 @@
 #include <cmath>
 #include <algorithm>
 
+#include "raylib.h"
+#include "raymath.h"
+
 #include "Tilemap.hpp"
 #include "Helper.hpp"
 
@@ -31,7 +34,7 @@ std::vector<Rectangle> Helper::create_spritesheet_frames(int frame_width, int fr
 	while (f < num_of_frames) {
 		for (int y = 0; y < image_height; y += frame_height) {
 			for (int x = 0; x < image_width; x += frame_width) {
-				if (f <= num_of_frames - 1) {
+				if (f <= num_of_frames) {
 					rectangles.push_back(Rectangle{ static_cast<float>(x), static_cast<float>(y), static_cast<float>(frame_width), static_cast<float>(frame_height)});
 					f++;
 				} else {

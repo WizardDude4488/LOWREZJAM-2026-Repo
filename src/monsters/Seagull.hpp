@@ -38,5 +38,4 @@ public:
     // From Character.hpp
     void die() override;
     void hurt(int amount) override;
-
 };
