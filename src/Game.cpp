@@ -161,6 +161,7 @@ void Game::update() {
     update_dt();
 
     for (Object* obj : objects) {
+        std::cout << obj->get_name() << "\n";
         obj->update(dt);
     }
 }
