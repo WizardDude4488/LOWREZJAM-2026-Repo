@@ -12,7 +12,7 @@ using namespace Helper;
 Player::Player(const std::string& n, Vector2 Pos) {
 
     name = n;
-    draw_layer = 4;
+    draw_layer = 5;
     bounds = {Pos.x, Pos.y, 5, 8};
     animation = Animation("yellow-guy", create_spritesheet_frames(5, 8, 64, 64, 4));
     max_health = 20;
