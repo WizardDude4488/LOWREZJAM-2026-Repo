@@ -29,4 +29,6 @@ void load_assets() {
 
     current_game->load_image("pirate", "pirate.png");
 
+    current_game->load_image("rolling-pin", "rolling-pin.png");
+
 }

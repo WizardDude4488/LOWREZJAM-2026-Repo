@@ -24,4 +24,5 @@ public:
 
 	void die() override;
 	void hurt(int amount) override;
+
 };

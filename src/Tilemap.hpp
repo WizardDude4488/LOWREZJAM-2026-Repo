@@ -6,11 +6,12 @@
 
 #include "Object.hpp"
 #include "Entity.hpp"
-#include "Player.hpp" // Replace with Player.hpp when impl.
 
 #define TILE_WIDTH 8
 #define TILEMAP_WIDTH (64 / TILE_WIDTH) // 64 / tile_width
 #define TRUE_WIDTH (TILEMAP_WIDTH + 2)
+
+class Player; //forward declaration rather than include to eliminate dependency loop
 
 class Tilemap : public Object {
 protected:
@@ -48,7 +49,7 @@ public:
 
 struct Level {
 	std::vector<Object*> objects;
-	Player* player_object;
+	Player* player_object = nullptr;
 	Tilemap* collision_object;
 
 	~Level();
