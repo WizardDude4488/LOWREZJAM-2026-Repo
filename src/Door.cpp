@@ -31,6 +31,7 @@ void Door::touch(const Object* from) {
 		if (open) {
 			if (target_level != nullptr) {
 				current_game->load_level(target_level);
+				std::cout << "Door: called load_level" << std::endl;
 			} else {
 				std::cout << "Door: attempted to load level from nullptr\n";
 			}
