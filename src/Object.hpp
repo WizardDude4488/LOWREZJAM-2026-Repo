@@ -9,7 +9,7 @@ class Game;
 // Abstract class; cannot be directly instanced
 class Object {
 protected:
-    int draw_layer = 0; // Assign 0 for background, 1 for walls, 2 for entities, 3 for monsters, 4 for player
+    int draw_layer = 0; // Assign 0 for background, 1 for walls, 2 for entities, 3 for monsters, 5 for player, 4 and 6 for player items
     std::string name;
 public:
     Object() = default;

@@ -94,7 +94,11 @@ void Seagull::draw() {
 }
 
 void Seagull::touch(const Object* from) {
-    return;
+    //add hurt() for rolling pin
+    if (from->get_class() == "RollingPin") {
+        hurt(5);
+        std::cout << "\nSeagull took five damage.";
+    }
 }
 
 void Seagull::die() {

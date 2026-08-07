@@ -59,7 +59,11 @@ void Pirate::draw() {
 }
 
 void Pirate::touch(const Object* from) {
-	return;
+	//add hurt() for rolling pin
+    if (from->get_class() == "RollingPin") {
+        hurt(5);
+        std::cout << "\nPirate took five damage.";
+    }
 }
 
 void Pirate::die() {

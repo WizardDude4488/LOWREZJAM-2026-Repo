@@ -5,12 +5,14 @@
 #include "Game.hpp"
 #include "Player.hpp"
 #include "Helper.hpp"
+#include "Weapon.hpp"
+
 using namespace Helper;
 
 Player::Player(const std::string& n, Vector2 Pos) {
 
     name = n;
-    draw_layer = 4;
+    draw_layer = 5;
     bounds = {Pos.x, Pos.y, 5, 8};
     animation = Animation("yellow-guy", create_spritesheet_frames(5, 8, 64, 64, 4));
     max_health = 20;
@@ -71,6 +73,29 @@ void Player::update(float dt) {
     if (hurt_time <= 0.0f) {
         if (IsKeyDown(KEY_X)) { hurt(10); }
     }
+
+    //using weapons
+    /*if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+        if (current_weapon != nullptr) {
+            //need to return pointer to weapon so draw layer, position, etc. can be modified based on player status
+            current_weapon->use(this);
+        }
+    }*/
+
+    std::vector<Object*> list = current_game->get_list();
+
+    for (Object* i : list) {
+        if (i->get_class() == "RollingPin") {
+            Weapon* weapon = static_cast<Weapon*>(i);
+            if (CheckCollisionRecs(bounds, weapon->get_bounds()) && !weapon->is_held()) {
+                std::cout << "\nTouching weapon.\n";
+                if (current_weapon != nullptr) {
+                current_weapon->drop(this);
+                }
+                current_weapon = weapon->pickup(this);
+            }
+        }
+    }
 }
 
 // TODO: draw animation object here
@@ -85,6 +110,20 @@ void Player::draw() {
 void Player::touch(const Object* from) {
     if (from->get_class() == "Crab") {
         hurt(5); // Set damage from each class
+    }
+}
+
+void Player::pickup_weapon(Entity* from) {
+    if (from == nullptr) {
+        return;
+    } else if (from->get_class() == "Weapon") {
+        Weapon* next_weapon = static_cast<Weapon*>(from);
+        if (current_weapon != nullptr) {
+            current_weapon->drop(this);
+        }
+        //change current_weapon to weapon being picked up
+        current_weapon = next_weapon->pickup(this);
+        std::cout << "\nPicked up weapon.";
     }
 }
 

@@ -12,16 +12,22 @@
 
 #include "Character.hpp"
 
+#include "Weapon.hpp"
+//avoid potential circular dependencies
+//class Weapon;
+
 
 class Player : public Character {
 protected:
     static const std::string class_name;
 
-    float speed = 15.0f;
+    float speed = 30.0f;
     float anim_time = 0.0f;
     float hurt_time = 0.0f;
 
     Vector2 velocity = {0.0f, 0.0f};
+
+    Weapon* current_weapon = nullptr;
 
 
 public:
@@ -38,5 +44,8 @@ public:
     // From Character.hpp
     void die() override;
     void hurt(int amount) override;
+    
+    //needs to be non-const so player can modify item's state
+    void pickup_weapon(Entity* from);
 
 };
