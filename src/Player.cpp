@@ -6,6 +6,7 @@
 #include "Player.hpp"
 #include "Helper.hpp"
 #include "Weapon.hpp"
+#include "Door.hpp"
 
 using namespace Helper;
 
@@ -94,6 +95,18 @@ void Player::update(float dt) {
                 }
                 current_weapon = weapon->pickup(this);
             }
+        }
+        if (i->get_class() == "Door") {
+            Door* door = static_cast<Door*>(i);
+            if (CheckCollisionRecs(bounds, door->get_bounds())) {
+                if (!door_lock) {
+                    door_lock = true;
+                    door->touch(this);
+                }
+            } else {
+                door_lock = false;
+            }
+            std::cout << door_lock << "\n";
         }
     }
 }

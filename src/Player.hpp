@@ -29,6 +29,7 @@ protected:
 
     Weapon* current_weapon = nullptr;
 
+    bool door_lock = false;
 
 public:
     Player(const std::string& n, Vector2 Pos);
