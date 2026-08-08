@@ -62,7 +62,7 @@ void Player::update(float dt) {
     collision = Helper::calculate_tile_collision(get_bounds(), current_game->get_collision_object());
     bounds.y = collision.y; */
 
-    bounds.x = collision.x; bounds.y = collision.y;
+    set_position(collision);
 
     if (last_anim_state != anim_state) {
         anim_time = 0.0f;

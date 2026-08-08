@@ -87,6 +87,9 @@ void Seagull::update (float dt) {
         animation.set_frame((animation.get_frame() + 1) % 1);
     }
 
+    // Calculate collision
+    Vector2 collision = Helper::calculate_tile_collision(get_bounds(), current_game->get_collision_object());
+    set_position(collision);
 }
 
 void Seagull::draw() {
