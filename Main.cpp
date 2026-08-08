@@ -161,14 +161,14 @@ int main(void) {
     auto ExecMainPauseMenu = [&]() {
             DrawRectangle(0, 0, 64, 64, Color{ 75, 75, 100, 100 }); // Draw background
             
-            if (CheckCollisionPointRec(Helper::screen_pos_to_game_pos(GetMousePosition()), Rectangle{ 0.0f, 8.0f, 64.0f, 10.0f })) {
+            if (CheckCollisionPointRec(Helper::screen_pos_to_game_pos(GetMousePosition()), Rectangle{ 0.0f, 8.0f, 64.0f, 8.0f })) {
                 DrawRectangle(0, 8, 64, 8, Color{ 50, 50, 100, 150 }); // Draw higlight
                 if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                     current_state = SETM;
                 }
             }
 
-            if (CheckCollisionPointRec(Helper::screen_pos_to_game_pos(GetMousePosition()), Rectangle{ 0.0f, 16.0f, 64.0f, 10.0f })) {
+            if (CheckCollisionPointRec(Helper::screen_pos_to_game_pos(GetMousePosition()), Rectangle{ 0.0f, 16.0f, 64.0f, 8.0f })) {
                 DrawRectangle(0, 16, 64, 8, Color{ 50, 50, 100, 150 });
                 if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                     should_exit = true;
