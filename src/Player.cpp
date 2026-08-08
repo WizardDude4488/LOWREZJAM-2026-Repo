@@ -56,11 +56,13 @@ void Player::update(float dt) {
 
     // X first
     Vector2 collision = Helper::calculate_tile_collision(get_bounds(), current_game->get_collision_object());
-    bounds.x = collision.x;
+    /*bounds.x = collision.x;
 
     // Then Y
     collision = Helper::calculate_tile_collision(get_bounds(), current_game->get_collision_object());
-    bounds.y = collision.y;
+    bounds.y = collision.y; */
+
+    bounds.x = collision.x; bounds.y = collision.y;
 
     if (last_anim_state != anim_state) {
         anim_time = 0.0f;
