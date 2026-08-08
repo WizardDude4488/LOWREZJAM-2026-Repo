@@ -142,10 +142,80 @@ int main(void) {
 
     current_game->load_level(level_1);
 
+    // Disable quitting game by pressing esc
+    SetExitKey(KEY_NULL);
+
     // Main game loop
-    while (!WindowShouldClose()) {
-        current_game->update();
-        current_game->draw();
+    enum GameState {INGAME, PAUSEM, SETM, MINIMAP};
+    GameState last_state = PAUSEM;
+    GameState current_state = INGAME;
+
+    int sound_volume = 5;
+    int music_volume = 5;
+
+    bool should_exit = false;
+
+    auto ExecMainPauseMenu = [&]() {
+            DrawRectangle(0, 0, 64, 64, Color{ 75, 75, 100, 100 }); // Draw background
+            DrawText("PAUSED",   0,  0,  8, RAYWHITE);
+            DrawText("SETTINGS", 0,  8,  8, RAYWHITE);
+            DrawText("QUIT?",    0, 16,  8, RAYWHITE);
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+                if (CheckCollisionPointRec(Helper::screen_pos_to_game_pos(GetMousePosition()), Rectangle{ 0.0f, 8.0f, 64.0f, 10.0f })) {
+                    current_state = SETM;
+                }
+                if (CheckCollisionPointRec(Helper::screen_pos_to_game_pos(GetMousePosition()), Rectangle{ 0.0f, 16.0f, 64.0f, 10.0f })) {
+                    should_exit = true;
+                }
+            }
+        };
+
+    auto ExecSettingMenu = [&]() {
+            DrawRectangle(0, 0, 64, 64, Color{ 75, 75, 100, 100 }); // Draw background
+            DrawText("PAUSED", 0, 0, 8, RAYWHITE); // Draw labels
+            DrawText("MUSIC", 0,  8, 8, RAYWHITE);
+            DrawText("SOUND", 0, 16, 8, RAYWHITE);
+            // Get current setting text
+            std::string sound = std::to_string(sound_volume);
+            std::string music = std::to_string(music_volume);
+            sound.resize(2);
+            music.resize(2);
+            // Draw
+            DrawText(music.c_str(), 64 - MeasureText(music.c_str(), 8), 8, 8, RAYWHITE);
+            DrawText(sound.c_str(), 64 - MeasureText(sound.c_str(), 8), 16, 8, RAYWHITE);
+            // Detect button press
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+                if (CheckCollisionPointRec(Helper::screen_pos_to_game_pos(GetMousePosition()), Rectangle{ 0.0f, 8.0f, 64.0f, 8.0f })) {
+                    music_volume = (music_volume + 1) % 11;
+                }
+                if (CheckCollisionPointRec(Helper::screen_pos_to_game_pos(GetMousePosition()), Rectangle{ 0.0f, 16.0f, 64.0f, 8.0f })) {
+                    sound_volume = (sound_volume + 1) % 11;
+                }
+            }
+
+            // TODO: Set music and sound volume
+        };
+
+    while (!should_exit) {
+
+        should_exit = WindowShouldClose();
+
+        if (IsKeyPressed(KEY_ESCAPE)) {
+            current_state = (current_state == INGAME) ? PAUSEM : INGAME;
+        }
+
+        if (current_state == INGAME) {
+            current_game->update();
+        }
+        
+        current_game->begin_draw();
+
+        switch (current_state) {
+        case PAUSEM: { ExecMainPauseMenu(); break; }
+        case SETM: { ExecSettingMenu(); break; }
+        }
+
+        current_game->end_draw();
         current_game->empty_queue();
         //----------------------------------------------------------------------------------
     }
