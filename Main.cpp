@@ -49,22 +49,22 @@ int main(void) {
         void init() override {
 
             const std::vector<int>& wall_data = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                                                  -1, 0, 20, 40, 40, 40, 40, 60, 80, -1,
-                                                  -1, 1, -1, -1, -1, -1, -1, -1, 81, -1,
-                                                  -1, 2, -1, -1, -1, -1, -1, -1, 82, -1,
-                                                  -1, 2, -1, -1, -1, -1, -1, -1, 82, -1,
-                                                  -1, 2, -1, -1, -1, -1, -1, -1, 82, -1,
-                                                  -1, 2, -1, -1, -1, -1, -1, -1, 82, -1,
-                                                  -1, 2, -1, -1, -1, -1, -1, -1, 82, -1,
-                                                  -1, 2, -1, -1, -1, -1, -1, -1, 83, -1,
+                                                  -1, 0, 0, 0, 0, 0, 0, 0, 0, -1,
+                                                  -1, 0, -1, -1, -1, -1, -1, -1, 0, -1,
+                                                  -1, 0, -1, -1, -1, -1, -1, -1, 0, -1,
+                                                  -1, 0, 0, 0, 0, 0, 0, 0, 0, -1,
+                                                  -1, 0, -1, -1, -1, -1, -1, -1, 0, -1,
+                                                  -1, 0, -1, -1, -1, -1, -1, -1, 0, -1,
+                                                  -1, 0, -1, -1, -1, -1, -1, -1, 0, -1,
+                                                  -1, 0, -1, -1, -1, -1, -1, -1, 0, -1,
                                                   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, };
 
             const std::vector<int>& floor_data = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
                                                    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
                                                    -1, -1, 21, 41, 41, 41, 41, 61, -1, -1,
-                                                   -1, -1, 22, 42, 42, 42, 42, 62, -1, -1,
-                                                   -1, -1, 22, 42, 42, 42, 42, 62, -1, -1,
-                                                   -1, -1, 22, 42, 42, 42, 42, 62, -1, -1,
+                                                   -1, -1, 23, 43, 43, 43, 43, 63, -1, -1,
+                                                   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                                                   -1, -1, 21, 41, 41, 41, 41, 61, -1, -1,
                                                    -1, -1, 22, 42, 42, 42, 42, 62, -1, -1,
                                                    -1, -1, 22, 42, 42, 42, 42, 62, -1, -1,
                                                    -1, -1, 22, 42, 42, 42, 42, 62, -1, -1,
@@ -142,10 +142,108 @@ int main(void) {
 
     current_game->load_level(level_1);
 
+    // Disable quitting game by pressing esc
+    SetExitKey(KEY_NULL);
+
+    // Hide default cursor
+    HideCursor();
+
     // Main game loop
-    while (!WindowShouldClose()) {
-        current_game->update();
-        current_game->draw();
+    enum GameState {INGAME, PAUSEM, SETM, MINIMAP};
+    GameState last_state = PAUSEM;
+    GameState current_state = INGAME;
+
+    int sound_volume = 5;
+    int music_volume = 5;
+
+    bool should_exit = false;
+
+    auto ExecMainPauseMenu = [&]() {
+            DrawRectangle(0, 0, 64, 64, Color{ 75, 75, 100, 100 }); // Draw background
+            
+            if (CheckCollisionPointRec(Helper::screen_pos_to_game_pos(GetMousePosition()), Rectangle{ 0.0f, 8.0f, 64.0f, 10.0f })) {
+                DrawRectangle(0, 8, 64, 8, Color{ 50, 50, 100, 150 }); // Draw higlight
+                if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+                    current_state = SETM;
+                }
+            }
+
+            if (CheckCollisionPointRec(Helper::screen_pos_to_game_pos(GetMousePosition()), Rectangle{ 0.0f, 16.0f, 64.0f, 10.0f })) {
+                DrawRectangle(0, 16, 64, 8, Color{ 50, 50, 100, 150 });
+                if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+                    should_exit = true;
+                }
+            }
+            
+            // Draw text over highlight
+            DrawText("PAUSED",   0,  0,  8, RAYWHITE);
+            DrawText("SETTINGS", 0,  8,  8, RAYWHITE);
+            DrawText("QUIT?",    0, 16,  8, RAYWHITE);
+        };
+
+    auto ExecSettingMenu = [&]() {
+            DrawRectangle(0, 0, 64, 64, Color{ 75, 75, 100, 100 }); // Draw background
+            
+            
+            
+            // Detect button press
+            if (CheckCollisionPointRec(Helper::screen_pos_to_game_pos(GetMousePosition()), Rectangle{ 0.0f, 8.0f, 64.0f, 8.0f })) {
+                DrawRectangle(0, 8, 64, 8, Color{ 50, 50, 100, 150 });
+                
+                if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) { // Detect mouse button press
+                    music_volume = (music_volume + 1) % 11;
+                }
+            }
+            if (CheckCollisionPointRec(Helper::screen_pos_to_game_pos(GetMousePosition()), Rectangle{ 0.0f, 16.0f, 64.0f, 8.0f })) {
+                DrawRectangle(0, 16, 64, 8, Color{ 50, 50, 100, 150 });
+                
+                if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+                    sound_volume = (sound_volume + 1) % 11;
+                }
+            }
+            // Draw text over highlight
+            DrawText("PAUSED", 0, 0, 8, RAYWHITE); // Draw labels
+            DrawText("MUSIC", 0,  8, 8, RAYWHITE);
+            DrawText("SOUND", 0, 16, 8, RAYWHITE);
+            
+            // Get current setting text
+            std::string sound = std::to_string(sound_volume);
+            std::string music = std::to_string(music_volume);
+            sound.resize(2);
+            music.resize(2);
+
+            DrawText(music.c_str(), 64 - MeasureText(music.c_str(), 8), 8, 8, RAYWHITE); // Draw values
+            DrawText(sound.c_str(), 64 - MeasureText(sound.c_str(), 8), 16, 8, RAYWHITE);
+
+            // TODO: Set music and sound volume
+        };
+
+    while (!should_exit) {
+
+        should_exit = WindowShouldClose();
+
+        if (IsKeyPressed(KEY_ESCAPE)) {
+            current_state = (current_state == INGAME) ? PAUSEM : INGAME;
+        }
+
+        if (current_state == INGAME) {
+            current_game->update();
+        }
+        
+        current_game->begin_draw();
+
+        switch (current_state) {
+        case PAUSEM: { ExecMainPauseMenu(); break; }
+        case SETM: { ExecSettingMenu(); break; }
+        }
+
+        // Draw pixel art cursor
+        if (current_state != INGAME) {
+            Vector2 pos = Helper::screen_pos_to_game_pos(GetMousePosition());
+            DrawTexture(current_game->get_texture("cursor"), static_cast<int>(pos.x), static_cast<int>(pos.y), WHITE);
+        }
+
+        current_game->end_draw();
         current_game->empty_queue();
         //----------------------------------------------------------------------------------
     }

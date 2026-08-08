@@ -50,7 +50,10 @@ public:
     void copy_level(Level* level); // Need to explicitly call delete_level afterwards (IF NEEDED)
 
     void update();
-    void draw();
+    //void draw();
+
+    void begin_draw(); // Draw to canvas
+    void end_draw(); // Finalize, draw to screen
 
     // Get and return last deltatime
     float get_dt() const;

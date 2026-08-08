@@ -167,8 +167,7 @@ void Game::update() {
     std::cout << "End\n";
 }
 
-void Game::draw() {
-    // Render to 64 x 64 canvas
+void Game::begin_draw() {
     BeginTextureMode(canvas);
 
     ClearBackground(BLACK);
@@ -179,9 +178,12 @@ void Game::draw() {
         for (Object* obj : objects) {
             if (obj->get_draw_layer() == i) {
                 obj->draw();
-            } 
+            }
         }
     }
+}
+
+void Game::end_draw() {
 
     EndTextureMode();
 
@@ -201,13 +203,14 @@ void Game::draw() {
     if (window_size.x >= window_size.y) {
         // Adjust on x axis
         canvas_target_rect = { (window_size.x - target_length) / 2.0f, 0.0f, target_length, target_length };
-    } else {
+    }
+    else {
         // Adjust on y axis
         canvas_target_rect = { 0.0f, (window_size.y - target_length) / 2.0f, target_length, target_length };
     }
 
     Vector2 position = { 0.0f, 0.0f };
-    DrawTexturePro(canvas.texture, canvas_source_rect, canvas_target_rect, {0.0f, 0.0f}, 0.0f, WHITE);
+    DrawTexturePro(canvas.texture, canvas_source_rect, canvas_target_rect, { 0.0f, 0.0f }, 0.0f, WHITE);
 
     EndDrawing();
 }

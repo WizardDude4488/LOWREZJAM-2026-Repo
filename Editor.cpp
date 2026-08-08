@@ -157,7 +157,8 @@ int main(void) {
         }
 
         // Draw tilemap
-        current_game->draw();
+        current_game->begin_draw();
+        current_game->end_draw();
         
         //----------------------------------------------------------------------------------
     }

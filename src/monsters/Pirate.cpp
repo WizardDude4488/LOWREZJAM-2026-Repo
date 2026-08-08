@@ -52,6 +52,10 @@ void Pirate::update(float dt) {
 			set_position(delta + get_position()); // Don't; Just move normally
 		}
 	}
+
+	// Calculate collision
+	Vector2 collision = Helper::calculate_tile_collision(get_bounds(), current_game->get_collision_object());
+	set_position(collision);
 }
 
 void Pirate::draw() {
