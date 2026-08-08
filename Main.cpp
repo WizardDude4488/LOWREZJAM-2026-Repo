@@ -145,6 +145,9 @@ int main(void) {
     // Disable quitting game by pressing esc
     SetExitKey(KEY_NULL);
 
+    // Hide default cursor
+    HideCursor();
+
     // Main game loop
     enum GameState {INGAME, PAUSEM, SETM, MINIMAP};
     GameState last_state = PAUSEM;
@@ -157,41 +160,60 @@ int main(void) {
 
     auto ExecMainPauseMenu = [&]() {
             DrawRectangle(0, 0, 64, 64, Color{ 75, 75, 100, 100 }); // Draw background
-            DrawText("PAUSED",   0,  0,  8, RAYWHITE);
-            DrawText("SETTINGS", 0,  8,  8, RAYWHITE);
-            DrawText("QUIT?",    0, 16,  8, RAYWHITE);
-            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-                if (CheckCollisionPointRec(Helper::screen_pos_to_game_pos(GetMousePosition()), Rectangle{ 0.0f, 8.0f, 64.0f, 10.0f })) {
+            
+            if (CheckCollisionPointRec(Helper::screen_pos_to_game_pos(GetMousePosition()), Rectangle{ 0.0f, 8.0f, 64.0f, 10.0f })) {
+                DrawRectangle(0, 8, 64, 8, Color{ 50, 50, 100, 150 }); // Draw higlight
+                if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                     current_state = SETM;
                 }
-                if (CheckCollisionPointRec(Helper::screen_pos_to_game_pos(GetMousePosition()), Rectangle{ 0.0f, 16.0f, 64.0f, 10.0f })) {
+            }
+
+            if (CheckCollisionPointRec(Helper::screen_pos_to_game_pos(GetMousePosition()), Rectangle{ 0.0f, 16.0f, 64.0f, 10.0f })) {
+                DrawRectangle(0, 16, 64, 8, Color{ 50, 50, 100, 150 });
+                if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                     should_exit = true;
                 }
             }
+            
+            // Draw text over highlight
+            DrawText("PAUSED",   0,  0,  8, RAYWHITE);
+            DrawText("SETTINGS", 0,  8,  8, RAYWHITE);
+            DrawText("QUIT?",    0, 16,  8, RAYWHITE);
         };
 
     auto ExecSettingMenu = [&]() {
             DrawRectangle(0, 0, 64, 64, Color{ 75, 75, 100, 100 }); // Draw background
+            
+            
+            
+            // Detect button press
+            if (CheckCollisionPointRec(Helper::screen_pos_to_game_pos(GetMousePosition()), Rectangle{ 0.0f, 8.0f, 64.0f, 8.0f })) {
+                DrawRectangle(0, 8, 64, 8, Color{ 50, 50, 100, 150 });
+                
+                if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) { // Detect mouse button press
+                    music_volume = (music_volume + 1) % 11;
+                }
+            }
+            if (CheckCollisionPointRec(Helper::screen_pos_to_game_pos(GetMousePosition()), Rectangle{ 0.0f, 16.0f, 64.0f, 8.0f })) {
+                DrawRectangle(0, 16, 64, 8, Color{ 50, 50, 100, 150 });
+                
+                if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+                    sound_volume = (sound_volume + 1) % 11;
+                }
+            }
+            // Draw text over highlight
             DrawText("PAUSED", 0, 0, 8, RAYWHITE); // Draw labels
             DrawText("MUSIC", 0,  8, 8, RAYWHITE);
             DrawText("SOUND", 0, 16, 8, RAYWHITE);
+            
             // Get current setting text
             std::string sound = std::to_string(sound_volume);
             std::string music = std::to_string(music_volume);
             sound.resize(2);
             music.resize(2);
-            // Draw
-            DrawText(music.c_str(), 64 - MeasureText(music.c_str(), 8), 8, 8, RAYWHITE);
+
+            DrawText(music.c_str(), 64 - MeasureText(music.c_str(), 8), 8, 8, RAYWHITE); // Draw values
             DrawText(sound.c_str(), 64 - MeasureText(sound.c_str(), 8), 16, 8, RAYWHITE);
-            // Detect button press
-            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-                if (CheckCollisionPointRec(Helper::screen_pos_to_game_pos(GetMousePosition()), Rectangle{ 0.0f, 8.0f, 64.0f, 8.0f })) {
-                    music_volume = (music_volume + 1) % 11;
-                }
-                if (CheckCollisionPointRec(Helper::screen_pos_to_game_pos(GetMousePosition()), Rectangle{ 0.0f, 16.0f, 64.0f, 8.0f })) {
-                    sound_volume = (sound_volume + 1) % 11;
-                }
-            }
 
             // TODO: Set music and sound volume
         };
@@ -213,6 +235,12 @@ int main(void) {
         switch (current_state) {
         case PAUSEM: { ExecMainPauseMenu(); break; }
         case SETM: { ExecSettingMenu(); break; }
+        }
+
+        // Draw pixel art cursor
+        if (current_state != INGAME) {
+            Vector2 pos = Helper::screen_pos_to_game_pos(GetMousePosition());
+            DrawTexture(current_game->get_texture("cursor"), static_cast<int>(pos.x), static_cast<int>(pos.y), WHITE);
         }
 
         current_game->end_draw();
