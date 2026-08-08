@@ -19,7 +19,8 @@ void load_assets() {
 
     // Add more tilesets here
 
-    current_game->load_image("yellow-guy", "yellow-guy.png");
+    //current_game->load_image("yellow-guy", "yellow-guy.png");
+    current_game->load_image("player", "player.png");
 
     current_game->load_image("crab", "crab.png");
 

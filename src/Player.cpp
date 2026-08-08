@@ -14,8 +14,8 @@ Player::Player(const std::string& n, Vector2 Pos) {
 
     name = n;
     draw_layer = 5;
-    bounds = {Pos.x, Pos.y, 5, 8};
-    animation = Animation("yellow-guy", create_spritesheet_frames(5, 8, 64, 64, 4));
+    bounds = {Pos.x, Pos.y, 13, 13};
+    animation = Animation("player", create_spritesheet_frames(13, 13, 143, 143, 84));
     max_health = 20;
     health = max_health;
 }
@@ -32,17 +32,21 @@ void Player::update(float dt) {
 
     Vector2 direction = Vector2{0.0f, 0.0f};
 
-    if (IsKeyDown(KEY_A)) { velocity.x -= 1; }
-    if (IsKeyDown(KEY_D)) { velocity.x += 1; }
-    if (IsKeyDown(KEY_W)) { velocity.y -= 1; }
-    if (IsKeyDown(KEY_S)) { velocity.y += 1; }
+    bool a = IsKeyDown(KEY_A);
+    bool d = IsKeyDown(KEY_D);
+    bool w = IsKeyDown(KEY_W);
+    bool s = IsKeyDown(KEY_S);
 
-    direction = Vector2Normalize(direction);
-    direction = Vector2Scale(direction, speed);
+    if (a) { direction.x -= 1; anim_direction = LEFT;        anim_state = WALK; }
+    if (d) { direction.x += 1; anim_direction = RIGHT;       anim_state = WALK; }
+    if (w) { direction.y -= 1; anim_direction = BACKWARD;    anim_state = WALK; }
+    if (s) { direction.y += 1; anim_direction = FORWARD;     anim_state = WALK; }
 
-    velocity += direction;
+    if (!(a || d || w || s)) {
+        anim_state = IDLE;
+    }
 
-    Vector2 delta = Vector2Scale(velocity, dt);
+    Vector2 delta = Vector2Scale(Vector2Normalize(direction), speed * dt);
 
     // Set intended position
 
@@ -58,17 +62,28 @@ void Player::update(float dt) {
     collision = Helper::calculate_tile_collision(get_bounds(), current_game->get_collision_object());
     bounds.y = collision.y;
 
-    // Add friction
-    velocity = Vector2Scale(velocity, 0.8f);
-
-    anim_time += dt;
-    
-    while (anim_time >= 0.1) {
-        animation.set_frame((animation.get_frame() + 1) % 4);
-        anim_time -= 0.25;
+    if (last_anim_state != anim_state) {
+        anim_time = 0.0f;
+        anim_counter = 0;
     }
 
+    anim_time += dt;
     hurt_time -= dt;
+    
+    while (anim_time >= 0.2) {
+        if (anim_state == IDLE) {
+            anim_counter = (anim_counter + 1) % 6; // Idle animation has 6 frames
+        } else if (anim_state == WALK) {
+            anim_counter = (anim_counter + 1) % 12; // Walk animation has 12 frames
+        } else if (anim_state == ATTACK) {
+            anim_counter = (anim_counter + 1) % 3; // Attack animation has 3 frames
+        }
+        anim_time -= 0.2;
+    }
+    
+    animation.set_frame(anim_direction + anim_state + anim_counter);
+
+    last_anim_state = anim_state;
 
     // Handle player hurt
     if (hurt_time <= 0.0f) {
@@ -86,17 +101,6 @@ void Player::update(float dt) {
     std::vector<Object*> list = current_game->get_list();
 
     for (Object* i : list) {
-        if (i->get_class() == "RollingPin") {
-            Weapon* weapon = dynamic_cast<Weapon*>(i);
-            //std::cout << "Found RollingPin in object list." << std::endl;
-            if (CheckCollisionRecs(bounds, weapon->get_bounds()) && !weapon->is_held()) {
-                //std::cout << "\nTouching weapon.\n";
-                if (current_weapon != nullptr) {
-                    current_weapon->drop();
-                }
-                current_weapon = weapon->pickup();
-            }
-        }
         if (i->get_class() == "Door") {
             //std::cout << "Found door in object list." << std::endl;
             Door* door = static_cast<Door*>(i);
@@ -109,7 +113,6 @@ void Player::update(float dt) {
             } else {
                 door_lock = false;
             }
-            std::cout << door_lock << "\n";
         }
     }
 }
