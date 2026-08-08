@@ -12,22 +12,23 @@
 
 #include "Character.hpp"
 
-#include "Weapon.hpp"
-//avoid potential circular dependencies
-//class Weapon;
-
 
 class Player : public Character {
 protected:
     static const std::string class_name;
 
-    float speed = 40.0f;
-    float anim_time = 0.0f;
+    float speed = 15.0f;
     float hurt_time = 0.0f;
 
-    Vector2 velocity = {0.0f, 0.0f};
+    float anim_time = 0.0f;
+    int anim_counter = 0;
+    
+    enum Direction {RIGHT = 0, FORWARD = 21, LEFT = 42, BACKWARD = 63};
+    Direction anim_direction = RIGHT;
 
-    Weapon* current_weapon = nullptr;
+    enum State {IDLE = 0, WALK = 6, ATTACK = 18};
+    State anim_state = IDLE;
+    State last_anim_state = IDLE;
 
     bool door_lock = false;
 

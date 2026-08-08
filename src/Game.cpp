@@ -164,6 +164,7 @@ void Game::update() {
         std::cout << obj->get_name() << "\n";
         obj->update(dt);
     }
+    std::cout << "End\n";
 }
 
 void Game::draw() {

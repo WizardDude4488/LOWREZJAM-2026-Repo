@@ -4,7 +4,7 @@ class Pirate : public Character {
 protected:
 	static const std::string class_name;
 
-	float walk_speed = 5.0f;
+	float walk_speed = 10.0f;
 	float target_radius;
 	float state_time = 0.0f;
 	float anim_time = 0.0f;
