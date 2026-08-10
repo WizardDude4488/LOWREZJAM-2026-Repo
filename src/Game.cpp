@@ -28,6 +28,7 @@ Game::Game() {
     collision_object = nullptr;
     dt = 0.0;
     current_layer = 0;
+    current_track = nullptr;
 
     // create default image
 
@@ -45,6 +46,17 @@ Game::~Game() {
     for (const auto& text : textures) {
         UnloadTexture(text.second);
     }
+
+    // Now that we have sound, make sure to delete them
+
+    for (const auto& snd : sounds) {
+        UnloadSound(snd.second);
+    }
+
+    for (const auto& msc : tracks) {
+        UnloadMusicStream(msc.second);
+    }
+
 }
 
 void Game::unload_level() {
@@ -164,7 +176,6 @@ void Game::update() {
         std::cout << obj->get_name() << "\n";
         obj->update(dt);
     }
-    std::cout << "End\n";
 }
 
 void Game::begin_draw() {
@@ -281,12 +292,12 @@ void Game::remove_object(Object* obj) {
 }
 
 void Game::load_image(const std::string& hash, const std::string& local_path) {
-    std::string path = "assets/" + local_path;
+    std::string path = "assets/img/" + local_path;
     textures[hash] = LoadTexture(path.c_str());
 }
 
 void Game::load_image_from_rect(const std::string& hash, const std::string& local_path, const Rectangle& rect) {
-    std::string path = "assets/" + local_path;
+    std::string path = "assets/img/" + local_path;
     Image img = LoadImage(path.c_str());
 
     Image img_rect = ImageFromImage(img, rect);
@@ -305,6 +316,61 @@ Texture2D Game::get_texture(const std::string& hash) const {
         return textures.at("default");
     }
     
+}
+
+void Game::load_sound(const std::string& hash, const std::string& local_path) {
+    std::string path = "assets/snd/" + local_path;
+    sounds[hash] = LoadSound(path.c_str());
+}
+
+void Game::set_sound_volume(float amount) {
+    for (const auto& snd : sounds) {
+        SetSoundVolume(snd.second, amount);
+    }
+}
+
+Sound Game::get_sound(const std::string& hash) {
+    return sounds[hash];
+}
+
+void Game::load_track(const std::string& hash, const std::string& local_path) {
+    std::string path = "assets/msc/" + local_path;
+    tracks[hash] = LoadMusicStream(path.c_str());
+}
+
+void Game::set_track_volume(float amount) {
+    for (const auto& msc : tracks) {
+        SetMusicVolume(msc.second, amount);
+    }
+}
+
+void Game::set_current_track(const std::string& hash) {
+    // If a track is already playing
+    if (current_track != nullptr) {
+        // Stop it
+        StopMusicStream(*current_track);
+    }
+    if (hash != "none") {
+        current_track = &tracks[hash];
+        PlayMusicStream(*current_track);
+        UpdateMusicStream(*current_track); // Make sure to load new data
+    }
+    else {
+        current_track = nullptr;
+    }
+    
+}
+
+void Game::update_current_track() {
+    if (current_track) {
+        UpdateMusicStream(*current_track);
+    }
+}
+
+Music* Game::get_current_track() { return current_track; }
+
+Music Game::get_track(const std::string& hash) {
+    return tracks[hash];
 }
 
 void Game::set_tile(int index, const std::string& texture) {
