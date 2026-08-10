@@ -33,6 +33,11 @@ protected:
     std::unordered_map<std::string, Texture2D> textures;
     std::unordered_map<int, std::string> tiles;
 
+    std::unordered_map<std::string, Sound> sounds;
+
+    std::unordered_map<std::string, Music> tracks;
+    Music* current_track;
+
     // Rendering
     RenderTexture2D canvas;
     int current_layer = 0;
@@ -79,6 +84,18 @@ public:
     void load_image(const std::string& hash, const std::string& local_path);
     void load_image_from_rect(const std::string& hash, const std::string& local_path, const Rectangle& rect);
     Texture2D get_texture(const std::string& hash) const;
+
+    void load_sound(const std::string& hash, const std::string& local_path);
+    void set_sound_volume(float amount);
+    Sound get_sound(const std::string& hash);
+
+    void load_track(const std::string& hash, const std::string& local_path);
+    void set_track_volume(float amount);
+
+    void set_current_track(const std::string& hash);
+    void update_current_track();
+    Music* get_current_track();
+    Music get_track(const std::string& hash);
 
     void set_tile(int index, const std::string& texture);
     std::string get_tile(int index) const;
