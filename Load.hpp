@@ -2,24 +2,27 @@
 #include "Game.hpp"
 #include "Helper.hpp"
 
+void load_tileset(const std::string& image_path, const std::string& tileset_hash, const std::vector<Rectangle>& rects) {
+    int count = 0;
+    for (Rectangle rect : rects) {
+
+        std::string hash = tileset_hash + std::to_string(count);
+        current_game->load_image_from_rect(hash, image_path, rect);
+        current_game->set_tile(count, hash);
+        count++;
+    }
+}
+
 void load_assets() {
 
     std::vector<Rectangle> tileset_rects = Helper::create_spritesheet_frames(8, 8, 160, 88, 220);
 
-    int count = 0;
-    std::string tileset_name = "sandtest";
-
-    for (Rectangle rect : tileset_rects) {
-
-        std::string hash = tileset_name + std::to_string(count);
-        current_game->load_image_from_rect(hash, "sandtest.png", rect);
-        current_game->set_tile(count, hash);
-        count++;
-    }
+    load_tileset("sandtest.png", "sandtest", tileset_rects);
 
     // Add more tilesets here
 
-    //current_game->load_image("yellow-guy", "yellow-guy.png");
+    // Load images
+    
     current_game->load_image("cursor", "cursor.png");
 
     current_game->load_image("player", "player.png");
@@ -35,4 +38,12 @@ void load_assets() {
     current_game->load_image("rolling-pin2", "rolling-pin2.png");
 
     current_game->load_image("door", "door-placeholder.png");
+
+    // Load sounds
+
+    current_game->load_sound("snd-test", "crab.ogg");
+
+    // Load music
+
+    current_game->load_track("msc-test", "water-level.ogg");
 }

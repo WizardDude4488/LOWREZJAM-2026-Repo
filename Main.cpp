@@ -21,6 +21,9 @@ int main(void) {
 
     InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
 
+    // Initialize Audio
+    InitAudioDevice();
+
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
 
@@ -161,14 +164,14 @@ int main(void) {
     auto ExecMainPauseMenu = [&]() {
             DrawRectangle(0, 0, 64, 64, Color{ 75, 75, 100, 100 }); // Draw background
             
-            if (CheckCollisionPointRec(Helper::screen_pos_to_game_pos(GetMousePosition()), Rectangle{ 0.0f, 8.0f, 64.0f, 10.0f })) {
+            if (CheckCollisionPointRec(Helper::screen_pos_to_game_pos(GetMousePosition()), Rectangle{ 0.0f, 8.0f, 64.0f, 8.0f })) {
                 DrawRectangle(0, 8, 64, 8, Color{ 50, 50, 100, 150 }); // Draw higlight
                 if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                     current_state = SETM;
                 }
             }
 
-            if (CheckCollisionPointRec(Helper::screen_pos_to_game_pos(GetMousePosition()), Rectangle{ 0.0f, 16.0f, 64.0f, 10.0f })) {
+            if (CheckCollisionPointRec(Helper::screen_pos_to_game_pos(GetMousePosition()), Rectangle{ 0.0f, 16.0f, 64.0f, 8.0f })) {
                 DrawRectangle(0, 16, 64, 8, Color{ 50, 50, 100, 150 });
                 if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                     should_exit = true;
@@ -192,6 +195,7 @@ int main(void) {
                 
                 if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) { // Detect mouse button press
                     music_volume = (music_volume + 1) % 11;
+                    current_game->set_track_volume(static_cast<float>(music_volume) / 10.0f);
                 }
             }
             if (CheckCollisionPointRec(Helper::screen_pos_to_game_pos(GetMousePosition()), Rectangle{ 0.0f, 16.0f, 64.0f, 8.0f })) {
@@ -199,6 +203,8 @@ int main(void) {
                 
                 if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                     sound_volume = (sound_volume + 1) % 11;
+                    current_game->set_sound_volume(static_cast<float>(sound_volume) / 10.0f);
+                    PlaySound(current_game->get_sound("snd-test"));
                 }
             }
             // Draw text over highlight
@@ -217,6 +223,8 @@ int main(void) {
 
             // TODO: Set music and sound volume
         };
+
+    current_game->set_current_track("msc-test");
 
     while (!should_exit) {
 
@@ -245,6 +253,9 @@ int main(void) {
 
         current_game->end_draw();
         current_game->empty_queue();
+
+        // Make sure to update music
+        current_game->update_current_track();
         //----------------------------------------------------------------------------------
     }
 
