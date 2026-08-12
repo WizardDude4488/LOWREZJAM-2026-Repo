@@ -30,7 +30,8 @@ void Door::touch(const Object* from) {
 		// Switch level to target_level
 		if (open) {
 			if (target_level != nullptr) {
-				current_game->load_level(target_level);
+				// New: queue command instead of doing it immediately, prevents crashes
+				current_game->switch_level(target_level);
 				//std::cout << "Door: called load_level" << std::endl;
 			} else {
 				//std::cout << "Door: attempted to load level from nullptr\n";

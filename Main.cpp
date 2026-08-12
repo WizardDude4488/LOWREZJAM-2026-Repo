@@ -80,8 +80,8 @@ int main(void) {
             player_object = new Player("Bob", { 32.0f, 32.0f });
 
             Tilemap* tilemap = new Tilemap("Floor", 0, floor_data);
-
-            objects.push_back(player_object);
+            
+             objects.push_back(player_object);
             objects.push_back(collision_object);
             objects.push_back(tilemap);
         }
@@ -114,11 +114,13 @@ int main(void) {
             collision_object = new Tilemap("Walls", 1, wall_data);
             Tilemap* floor = new Tilemap("Floor", 0, floor_data);
             player_object = new Player("Bob", { 16.0f, 32.0f });
+            Seagull* seagull = new Seagull("Seagull", { 48.0f, 48.0f }, 28.0f);
             //the rolling pin object is the only object in level 2 not present in level 1
 
             objects.push_back(player_object);
             objects.push_back(collision_object);
             objects.push_back(floor);
+            objects.push_back(seagull);
         }
     };
 
@@ -143,7 +145,7 @@ int main(void) {
 
     // Load level
 
-    current_game->load_level(level_1);
+    current_game->__load_level(level_1);
 
     // Disable quitting game by pressing esc
     SetExitKey(KEY_NULL);
@@ -252,10 +254,17 @@ int main(void) {
         }
 
         current_game->end_draw();
+
+        current_game->update_current_track();
+
+        
+        
+        
+        
+        
         current_game->empty_queue();
 
         // Make sure to update music
-        current_game->update_current_track();
         //----------------------------------------------------------------------------------
     }
 

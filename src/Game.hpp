@@ -19,12 +19,20 @@ extern Game* current_game;
 void begin_game();
 void end_game();
 
+struct GameQueueCommand {
+    enum QueueCommandType { ADD_OBJ, DEL_OBJ, SWITCH_LEVEL };
+    QueueCommandType type;
+    // If ADD_OBJ or DEL_OBJ, then void* is Object*; If SWITCH_LEVEL, then void* Level*
+    void* target;
+};
+
 class Game {
 protected:
     // Objects
     std::vector<Object*> objects;
-    std::vector<Object*> object_add_queue;
-    std::vector<Object*> object_remove_queue;
+
+    std::vector<GameQueueCommand> command_queue;
+
     Player* player_object; // Change to Player* when Player is implemented
     Tilemap* collision_object; // Current layer considered for wall collision
     float dt;
@@ -45,14 +53,15 @@ public:
     Game();
     ~Game();
 
-    void unload_level();
-    // Can only be implemented fully when Player is implemented
-    void load_level(Level* level);
-
     void delete_level(); // Level in locally stored memory, not other level
                          // Should not be called when loading a level using load_level
                          // Use copy_level instead
     void copy_level(Level* level); // Need to explicitly call delete_level afterwards (IF NEEDED)
+
+    void __unload_level();
+    void __load_level(Level* level);
+
+    void switch_level(Level* level);
 
     void update();
     //void draw();
