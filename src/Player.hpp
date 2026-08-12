@@ -4,6 +4,8 @@
 
 #include <vector>
 
+#include <unordered_map>
+
 #include "raylib.h"
 
 #include "raymath.h"
@@ -31,6 +33,10 @@ protected:
     State last_anim_state = IDLE;
 
     bool door_lock = false;
+
+    //using an unordered map to with key type string and value type bool to track inventory
+    std::unordered_map<std::string, int> inventory;
+    
 
 public:
     Player(const std::string& n, Vector2 Pos);

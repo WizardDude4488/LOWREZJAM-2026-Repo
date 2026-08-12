@@ -175,3 +175,15 @@ void Player::hurt(int amount) {
         // Play hurt animation
     }
 }
+
+
+//implement an add_item method so items can change player inventory when their touch methods are called
+void Player::add_item(const Object* from) {
+    //check if the item associated with the class name already has an entry
+    //if not, add it to the map with a value of true
+    std::string item_name = from->get_class();
+    if (inventory.find(item_name) != inventory.end()) {
+        inventory.insert({item_name, true});
+    }
+
+}
