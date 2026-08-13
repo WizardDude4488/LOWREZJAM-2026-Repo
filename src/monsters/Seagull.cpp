@@ -24,7 +24,7 @@ Seagull::Seagull(const std::string& n, Vector2 perch_pos, float radius) {
     perch_position = perch_pos;
     target_position = perch_position;
     target_radius = radius;
-    bounds = {perch_pos.x, perch_pos.y, 6, 6};
+    bounds = {perch_pos.x, perch_pos.y, bound_size.x, bound_size.y};
     animation = Animation("seagull", create_spritesheet_frames(11, 11, 121, 121, 16));
     health = 10;
     max_health = health;
@@ -39,6 +39,7 @@ void Seagull::update (float dt) {
             // If the player is nearby, switch to swooping state to attack
             if (Vector2Distance(get_position(), current_game->get_player_object()->get_position()) <= target_radius) {
                 current_state = DIVE;
+                anim_state = FLY;
                 target_position = current_game->get_player_object()->get_position();
                 state_time = 0.0f;
             }
@@ -94,6 +95,7 @@ void Seagull::update (float dt) {
         // If we reached target, switch state
         if (get_position() == target_position) {
             current_state = IDLE;
+            anim_state = SIT;
             target_position = perch_position;
             state_time = 0.0f;
         }
@@ -104,27 +106,30 @@ void Seagull::update (float dt) {
     anim_time += dt;
 
     while (anim_time >= 0.2f) {
-        anim_counter = (anim_counter + 1) % 4;
+        anim_counter = (anim_counter + 1) % 4; 
         anim_time -= 0.2f;
     }
 
-    animation.set_frame(anim_direction + current_state + anim_counter);
+    animation.set_frame(anim_direction + anim_state + anim_counter);
 
     // Calculate collision
     Vector2 collision = Helper::calculate_tile_collision(get_bounds(), current_game->get_collision_object());
     set_position(collision);
+
+    // Hurt player
+
+    if (CheckCollisionRecs(bounds, current_game->get_player_object()->get_bounds())) {
+        current_game->get_player_object()->touch(this);
+    }
 }
 
 void Seagull::draw() {
-    animation.draw_frame(get_position());
+    animation.draw_frame(get_position() + Helper::adjust_sprite_to_collider(bound_size, sprite_size));
+    DrawRectanglePro(bounds, { 0.0f, 0.0f }, 0.0f, { 255, 0, 255, 100 });
 }
 
 void Seagull::touch(const Object* from) {
-    //add hurt() for rolling pin
-    if (from->get_class() == "RollingPin") {
-        hurt(5);
-        std::cout << "\nSeagull took five damage.";
-    }
+    
 }
 
 void Seagull::die() {

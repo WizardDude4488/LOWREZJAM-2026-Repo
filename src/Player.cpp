@@ -132,6 +132,11 @@ void Player::touch(const Object* from) {
     if (from->get_class() == "Crab") {
         hurt(5); // Set damage from each class
     }
+    else if (from->get_class() == "Seagull") {
+        hurt(8);
+    } else if (from->get_class() == "Bullet") {
+        hurt(12);
+    }
 }
 
 /*void Player::pickup_weapon(Entity* from) {

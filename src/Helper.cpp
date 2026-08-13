@@ -252,7 +252,12 @@ Vector2 Helper::calculate_tile_collision(Rectangle object_bounds, Tilemap* tilem
     return Vector2{ new_x, new_y };
 }
 
-Vector2 get_animation_center(const Animation& anim) {
+Vector2 Helper::get_animation_center(const Animation& anim) {
     const Rectangle& rect = anim.get_frame_rect(0);
     return Vector2{ rect.width / 2.0f, rect.height / 2.0f };
+}
+
+Vector2 Helper::adjust_sprite_to_collider(Vector2 collider_size, Vector2 sprite_size) {
+    Vector2 r_diff = (sprite_size - collider_size) / 2.0f;
+    return r_diff * -1.0f;
 }

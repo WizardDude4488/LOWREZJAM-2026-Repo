@@ -19,8 +19,8 @@ Crab::Crab(const std::string& n, Vector2 start_pos, Vector2 end_pos, float s) {
     draw_layer = 3;
     start_position = start_pos;
     end_position = end_pos;
-    bounds = {start_pos.x, start_pos.y, 8, 8};
-    animation = Animation("crab", create_spritesheet_frames(10, 8, 64, 64, 2));
+    bounds = {start_pos.x, start_pos.y, bound_size.x, bound_size.y};
+    animation = Animation("crab", create_spritesheet_frames(12, 12, 132, 132, 15));
     max_health = 20;
     health = max_health;
     speed = s;
@@ -36,6 +36,24 @@ void Crab::update(float dt) {
 
     direction = (current_state == TO_START) ? (start_position - get_position()) : (end_position - get_position()) ;
     direction = Vector2Normalize(direction);
+
+    // Determine anim_direction
+    if (abs(direction.x) > abs(direction.y)) {
+        if (direction.x < 0.0f) {
+            anim_direction = LEFT;
+        }
+        else if (direction.x > 0.0f) {
+            anim_direction = RIGHT;
+        }
+    }
+    else {
+        if (direction.y < 0.0f) {
+            anim_direction = BACK;
+        }
+        else if (direction.y > 0.0f) {
+            anim_direction = FORWARD;
+        }
+    }
 
     // When we reach the start point, switch to TO_END and vice versa
     if (current_state == TO_START && get_position() == start_position) {
@@ -71,22 +89,21 @@ void Crab::update(float dt) {
 
     anim_time += dt;
 
-    while (anim_time >= 1 / speed) {
-        animation.set_frame((animation.get_frame() + 1) % 2);
-        anim_time = 0;
+    while (anim_time >= 0.2f) {
+        if (anim_direction == FORWARD || anim_direction == BACK) {
+            anim_counter = (anim_counter + 1) % 4; // They have 4 frames
+        } else {
+            anim_counter = (anim_counter + 1) % 2; // They have 2 frames
+        }
+        anim_time -= 0.2;
     }
+
+    animation.set_frame(anim_direction + anim_counter);
 
     // Check for collision with player
 
-    std::vector<Object*> list = current_game->get_list();
-
-    for (Object* i : list) {
-        if (i->get_class() == "Player") {
-            Player* player = static_cast<Player*>(i);
-            if (CheckCollisionRecs(bounds, player->get_bounds())) {
-                player->touch(this);
-            }
-        }
+    if (CheckCollisionRecs(bounds, current_game->get_player_object()->get_bounds())) {
+        current_game->get_player_object()->touch(this);
     }
 
     // Collision with walls
@@ -95,15 +112,11 @@ void Crab::update(float dt) {
 }
 
 void Crab::draw() {
-    animation.draw_frame(get_position());
+    animation.draw_frame(get_position() + Helper::adjust_sprite_to_collider(bound_size, sprite_size));
 }
 
 void Crab::touch(const Object* from) {
     //add hurt() for rolling pin
-    if (from->get_class() == "RollingPin") {
-        hurt(5);
-        std::cout << "\nCrab took five damage.";
-    }
 }
 
 void Crab::die() {
