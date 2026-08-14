@@ -23,4 +23,10 @@ namespace Helper {
 	Vector2 calculate_tile_collision(Rectangle object_bounds, Tilemap* tilemap);
 
 	Vector2 get_animation_center(const Animation& anim);
+
+	// If collider is smaller than sprite, make sure sprite encapsulates collider equally in all directions
+	// Return the difference
+	Vector2 adjust_sprite_to_collider(Vector2 collider_size, Vector2 sprite_size);
+
+	Color calculate_hurt_flash(float hurt_time);
 }

@@ -9,8 +9,8 @@ void Animation::set_frame(int curr_frame) {
 	current_frame = curr_frame;
 }
 
-void Animation::draw_frame(Vector2 position) {
-	DrawTextureRec(current_game->get_texture(texture), frames[current_frame], position, WHITE);
+void Animation::draw_frame(Vector2 position, Color tint) {
+	DrawTextureRec(current_game->get_texture(texture), frames[current_frame], position, tint);
 }
 
 const Rectangle& Animation::get_frame_rect(int frame) const {

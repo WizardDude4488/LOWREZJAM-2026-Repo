@@ -10,11 +10,15 @@
 class Seagull : public Character {
 protected:
     static const std::string class_name;
+    const Vector2 sprite_size = { 11.0f, 11.0f };
+    const Vector2 bound_size = { 5.0f, 5.0f };
 
     float speed = 30.0f;
     float target_radius;
     float state_time = 0.0f;
+
     float anim_time = 0.0f;
+    int anim_counter = 0;
 
     Vector2 perch_position;
     Vector2 target_position;
@@ -22,8 +26,15 @@ protected:
     Vector2 direction = { 0.0f, 0.0f };
     Vector2 velocity = { 0.0f, 0.0f };
 
-    enum SeagullState { IDLE = 0, DIVE = 1, PERCH = 2 };
+    enum Direction {LEFT = 8, RIGHT = 0};
+    Direction anim_direction = RIGHT;
+
+    // Dive and Perch use the same animations
+    enum SeagullState { IDLE, DIVE, PERCH };
     SeagullState current_state = IDLE;
+
+    enum SeagullAnimationState {SIT = 0, FLY = 3};
+    SeagullAnimationState anim_state = SIT;
 
 public:
     Seagull(const std::string& n, Vector2 perch_pos, float radius);

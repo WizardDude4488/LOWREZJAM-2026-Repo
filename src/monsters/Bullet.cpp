@@ -26,6 +26,12 @@ void Bullet::update(float dt) {
 	velocity = Vector2Scale(direction, speed * dt);
 	set_position(get_position() + velocity);
 
+	// Hurt player
+
+	if (CheckCollisionRecs(bounds, current_game->get_player_object()->get_bounds())) {
+		current_game->get_player_object()->touch(this);
+	}
+
 	// If touching player or wall, delete itself
 	if (Helper::colliding_with_tile(bounds, current_game->get_collision_object()) || CheckCollisionRecs(bounds, current_game->get_player_object()->get_bounds())) { current_game->remove_object(this); }
 }
