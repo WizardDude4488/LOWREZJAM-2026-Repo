@@ -12,6 +12,7 @@
 #include "monsters/Seagull.hpp"
 #include "monsters/Bullet.hpp"
 #include "monsters/Pirate.hpp"
+#include "items/Lobster.hpp"
 
 int main(void) {
     const int screenWidth = 1024;
@@ -81,9 +82,12 @@ int main(void) {
 
             Tilemap* tilemap = new Tilemap("Floor", 0, floor_data);
 
+            Lobster* lobster_object = new Lobster("Larry", { 30.0f, 20.0f });
+
             objects.push_back(player_object);
             objects.push_back(collision_object);
             objects.push_back(tilemap);
+            objects.push_back(lobster_object);
         }
     };
 

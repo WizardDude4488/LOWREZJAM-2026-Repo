@@ -39,6 +39,8 @@ void load_assets() {
 
     current_game->load_image("door", "door-placeholder.png");
 
+    current_game->load_image("lobster", "lobster.png");
+
     // Load sounds
 
     current_game->load_sound("snd-test", "crab.ogg");
