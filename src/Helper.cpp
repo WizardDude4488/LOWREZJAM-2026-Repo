@@ -261,3 +261,9 @@ Vector2 Helper::adjust_sprite_to_collider(Vector2 collider_size, Vector2 sprite_
     Vector2 r_diff = (sprite_size - collider_size) / 2.0f;
     return r_diff * -1.0f;
 }
+
+Color Helper::calculate_hurt_flash(float hurt_time) {
+    float cos_value = (hurt_time > 0.0f) ? (cos(10.0f * (hurt_time - PI / 2.0f)) + 1) / 2.0f : 1.0f;
+    unsigned char int_value = static_cast<int>(cos_value * 255.0f);
+    return Color{ int_value, int_value, int_value, int_value };
+}

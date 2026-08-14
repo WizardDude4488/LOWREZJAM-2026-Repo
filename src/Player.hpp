@@ -50,4 +50,5 @@ public:
     //needs to be non-const so player can modify item's state
     //void pickup_weapon(Entity* from);
 
+    void set_health(int amount);
 };

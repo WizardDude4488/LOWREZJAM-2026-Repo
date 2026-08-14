@@ -27,4 +27,6 @@ namespace Helper {
 	// If collider is smaller than sprite, make sure sprite encapsulates collider equally in all directions
 	// Return the difference
 	Vector2 adjust_sprite_to_collider(Vector2 collider_size, Vector2 sprite_size);
+
+	Color calculate_hurt_flash(float hurt_time);
 }

@@ -32,9 +32,8 @@ protected:
     std::vector<Object*> objects;
 
     std::vector<GameQueueCommand> command_queue;
-
-    Player* player_object; // Change to Player* when Player is implemented
     Tilemap* collision_object; // Current layer considered for wall collision
+    Level* level = nullptr;
     float dt;
 
     // Assets
@@ -47,16 +46,21 @@ protected:
     Music* current_track;
 
     // Rendering
+    std::unordered_map<std::string, Shader> shaders;
+
     RenderTexture2D canvas;
     int current_layer = 0;
 public:
+    Player* player_object;
+    Level* first_level = nullptr;
+
     Game();
     ~Game();
 
-    void delete_level(); // Level in locally stored memory, not other level
+    //void delete_level(); // Level in locally stored memory, not other level
                          // Should not be called when loading a level using load_level
                          // Use copy_level instead
-    void copy_level(Level* level); // Need to explicitly call delete_level afterwards (IF NEEDED)
+    //void copy_level(Level* level); // Need to explicitly call delete_level afterwards (IF NEEDED)
 
     void __unload_level();
     void __load_level(Level* level);
@@ -65,6 +69,7 @@ public:
 
     void update();
     //void draw();
+    void reset(); // Called if player dies
 
     void begin_draw(); // Draw to canvas
     void end_draw(); // Finalize, draw to screen

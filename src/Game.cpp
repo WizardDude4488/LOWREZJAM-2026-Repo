@@ -60,9 +60,15 @@ Game::~Game() {
 }
 
 void Game::__unload_level() {
+    if (this->level != nullptr) {
+        std::cout << player_object->get_position().x << "\n";
+
+        this->level->player_position = player_object->get_position();
+    }
     // No longer owns these objects -- just drop references to them
     objects.clear();
-    player_object = nullptr;
+    //player_object = nullptr;
+    // Don't get rid of player; player object stays the same in all games
     collision_object = nullptr;
     // Don't unload assets
 }
@@ -71,8 +77,12 @@ void Game::__load_level(Level* level) {
     // Unload current level (just clears references, doesn't delete)
     __unload_level();
 
+    this->level = level;
+
+    std::cout << (this->player_object == nullptr) << "\n";
+
     // Reference the level's objects directly; no copying needed since we don't own them
-    player_object = level->player_object;
+    player_object->set_position(level->player_position);
     collision_object = level->collision_object;
 
     if (player_object != nullptr) {
@@ -105,6 +115,9 @@ void Game::switch_level(Level* level) {
         GameQueueCommand{GameQueueCommand::SWITCH_LEVEL, level}
     );
 }
+
+// Not using this anymore
+/*
 
 void Game::delete_level() {
     // Pretty much the same as the deconstructor
@@ -174,6 +187,7 @@ void Game::copy_level(Level* level) {
     }
 }
 
+*/
 
 void Game::update() {
     update_dt();
@@ -181,6 +195,18 @@ void Game::update() {
     for (Object* obj : objects) {
         obj->update(dt);
     }
+}
+
+void Game::reset() {
+    // Reset first level
+    first_level->objects.clear();
+    first_level->init();
+
+    // Set player back to full health
+    player_object->set_health(player_object->get_max_health());
+
+    // Load level
+    __load_level(first_level);
 }
 
 void Game::begin_draw() {

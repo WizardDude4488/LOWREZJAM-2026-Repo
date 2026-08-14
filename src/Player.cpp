@@ -121,7 +121,8 @@ void Player::update(float dt) {
 
 // TODO: draw animation object here
 void Player::draw() {
-    animation.draw_frame(get_position());
+
+    animation.draw_frame(get_position(), Helper::calculate_hurt_flash(hurt_time));
 
     // Draw rectangle for health bar
     DrawRectangle(0, 0, get_health(), 5, RED);
@@ -164,6 +165,8 @@ void Player::die() {
     //code for death sequence/animation, maybe a "You Died" screen
     //sets player back to last checkpoint or smth
 
+    current_game->reset();
+
 }
 
 void Player::hurt(int amount) {
@@ -179,4 +182,8 @@ void Player::hurt(int amount) {
     } else {
         // Play hurt animation
     }
+}
+
+void Player::set_health(int amount) {
+    health = amount;
 }

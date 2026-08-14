@@ -100,7 +100,6 @@ Level::~Level() {
 		delete object;
 	}
 
-	player_object = nullptr;
 	collision_object = nullptr;
 }
 

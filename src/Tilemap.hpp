@@ -49,7 +49,9 @@ public:
 
 struct Level {
 	std::vector<Object*> objects;
-	Player* player_object = nullptr;
+	//Player* player_object = nullptr;
+	// Replace with position
+	Vector2 player_position = {0.0f, 0.0f};
 	Tilemap* collision_object;
 
 	~Level();

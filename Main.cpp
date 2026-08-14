@@ -77,11 +77,10 @@ int main(void) {
 
             // Give player and crab different positions
 
-            player_object = new Player("Bob", { 32.0f, 32.0f });
+            player_position = { 32.0f, 32.0f };
 
             Tilemap* tilemap = new Tilemap("Floor", 0, floor_data);
             
-             objects.push_back(player_object);
             objects.push_back(collision_object);
             objects.push_back(tilemap);
         }
@@ -113,11 +112,11 @@ int main(void) {
 
             collision_object = new Tilemap("Walls", 1, wall_data);
             Tilemap* floor = new Tilemap("Floor", 0, floor_data);
-            player_object = new Player("Bob", { 16.0f, 32.0f });
             Seagull* seagull = new Seagull("Seagull", { 48.0f, 48.0f }, 28.0f);
             //the rolling pin object is the only object in level 2 not present in level 1
 
-            objects.push_back(player_object);
+            player_position = { 16.0f, 32.0f };
+
             objects.push_back(collision_object);
             objects.push_back(floor);
             objects.push_back(seagull);
@@ -143,8 +142,13 @@ int main(void) {
 
     //current_game->add_object(tilemap);
 
+    // Now that level only holds the player's position, we need to make sure to create a player object first
+
+    current_game->player_object = new Player("Player", { 0.0f, 0.0f });
+
     // Load level
 
+    current_game->first_level = level_1;
     current_game->__load_level(level_1);
 
     // Disable quitting game by pressing esc
