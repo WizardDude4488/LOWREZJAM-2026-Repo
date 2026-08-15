@@ -200,11 +200,13 @@ void Player::add_item(const Object* from) {
     //if not, add it to the map with a value of true
     std::string item_name = from->get_class();
     if (inventory.find(item_name) == inventory.end()) {
-        inventory.insert({item_name, 1});
-    } else {
+        inventory.insert({ item_name, 1 });
+    }
+    else {
         //if said item is already present (at least one of item type) increment by 1 instead
         inventory[item_name] += 1;
     }
+}
 
 void Player::set_health(int amount) {
     health = amount;
