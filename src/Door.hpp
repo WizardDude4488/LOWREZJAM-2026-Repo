@@ -5,18 +5,18 @@
 #include "Entity.hpp"
 
 
-// NOTE: See the Level struct for a proper explanation of doors
+// NOTE: See the Room struct for a proper explanation of doors
 
 class Door : public Entity {
 protected:
-	Level* target_level = nullptr;
+	Room* target_level = nullptr;
 	bool open = true; // If true, players can pass through the door
 	static const std::string& class_name;
 public:
 	// target_level is not set here.
 	// There will be a function link_doors that sets the target_level after all levels have been created
 	// If we set target_level here then the pointer could point to the wrong level or 
-	Door(const std::string& n, Vector2 position);
+	Door(const std::string& n, Rectangle bounds);
 	const std::string& get_class() const override;
 
 	void update(float dt) override;
@@ -24,8 +24,8 @@ public:
 
 	void touch(const Object* from) override;
 
-	void set_target_level(Level* level);
-	Level* get_target_level();
+	void set_target_level(Room* level);
+	Room* get_target_level();
 
 	void open_door();
 	void close_door();

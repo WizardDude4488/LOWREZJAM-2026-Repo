@@ -122,7 +122,7 @@ void Player::update(float dt) {
 // TODO: draw animation object here
 void Player::draw() {
 
-    animation.draw_frame(get_position(), Helper::calculate_hurt_flash(hurt_time));
+    animation.draw_frame(get_position() + Helper::adjust_sprite_to_collider(bound_size, sprite_size), Helper::calculate_hurt_flash(hurt_time));
 
     // Draw rectangle for health bar
     DrawRectangle(0, 0, get_health(), 5, RED);

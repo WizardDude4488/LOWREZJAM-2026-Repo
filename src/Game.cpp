@@ -60,10 +60,11 @@ Game::~Game() {
 }
 
 void Game::__unload_level() {
-    if (this->level != nullptr) {
-        std::cout << player_object->get_position().x << "\n";
+    if (level != nullptr) {
 
-        this->level->player_position = player_object->get_position();
+        if (player_object != nullptr) {
+            level->player_position = player_object->get_position();
+        }
     }
     // No longer owns these objects -- just drop references to them
     objects.clear();
@@ -73,19 +74,17 @@ void Game::__unload_level() {
     // Don't unload assets
 }
 
-void Game::__load_level(Level* level) {
+void Game::__load_level(Room* level) {
     // Unload current level (just clears references, doesn't delete)
     __unload_level();
 
     this->level = level;
 
-    std::cout << (this->player_object == nullptr) << "\n";
-
     // Reference the level's objects directly; no copying needed since we don't own them
-    player_object->set_position(level->player_position);
     collision_object = level->collision_object;
 
     if (player_object != nullptr) {
+        player_object->set_position(level->player_position);
         objects.push_back(player_object);
         //std::cout << "Added player object to level 2" << std::endl;
     }
@@ -110,7 +109,7 @@ void Game::__load_level(Level* level) {
     }
 }
 
-void Game::switch_level(Level* level) {
+void Game::switch_level(Room* level) {
     command_queue.push_back(
         GameQueueCommand{GameQueueCommand::SWITCH_LEVEL, level}
     );
@@ -131,7 +130,7 @@ void Game::delete_level() {
 }
 
 
-void Game::copy_level(Level* level) {
+void Game::copy_level(Room* level) {
     // Unload current level
     __unload_level();
     
@@ -200,7 +199,7 @@ void Game::update() {
 void Game::reset() {
     // Reset first level
     first_level->objects.clear();
-    first_level->init();
+    //first_level->init();
 
     // Set player back to full health
     player_object->set_health(player_object->get_max_health());
@@ -275,7 +274,7 @@ void Game::empty_queue() {
     for (GameQueueCommand command : command_queue) {
         // This because C++ is stupid
         Object* obj;
-        Level* lvl;
+        Room* lvl;
 
         if (command.type == GameQueueCommand::ADD_OBJ) {
             obj = static_cast<Object*>(command.target);
@@ -289,7 +288,7 @@ void Game::empty_queue() {
                 objects.erase(at);
             }
         } else if (command.type == GameQueueCommand::SWITCH_LEVEL) {
-            lvl = static_cast<Level*>(command.target);
+            lvl = static_cast<Room*>(command.target);
             this->__load_level(lvl);
         }
         

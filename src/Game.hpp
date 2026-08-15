@@ -22,7 +22,7 @@ void end_game();
 struct GameQueueCommand {
     enum QueueCommandType { ADD_OBJ, DEL_OBJ, SWITCH_LEVEL };
     QueueCommandType type;
-    // If ADD_OBJ or DEL_OBJ, then void* is Object*; If SWITCH_LEVEL, then void* Level*
+    // If ADD_OBJ or DEL_OBJ, then void* is Object*; If SWITCH_LEVEL, then void* Room*
     void* target;
 };
 
@@ -33,7 +33,7 @@ protected:
 
     std::vector<GameQueueCommand> command_queue;
     Tilemap* collision_object; // Current layer considered for wall collision
-    Level* level = nullptr;
+    Room* level = nullptr;
     float dt;
 
     // Assets
@@ -52,20 +52,20 @@ protected:
     int current_layer = 0;
 public:
     Player* player_object;
-    Level* first_level = nullptr;
+    Room* first_level = nullptr;
 
     Game();
     ~Game();
 
-    //void delete_level(); // Level in locally stored memory, not other level
+    //void delete_level(); // Room in locally stored memory, not other level
                          // Should not be called when loading a level using load_level
                          // Use copy_level instead
-    //void copy_level(Level* level); // Need to explicitly call delete_level afterwards (IF NEEDED)
+    //void copy_level(Room* level); // Need to explicitly call delete_level afterwards (IF NEEDED)
 
     void __unload_level();
-    void __load_level(Level* level);
+    void __load_level(Room* level);
 
-    void switch_level(Level* level);
+    void switch_level(Room* level);
 
     void update();
     //void draw();
