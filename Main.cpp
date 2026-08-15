@@ -12,6 +12,7 @@
 #include "monsters/Seagull.hpp"
 #include "monsters/Bullet.hpp"
 #include "monsters/Pirate.hpp"
+#include "Level.hpp"
 
 int main(void) {
     const int screenWidth = 1024;
@@ -42,101 +43,7 @@ int main(void) {
     current_game->load_image("bullet", "bullet.png");
 
     current_game->load_image("bullet", "bullet.png");
-
-    // HERE
-    // Game hangs right here
-
-    // Create test level
-    // Game doesn't handle Level's memory so we need to delete it at application close
-    struct Level1 : public Level {
-        void init() override {
-
-            const std::vector<int>& wall_data = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                                                  -1, 0, 0, 0, 0, 0, 0, 0, 0, -1,
-                                                  -1, 0, -1, -1, -1, -1, -1, -1, 0, -1,
-                                                  -1, 0, -1, -1, -1, -1, -1, -1, 0, -1,
-                                                  -1, 0, 0, 0, 0, 0, 0, 0, 0, -1,
-                                                  -1, 0, -1, -1, -1, -1, -1, -1, 0, -1,
-                                                  -1, 0, -1, -1, -1, -1, -1, -1, 0, -1,
-                                                  -1, 0, -1, -1, -1, -1, -1, -1, 0, -1,
-                                                  -1, 0, -1, -1, -1, -1, -1, -1, 0, -1,
-                                                  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, };
-
-            const std::vector<int>& floor_data = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                                                   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                                                   -1, -1, 21, 41, 41, 41, 41, 61, -1, -1,
-                                                   -1, -1, 23, 43, 43, 43, 43, 63, -1, -1,
-                                                   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                                                   -1, -1, 21, 41, 41, 41, 41, 61, -1, -1,
-                                                   -1, -1, 22, 42, 42, 42, 42, 62, -1, -1,
-                                                   -1, -1, 22, 42, 42, 42, 42, 62, -1, -1,
-                                                   -1, -1, 22, 42, 42, 42, 42, 62, -1, -1,
-                                                   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, };
-
-            collision_object = new Tilemap("Walls", 1, wall_data);
-
-            // Give player and crab different positions
-
-            player_position = { 32.0f, 32.0f };
-
-            Tilemap* tilemap = new Tilemap("Floor", 0, floor_data);
-            
-            objects.push_back(collision_object);
-            objects.push_back(tilemap);
-        }
-    };
-
-    struct Level2 : public Level {
-        void init() override {
-            const std::vector<int>& wall_data = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                                                  -1, 2, -1, -1, -1, -1, -1, -1, 82, -1,
-                                                  -1, 2, -1, -1, -1, -1, -1, -1, 82, -1,
-                                                  -1, 2, -1, -1, -1, -1, -1, -1, 82, -1,
-                                                  -1, 2, -1, -1, -1, -1, -1, -1, 82, -1,
-                                                  -1, 2, -1, -1, -1, -1, -1, -1, 82, -1,
-                                                  -1, 2, -1, -1, -1, -1, -1, -1, 82, -1,
-                                                  -1, 3, -1, -1, -1, -1, -1, -1, 83, -1,
-                                                  -1, 4, 24, 44, 44, 44, 44, 64, 84, -1,
-                                                  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
-
-            const std::vector<int>& floor_data = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                                                   -1, -1, 22, 42, 42, 42, 42, 62, -1, -1,
-                                                   -1, -1, 22, 42, 42, 42, 42, 62, -1, -1,
-                                                   -1, -1, 22, 42, 42, 42, 42, 62, -1, -1,
-                                                   -1, -1, 22, 42, 42, 42, 42, 62, -1, -1,
-                                                   -1, -1, 22, 42, 42, 42, 42, 62, -1, -1,
-                                                   -1, -1, 22, 42, 42, 42, 42, 62, -1, -1,
-                                                   -1, -1, 23, 43, 43, 43, 43, 63, -1, -1,
-                                                   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                                                   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,};
-
-            collision_object = new Tilemap("Walls", 1, wall_data);
-            Tilemap* floor = new Tilemap("Floor", 0, floor_data);
-            Seagull* seagull = new Seagull("Seagull", { 48.0f, 48.0f }, 28.0f);
-            //the rolling pin object is the only object in level 2 not present in level 1
-
-            player_position = { 16.0f, 32.0f };
-
-            objects.push_back(collision_object);
-            objects.push_back(floor);
-            objects.push_back(seagull);
-        }
-    };
-
-    Level* level_1 = new Level1();
-    Level* level_2 = new Level2();
-
-    Door* to_lvl2 = new Door("to_lvl2", Vector2{ 56.0f, 32.0f });
-    Door* to_lvl1 = new Door("to_lvl1", Vector2{ 8.0f, 32.0f });
-
-    level_1->init();
-    level_2->init();
-
-    to_lvl2->set_target_level(level_2);
-    to_lvl1->set_target_level(level_1);
-
-    level_2->add_object(to_lvl1);
-    level_1->add_object(to_lvl2);
+    
 
     // Do not call delete on tilemap; game handles this automatically
 
@@ -144,12 +51,11 @@ int main(void) {
 
     // Now that level only holds the player's position, we need to make sure to create a player object first
 
-    current_game->player_object = new Player("Player", { 0.0f, 0.0f });
+    Level* level = new Level();
 
-    // Load level
+    current_game->player_object = level->reset();
 
-    current_game->first_level = level_1;
-    current_game->__load_level(level_1);
+    current_game->__load_level(level->get_room(0));
 
     // Disable quitting game by pressing esc
     SetExitKey(KEY_NULL);

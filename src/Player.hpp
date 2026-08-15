@@ -17,6 +17,9 @@ class Player : public Character {
 protected:
     static const std::string class_name;
 
+    const Vector2 sprite_size = { 13.0f, 13.0f };
+    const Vector2 bound_size = { 13.0f, 13.0f };
+
     float speed = 15.0f;
     float hurt_time = 0.0f;
 

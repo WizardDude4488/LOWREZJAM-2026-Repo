@@ -28,6 +28,7 @@ list(APPEND src_files
     src/monsters/Seagull.cpp
     src/monsters/Bullet.cpp
     src/monsters/Pirate.cpp
+    src/Level.cpp
     
     Load.hpp
     src/Game.hpp
@@ -44,6 +45,7 @@ list(APPEND src_files
     src/monsters/Seagull.hpp
     src/monsters/Bullet.hpp
     src/monsters/Pirate.hpp
+    src/Level.hpp
 )
 
 add_executable(lowrez Main.cpp)

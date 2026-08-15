@@ -40,21 +40,20 @@ public:
 
 // NOTE: This deserves a bit of explanation
 // In our project ideas, we have ideas for a number of levels.
-// The levels in our ideas are not the same as the Level class.
-// One level that we want to make might have multiple Level
+// The levels in our ideas are not the same as the Room class.
+// One level that we want to make might have multiple Room
 // instances corresponding to different rooms.
 // This simplifies the implementation of doors, because then
 // we don't have to have a different implementation of a door
 // depending on if we are going to a different room or a new level
 
-struct Level {
+struct Room {
 	std::vector<Object*> objects;
 	//Player* player_object = nullptr;
 	// Replace with position
 	Vector2 player_position = {0.0f, 0.0f};
 	Tilemap* collision_object;
 
-	~Level();
-	virtual void init() = 0; // Make specific level here
+	~Room();
 	void add_object(Object* obj);
 };
