@@ -12,6 +12,7 @@
 #include "monsters/Seagull.hpp"
 #include "monsters/Bullet.hpp"
 #include "monsters/Pirate.hpp"
+#include "items/Lobster.hpp"
 #include "Level.hpp"
 
 int main(void) {
