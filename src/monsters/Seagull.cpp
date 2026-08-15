@@ -133,7 +133,7 @@ void Seagull::touch(const Object* from) {
 }
 
 void Seagull::die() {
-    return;
+    current_game->remove_object(this);
 }
 
 void Seagull::hurt(int amount) {

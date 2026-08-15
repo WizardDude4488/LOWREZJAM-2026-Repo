@@ -88,6 +88,7 @@ void Crab::update(float dt) {
     }
 
     anim_time += dt;
+    flash_time -= dt;
 
     while (anim_time >= 0.2f) {
         if (anim_direction == FORWARD || anim_direction == BACK) {
@@ -112,7 +113,11 @@ void Crab::update(float dt) {
 }
 
 void Crab::draw() {
-    animation.draw_frame(get_position() + Helper::adjust_sprite_to_collider(bound_size, sprite_size));
+    if (flash_time > 0.0f) {
+        animation.draw_frame(get_position() + Helper::adjust_sprite_to_collider(bound_size, sprite_size), Color{100, 100, 100, 100});
+    } else {
+        animation.draw_frame(get_position() + Helper::adjust_sprite_to_collider(bound_size, sprite_size));
+    }
 }
 
 void Crab::touch(const Object* from) {
@@ -120,9 +125,13 @@ void Crab::touch(const Object* from) {
 }
 
 void Crab::die() {
-    return;
+    current_game->remove_object(this);
 }
 
 void Crab::hurt(int amount) {
-    return;
+    health -= amount;
+    flash_time = 0.1f;
+    if (health <= 0) {
+        die();
+    }
 }
