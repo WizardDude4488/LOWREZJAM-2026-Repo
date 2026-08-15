@@ -64,7 +64,7 @@ int main(void) {
 
     // Load level
 
-    current_game->__load_level(test_level);
+    current_game->__load_room(test_level);
 
     enum EditorState {EDIT_TILEMAP = 0, EDIT_ENTITIES = 1, SELECT_TILEMAP = 2, SELECT_ENTITIES = 3};
     EditorState current_state = EDIT_TILEMAP;
@@ -160,7 +160,7 @@ int main(void) {
     // De-Initialization
     //--------------------------------------------------------------------------------------
 
-    current_game->__unload_level();
+    current_game->__unload_room();
 
     std::cout << "\n\n";
 
