@@ -7,6 +7,7 @@
 #include "Helper.hpp"
 #include "Weapon.hpp"
 #include "Door.hpp"
+#include "items/Lobster.hpp"
 
 using namespace Helper;
 
@@ -116,6 +117,13 @@ void Player::update(float dt) {
                 door_lock = false;
             }
         }
+        if (i->get_class() == "Lobster") {
+            Lobster* lobster = static_cast<Lobster*>(i);
+            if (CheckCollisionRecs(bounds, lobster->get_bounds())) {
+                std::cout << "Touching lobster" << std::endl;
+                lobster->touch(this);
+            }
+        }
     }
 }
 
@@ -183,6 +191,20 @@ void Player::hurt(int amount) {
         // Play hurt animation
     }
 }
+
+
+//implement an add_item method so items can change player inventory when their touch methods are called
+void Player::add_item(const Object* from) {
+    //check if the item associated with the class name already has an entry
+    //if said item does not have an entry, .find() will return .end(), so need to do == .end() and not != .end()
+    //if not, add it to the map with a value of true
+    std::string item_name = from->get_class();
+    if (inventory.find(item_name) == inventory.end()) {
+        inventory.insert({item_name, 1});
+    } else {
+        //if said item is already present (at least one of item type) increment by 1 instead
+        inventory[item_name] += 1;
+    }
 
 void Player::set_health(int amount) {
     health = amount;

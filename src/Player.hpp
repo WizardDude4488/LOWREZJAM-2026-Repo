@@ -4,6 +4,8 @@
 
 #include <vector>
 
+#include <unordered_map>
+
 #include "raylib.h"
 
 #include "raymath.h"
@@ -35,6 +37,10 @@ protected:
 
     bool door_lock = false;
 
+    //using an unordered map to with key type string and value type bool to track inventory
+    std::unordered_map<std::string, int> inventory;
+    
+
 public:
     Player(const std::string& n, Vector2 Pos);
 
@@ -52,6 +58,7 @@ public:
     
     //needs to be non-const so player can modify item's state
     //void pickup_weapon(Entity* from);
+    void add_item(const Object* from);
 
     void set_health(int amount);
 };
