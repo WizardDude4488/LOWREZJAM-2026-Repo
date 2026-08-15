@@ -1,4 +1,5 @@
 #include "Level.hpp"
+#include "items/Lobster.hpp"
 
 Player* Level::reset() {
 	// Create the levels
@@ -33,6 +34,8 @@ Player* Level::reset() {
 	});
 
 	beach1->add_object(walls);
+
+	beach1->add_object(new Lobster("Lobster", {48.0f, 48.0f}));
 
 	beach1->collision_object = walls;
 
