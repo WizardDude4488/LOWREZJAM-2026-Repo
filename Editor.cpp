@@ -28,7 +28,7 @@ int main(void) {
     load_assets();
 
     // Create test level
-    // Game doesn't handle Level's memory so we need to delete it at application close
+    // Game doesn't handle Room's memory so we need to delete it at application close
 
     Tilemap* select_tile = new Tilemap("Select", 1);
 
@@ -48,19 +48,13 @@ int main(void) {
         }
     };
 
-    struct TestLevel : public Level {
-
-        void init() override {
-            collision_object = new Tilemap("Walls", 0);
-            objects.push_back(collision_object);
-        }
-    };
-
-    Level* test_level = new TestLevel();
+    Room* test_level = new Room();
 
     HighlightTile* highlight = new HighlightTile();
-
-    test_level->init();
+    Tilemap* collision_object = new Tilemap("Walls", 0);
+    
+    test_level->add_object(collision_object);
+    test_level->collision_object = collision_object;
     test_level->add_object(select_tile);
     test_level->add_object(highlight);
 
@@ -70,7 +64,7 @@ int main(void) {
 
     // Load level
 
-    current_game->load_level(test_level);
+    current_game->__load_level(test_level);
 
     enum EditorState {EDIT_TILEMAP = 0, EDIT_ENTITIES = 1, SELECT_TILEMAP = 2, SELECT_ENTITIES = 3};
     EditorState current_state = EDIT_TILEMAP;
@@ -166,7 +160,7 @@ int main(void) {
     // De-Initialization
     //--------------------------------------------------------------------------------------
 
-    current_game->unload_level();
+    current_game->__unload_level();
 
     std::cout << "\n\n";
 

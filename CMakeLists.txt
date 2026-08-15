@@ -30,6 +30,7 @@ list(APPEND src_files
     src/monsters/Pirate.cpp
     src/Item.cpp
     src/items/Lobster.cpp
+    src/Level.cpp
     
     Load.hpp
     src/Game.hpp
@@ -48,6 +49,7 @@ list(APPEND src_files
     src/monsters/Pirate.hpp
     src/Item.hpp
     src/items/Lobster.hpp
+    src/Level.hpp
 )
 
 add_executable(lowrez Main.cpp)

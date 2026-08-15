@@ -25,5 +25,5 @@ public:
     int get_frame() const;
     const Rectangle& get_frame_rect(int frame) const;
     void set_frame(int curr_frame);
-    void draw_frame(Vector2 position); // add rotation, scale later if we need it
+    void draw_frame(Vector2 position, Color tint = WHITE); // add rotation, scale later if we need it
 };

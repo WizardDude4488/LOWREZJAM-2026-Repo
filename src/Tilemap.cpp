@@ -94,16 +94,15 @@ int Tilemap::get_tile(int x, int y) {
 	return -1;
 }
 
-Level::~Level() {
+Room::~Room() {
 	// Make sure we deallocate objects
 	for (Object* object : objects) {
 		delete object;
 	}
 
-	player_object = nullptr;
 	collision_object = nullptr;
 }
 
-void Level::add_object(Object* obj) {
+void Room::add_object(Object* obj) {
 	objects.push_back(obj);
 }

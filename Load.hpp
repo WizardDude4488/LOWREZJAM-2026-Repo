@@ -2,22 +2,27 @@
 #include "Game.hpp"
 #include "Helper.hpp"
 
-void load_tileset(const std::string& image_path, const std::string& tileset_hash, const std::vector<Rectangle>& rects) {
-    int count = 0;
+void load_tileset(const std::string& image_path, const std::string& tileset_hash, const std::vector<Rectangle>& rects, int* count) {
     for (Rectangle rect : rects) {
 
-        std::string hash = tileset_hash + std::to_string(count);
+        std::string hash = tileset_hash + std::to_string(*count);
         current_game->load_image_from_rect(hash, image_path, rect);
-        current_game->set_tile(count, hash);
-        count++;
+        current_game->set_tile(*count, hash);
+        (*count)++;
     }
 }
 
 void load_assets() {
 
-    std::vector<Rectangle> tileset_rects = Helper::create_spritesheet_frames(8, 8, 160, 88, 220);
+    int count = 0;
 
-    load_tileset("sandtest.png", "sandtest", tileset_rects);
+    std::vector<Rectangle> rects = Helper::create_spritesheet_frames(8, 8, 160, 88, 220);
+
+    load_tileset("sandtest.png", "sandtest", rects, &count);
+
+    load_tileset("sandwalls.png", "sandwalls", rects, &count);
+
+    load_tileset("grasstiles.png", "grasstiles", rects, &count);
 
     // Add more tilesets here
 

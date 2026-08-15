@@ -6,9 +6,9 @@
 
 const std::string& Door::class_name = "Door";
 
-Door::Door(const std::string& n, Vector2 position) {
+Door::Door(const std::string& n, Rectangle bounds) {
 	name = n;
-	bounds = {position.x, position.y, 8.0f, 8.0f}; // Make it 8x8 for now
+	this->bounds = bounds; // Allow any door size
 	animation = Animation("door", Helper::create_spritesheet_frames(4, 4, 4, 4));
 	animation.set_frame(0);
 }
@@ -30,7 +30,8 @@ void Door::touch(const Object* from) {
 		// Switch level to target_level
 		if (open) {
 			if (target_level != nullptr) {
-				current_game->load_level(target_level);
+				// New: queue command instead of doing it immediately, prevents crashes
+				current_game->switch_level(target_level);
 				//std::cout << "Door: called load_level" << std::endl;
 			} else {
 				//std::cout << "Door: attempted to load level from nullptr\n";
@@ -40,11 +41,11 @@ void Door::touch(const Object* from) {
 	}
 }
 
-void Door::set_target_level(Level* level) {
+void Door::set_target_level(Room* level) {
 	target_level = level;
 }
 
-Level* Door::get_target_level() {
+Room* Door::get_target_level() {
 	return target_level;
 }
 

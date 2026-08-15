@@ -24,8 +24,8 @@ Seagull::Seagull(const std::string& n, Vector2 perch_pos, float radius) {
     perch_position = perch_pos;
     target_position = perch_position;
     target_radius = radius;
-    bounds = {perch_pos.x, perch_pos.y, 6, 6};
-    animation = Animation("seagull", create_spritesheet_frames(6, 6, 64, 64, 1));
+    bounds = {perch_pos.x, perch_pos.y, bound_size.x, bound_size.y};
+    animation = Animation("seagull", create_spritesheet_frames(11, 11, 121, 121, 16));
     health = 10;
     max_health = health;
 }
@@ -33,17 +33,28 @@ Seagull::Seagull(const std::string& n, Vector2 perch_pos, float radius) {
 
 void Seagull::update (float dt) {
     if (current_state == IDLE) {
+        direction = Vector2{ 0.0f, 0.0f };
         state_time += dt; // Only increment when IDLE
         if (state_time >= 3.0f) {
             // If the player is nearby, switch to swooping state to attack
             if (Vector2Distance(get_position(), current_game->get_player_object()->get_position()) <= target_radius) {
                 current_state = DIVE;
+                anim_state = FLY;
                 target_position = current_game->get_player_object()->get_position();
                 state_time = 0.0f;
             }
         }
     } else if (current_state == DIVE) {
         direction = Vector2Normalize(target_position - get_position());
+
+        if (direction.x > 0.0f) {
+            anim_direction = RIGHT;
+        }
+
+        if (direction.x < 0.0f) {
+            anim_direction = LEFT;
+        }
+
         Vector2 delta = Vector2Scale(direction, dt * speed); // Calculate speed
         // Same strategy as in Crab
         if (Vector2Distance(delta + get_position(), target_position) > Vector2Distance(get_position(), target_position)) {
@@ -63,6 +74,15 @@ void Seagull::update (float dt) {
 
         // TODO: this is pretty much just duplicating code, condense it
         direction = Vector2Normalize(target_position - get_position());
+
+        if (direction.x > 0.0f) {
+            anim_direction = RIGHT;
+        }
+
+        if (direction.x < 0.0f) {
+            anim_direction = LEFT;
+        }
+
         Vector2 delta = Vector2Scale(direction, dt * speed); // Calculate speed
 
         if (Vector2Distance(delta + get_position(), target_position) > Vector2Distance(get_position(), target_position)) {
@@ -75,33 +95,41 @@ void Seagull::update (float dt) {
         // If we reached target, switch state
         if (get_position() == target_position) {
             current_state = IDLE;
+            anim_state = SIT;
             target_position = perch_position;
             state_time = 0.0f;
         }
     }
 
-
     //could have separate while loop for hover animation if needed
 
-    while (anim_time >= 1 / speed) {
-        animation.set_frame((animation.get_frame() + 1) % 1);
+    anim_time += dt;
+
+    while (anim_time >= 0.2f) {
+        anim_counter = (anim_counter + 1) % 4; 
+        anim_time -= 0.2f;
     }
+
+    animation.set_frame(anim_direction + anim_state + anim_counter);
 
     // Calculate collision
     Vector2 collision = Helper::calculate_tile_collision(get_bounds(), current_game->get_collision_object());
     set_position(collision);
+
+    // Hurt player
+
+    if (CheckCollisionRecs(bounds, current_game->get_player_object()->get_bounds())) {
+        current_game->get_player_object()->touch(this);
+    }
 }
 
 void Seagull::draw() {
-    animation.draw_frame(get_position());
+    animation.draw_frame(get_position() + Helper::adjust_sprite_to_collider(bound_size, sprite_size));
+    DrawRectanglePro(bounds, { 0.0f, 0.0f }, 0.0f, { 255, 0, 255, 100 });
 }
 
 void Seagull::touch(const Object* from) {
-    //add hurt() for rolling pin
-    if (from->get_class() == "RollingPin") {
-        hurt(5);
-        std::cout << "\nSeagull took five damage.";
-    }
+    
 }
 
 void Seagull::die() {

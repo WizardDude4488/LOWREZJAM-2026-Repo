@@ -129,7 +129,8 @@ void Player::update(float dt) {
 
 // TODO: draw animation object here
 void Player::draw() {
-    animation.draw_frame(get_position());
+
+    animation.draw_frame(get_position() + Helper::adjust_sprite_to_collider(bound_size, sprite_size), Helper::calculate_hurt_flash(hurt_time));
 
     // Draw rectangle for health bar
     DrawRectangle(0, 0, get_health(), 5, RED);
@@ -139,6 +140,11 @@ void Player::draw() {
 void Player::touch(const Object* from) {
     if (from->get_class() == "Crab") {
         hurt(5); // Set damage from each class
+    }
+    else if (from->get_class() == "Seagull") {
+        hurt(8);
+    } else if (from->get_class() == "Bullet") {
+        hurt(12);
     }
 }
 
@@ -166,6 +172,8 @@ void Player::die() {
 
     //code for death sequence/animation, maybe a "You Died" screen
     //sets player back to last checkpoint or smth
+
+    current_game->reset();
 
 }
 
@@ -198,4 +206,6 @@ void Player::add_item(const Object* from) {
         inventory[item_name] += 1;
     }
 
+void Player::set_health(int amount) {
+    health = amount;
 }

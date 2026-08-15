@@ -59,23 +59,32 @@ Game::~Game() {
 
 }
 
-void Game::unload_level() {
+void Game::__unload_level() {
+    if (level != nullptr) {
+
+        if (player_object != nullptr) {
+            level->player_position = player_object->get_position();
+        }
+    }
     // No longer owns these objects -- just drop references to them
     objects.clear();
-    player_object = nullptr;
+    //player_object = nullptr;
+    // Don't get rid of player; player object stays the same in all games
     collision_object = nullptr;
     // Don't unload assets
 }
 
-void Game::load_level(Level* level) {
+void Game::__load_level(Room* level) {
     // Unload current level (just clears references, doesn't delete)
-    unload_level();
+    __unload_level();
+
+    this->level = level;
 
     // Reference the level's objects directly; no copying needed since we don't own them
-    player_object = level->player_object;
     collision_object = level->collision_object;
 
     if (player_object != nullptr) {
+        player_object->set_position(level->player_position);
         objects.push_back(player_object);
         //std::cout << "Added player object to level 2" << std::endl;
     }
@@ -100,6 +109,15 @@ void Game::load_level(Level* level) {
     }
 }
 
+void Game::switch_level(Room* level) {
+    command_queue.push_back(
+        GameQueueCommand{GameQueueCommand::SWITCH_LEVEL, level}
+    );
+}
+
+// Not using this anymore
+/*
+
 void Game::delete_level() {
     // Pretty much the same as the deconstructor
     for (Object* obj : objects) {
@@ -112,9 +130,9 @@ void Game::delete_level() {
 }
 
 
-void Game::copy_level(Level* level) {
+void Game::copy_level(Room* level) {
     // Unload current level
-    unload_level();
+    __unload_level();
     
     // Copy values; don't move
     // This becomes a little more complicated than using the copy constructor because
@@ -168,14 +186,26 @@ void Game::copy_level(Level* level) {
     }
 }
 
+*/
 
 void Game::update() {
     update_dt();
 
     for (Object* obj : objects) {
-        std::cout << obj->get_name() << "\n";
         obj->update(dt);
     }
+}
+
+void Game::reset() {
+    // Reset first level
+    first_level->objects.clear();
+    //first_level->init();
+
+    // Set player back to full health
+    player_object->set_health(player_object->get_max_health());
+
+    // Load level
+    __load_level(first_level);
 }
 
 void Game::begin_draw() {
@@ -235,22 +265,41 @@ void Game::update_dt() {
 }
 
 void Game::add_object(Object* obj) {
-    object_add_queue.push_back(obj);
+    command_queue.push_back(
+        GameQueueCommand{ GameQueueCommand::ADD_OBJ, obj }
+    );
 }
 
 void Game::empty_queue() {
-    // Append new objects
-    objects.reserve(objects.size() + object_add_queue.size());
-    objects.insert(objects.end(), object_add_queue.begin(), object_add_queue.end());
-    object_add_queue.clear();
-    // Remove old objects
-    for (Object* obj : object_remove_queue) {
-        auto at = std::find(objects.begin(), objects.end(), obj);
+    for (GameQueueCommand command : command_queue) {
+        // This because C++ is stupid
+        Object* obj;
+        Room* lvl;
+
+        if (command.type == GameQueueCommand::ADD_OBJ) {
+            obj = static_cast<Object*>(command.target);
+            objects.reserve(objects.size() + 1);
+            objects.insert(objects.end(), obj);
+        } else if (command.type == GameQueueCommand::DEL_OBJ) {
+            obj = static_cast<Object*>(command.target);
+            auto at = std::find(objects.begin(), objects.end(), obj);
+            if (at != objects.end()) {
+                delete* at;
+                objects.erase(at);
+            }
+        } else if (command.type == GameQueueCommand::SWITCH_LEVEL) {
+            lvl = static_cast<Room*>(command.target);
+            this->__load_level(lvl);
+        }
+        
+        command_queue.clear();
+
+        /* auto at = std::find(objects.begin(), objects.end(), obj);
 
         if (at != objects.end()) {
              delete *at;
              objects.erase(at);
-        }
+        } */
     }
 }
 
@@ -284,11 +333,13 @@ int Game::get_current_layer() const {
 
 
 void Game::remove_object(int index) {
-    object_remove_queue.push_back(objects.at(index));
+    remove_object(objects.at(index));
 }
 
 void Game::remove_object(Object* obj) {
-    object_remove_queue.push_back(obj);
+    command_queue.push_back(
+        GameQueueCommand{ GameQueueCommand::DEL_OBJ, static_cast<void*>(obj) }
+    );
 }
 
 void Game::load_image(const std::string& hash, const std::string& local_path) {

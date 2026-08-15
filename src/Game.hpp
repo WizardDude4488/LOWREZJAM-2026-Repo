@@ -19,14 +19,21 @@ extern Game* current_game;
 void begin_game();
 void end_game();
 
+struct GameQueueCommand {
+    enum QueueCommandType { ADD_OBJ, DEL_OBJ, SWITCH_LEVEL };
+    QueueCommandType type;
+    // If ADD_OBJ or DEL_OBJ, then void* is Object*; If SWITCH_LEVEL, then void* Room*
+    void* target;
+};
+
 class Game {
 protected:
     // Objects
     std::vector<Object*> objects;
-    std::vector<Object*> object_add_queue;
-    std::vector<Object*> object_remove_queue;
-    Player* player_object; // Change to Player* when Player is implemented
+
+    std::vector<GameQueueCommand> command_queue;
     Tilemap* collision_object; // Current layer considered for wall collision
+    Room* level = nullptr;
     float dt;
 
     // Assets
@@ -39,23 +46,30 @@ protected:
     Music* current_track;
 
     // Rendering
+    std::unordered_map<std::string, Shader> shaders;
+
     RenderTexture2D canvas;
     int current_layer = 0;
 public:
+    Player* player_object;
+    Room* first_level = nullptr;
+
     Game();
     ~Game();
 
-    void unload_level();
-    // Can only be implemented fully when Player is implemented
-    void load_level(Level* level);
-
-    void delete_level(); // Level in locally stored memory, not other level
+    //void delete_level(); // Room in locally stored memory, not other level
                          // Should not be called when loading a level using load_level
                          // Use copy_level instead
-    void copy_level(Level* level); // Need to explicitly call delete_level afterwards (IF NEEDED)
+    //void copy_level(Room* level); // Need to explicitly call delete_level afterwards (IF NEEDED)
+
+    void __unload_level();
+    void __load_level(Room* level);
+
+    void switch_level(Room* level);
 
     void update();
     //void draw();
+    void reset(); // Called if player dies
 
     void begin_draw(); // Draw to canvas
     void end_draw(); // Finalize, draw to screen
