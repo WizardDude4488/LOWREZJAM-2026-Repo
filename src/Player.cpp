@@ -15,9 +15,9 @@ Player::Player(const std::string& n, Vector2 Pos) {
 
     name = n;
     draw_layer = 5;
-    bounds = {Pos.x, Pos.y, 13, 13};
+    bounds = {Pos.x, Pos.y, bound_size.x, bound_size.y};
     animation = Animation("player", create_spritesheet_frames(13, 13, 143, 143, 84));
-    max_health = 20;
+    max_health = 35;
     health = max_health;
 }
 
@@ -70,16 +70,16 @@ void Player::update(float dt) {
 
     // Remember that a rect starts from its top-left corner
     if (anim_direction == FORWARD) {
-        attack_rect = Rectangle{ bounds.x + ((bounds.width - attack_area.y) / 2.0f) , bounds.y + bounds.height, attack_area.y, attack_area.x }; // Facing up
+        attack_rect = Rectangle{ bounds.x + ((sprite_size.x - attack_area.y) / 2.0f) , bounds.y + bounds.height, attack_area.y, attack_area.x }; // Facing up
     }
     else if (anim_direction == BACKWARD) {
-        attack_rect = Rectangle{ bounds.x + ((bounds.width - attack_area.y) / 2.0f), bounds.y - attack_area.x, attack_area.y, attack_area.x}; // Facing down
+        attack_rect = Rectangle{ bounds.x + ((sprite_size.x - attack_area.y) / 2.0f), bounds.y - attack_area.x, attack_area.y, attack_area.x}; // Facing down
     }
     else if (anim_direction == RIGHT) {
-        attack_rect = Rectangle{ bounds.x + bounds.width, bounds.y + ((bounds.height - attack_area.y)/2.0f), attack_area.x, attack_area.y }; // Right
+        attack_rect = Rectangle{ bounds.x + bounds.width, bounds.y + ((sprite_size.y - attack_area.y)/2.0f), attack_area.x, attack_area.y }; // Right
     }
     else if (anim_direction == LEFT) {
-        attack_rect = Rectangle{ bounds.x - attack_area.x, bounds.y + ((bounds.height - attack_area.y) / 2.0f), attack_area.x, attack_area.y }; // Left
+        attack_rect = Rectangle{ bounds.x - attack_area.x, bounds.y + ((sprite_size.y - attack_area.y) / 2.0f), attack_area.x, attack_area.y }; // Left
     }
 
     if (IsKeyPressed(KEY_COMMA)) {
@@ -166,7 +166,11 @@ void Player::update(float dt) {
 // TODO: draw animation object here
 void Player::draw() {
 
-    animation.draw_frame(get_position() + Helper::adjust_sprite_to_collider(bound_size, sprite_size), Helper::calculate_hurt_flash(hurt_time));
+    Vector2 sprite_pos = get_position() + Helper::adjust_sprite_to_collider(bound_size, sprite_size);
+    // Prevent from rendering at non-integer position, otherwise it produces distortion
+    sprite_pos.x = std::floor(sprite_pos.x);
+    sprite_pos.y = std::floor(sprite_pos.y);
+    animation.draw_frame(sprite_pos, Helper::calculate_hurt_flash(hurt_time));
 
     // Draw hit area
     //DrawRectanglePro(attack_rect, { 0.0f, 0.0f }, 0.0f, Color{255, 0, 255, 100});

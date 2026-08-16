@@ -13,7 +13,7 @@ const std::string Pirate::class_name = "Pirate";
 Pirate::Pirate(const std::string& n, Vector2 pos, float radius) {
 	name = n;
 	draw_layer = 3;
-	bounds = { pos.x, pos.y, 12.0f, 12.0f };
+	bounds = { pos.x, pos.y, bound_size.x, bound_size.y };
 	target_radius = radius;
 	animation = Animation("pirate", Helper::create_spritesheet_frames(12, 12, 132, 132, 48) );
 	max_health = 25;
@@ -101,6 +101,7 @@ void Pirate::update(float dt) {
 	}
 
 	anim_time += dt;
+	flash_time -= dt;
 
 	while (anim_time >= 0.2) {
 		anim_counter = (anim_counter + 1) % 4; // All of the animations in pirate.png have the same number of frames
@@ -113,7 +114,12 @@ void Pirate::update(float dt) {
 }
 
 void Pirate::draw() {
-	animation.draw_frame(Vector2{bounds.x, bounds.y});
+	if (flash_time > 0.0f) {
+		animation.draw_frame(get_position() + Helper::adjust_sprite_to_collider(bound_size, sprite_size), Color{ 100, 100, 100, 100 });
+	}
+	else {
+		animation.draw_frame(get_position() + Helper::adjust_sprite_to_collider(bound_size, sprite_size));
+	}
 }
 
 void Pirate::touch(const Object* from) {
@@ -126,6 +132,7 @@ void Pirate::die() {
 
 void Pirate::hurt(int amount) {
 	health -= amount;
+	flash_time = 0.1f;
 	if (health <= 0) {
 		die();
 	}

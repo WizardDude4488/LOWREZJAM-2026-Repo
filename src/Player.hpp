@@ -20,7 +20,7 @@ protected:
     static const std::string class_name;
 
     const Vector2 sprite_size = { 13.0f, 13.0f };
-    const Vector2 bound_size = { 13.0f, 13.0f };
+    const Vector2 bound_size = { 10.0f, 10.0f };
 
     const Vector2 attack_area = { 8.0f, 8.0f }; // Area when pointing to the right
                                                   // Use of members may be switched depending on direction

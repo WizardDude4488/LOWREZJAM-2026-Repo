@@ -1,6 +1,8 @@
 #include "Level.hpp"
 #include "items/Lobster.hpp"
 #include "monsters/Crab.hpp"
+#include "monsters/Pirate.hpp"
+#include "monsters/Seagull.hpp"
 
 Player* Level::reset() {
 	// Create the levels
@@ -39,6 +41,10 @@ Player* Level::reset() {
 	beach1->add_object(new Lobster("Lobster", {48.0f, 48.0f}));
 
 	beach1->add_object(new Crab("Crab", { 48.0f, 16.0f }, { 48.0f, 32.0f }, 15.0f));
+
+	beach1->add_object(new Pirate("Pirate", {8.0f, 8.0f}, 8.0f));
+
+	beach1->add_object(new Seagull("Seagull", { 48.0f, 8.0f }, 15.0f));
 
 	beach1->collision_object = walls;
 
