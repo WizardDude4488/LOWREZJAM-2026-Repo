@@ -154,6 +154,9 @@ int main(void) {
         
         current_game->begin_draw();
 
+        // Draw player healthbar
+        DrawRectangle(0, 0, current_game->get_player_object()->get_health(), 5, RED);
+
         switch (current_state) {
         case PAUSEM: { ExecMainPauseMenu(); break; }
         case SETM: { ExecSettingMenu(); break; }
