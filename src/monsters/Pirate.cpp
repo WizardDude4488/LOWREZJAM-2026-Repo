@@ -16,7 +16,7 @@ Pirate::Pirate(const std::string& n, Vector2 pos, float radius) {
 	bounds = { pos.x, pos.y, bound_size.x, bound_size.y };
 	target_radius = radius;
 	animation = Animation("pirate", Helper::create_spritesheet_frames(12, 12, 132, 132, 48) );
-	max_health = 25;
+	max_health = 18;
 	health = max_health;
 }
 
@@ -35,6 +35,8 @@ void Pirate::update(float dt) {
 	if (state_time >= 4.0f) {
 		// If player is close enough, shoot
 		if (distance_to_player <= target_radius) {
+			// Play shooting sound
+			PlaySound(current_game->get_sound("shoot"));
 			Bullet* bullet = new Bullet("PirateBullet", get_position(), direction, 20.0f);
 			current_game->add_object(bullet);
 			state_time = 0.0f;
@@ -42,6 +44,7 @@ void Pirate::update(float dt) {
 		}
 	}
 
+	// Wait for shoot animation to play before moving again
 	if (distance_to_player <= target_radius) {
 		// Update player position continuously
 		direction = Vector2Normalize(player_object->get_position() - get_position());
@@ -93,24 +96,26 @@ void Pirate::update(float dt) {
 		}
 	}
 
-	if (anim_state == ATTACK) {
-		// If animation is finished
-		if (anim_time >= 0.8f) {
-			anim_state = IDLE;
-		}
-	}
-
 	anim_time += dt;
 	flash_time -= dt;
 
 	while (anim_time >= 0.2) {
 		anim_counter = (anim_counter + 1) % 4; // All of the animations in pirate.png have the same number of frames
 		anim_time -= 0.2;
+
+		// Making the pirate stop for a bit after shooting is less punishing to the player
+		if (anim_state == ATTACK) {
+			// If animation is finished
+			anim_state = IDLE;
+		}
+
 	}
 
 	animation.set_frame(anim_direction + anim_state + anim_counter);
 
 	last_anim_state = anim_state;
+
+	std::cout << anim_time << "\n";
 }
 
 void Pirate::draw() {

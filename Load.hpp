@@ -52,6 +52,12 @@ void load_assets() {
 
     current_game->load_sound("snd-test", "crab.ogg");
 
+    current_game->load_sound("shoot", "crab.ogg");
+
+    current_game->load_sound("hurt", "hurt.ogg");
+
+    current_game->load_sound("aggro", "bird-attack.ogg");
+
     // Load music
 
     current_game->load_track("msc-test", "water-level.ogg");

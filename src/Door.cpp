@@ -6,11 +6,12 @@
 
 const std::string& Door::class_name = "Door";
 
-Door::Door(const std::string& n, Rectangle bounds) {
+Door::Door(const std::string& n, Rectangle bounds, bool visible) {
 	name = n;
 	this->bounds = bounds; // Allow any door size
 	animation = Animation("door", Helper::create_spritesheet_frames(4, 4, 4, 4));
 	animation.set_frame(0);
+	visible = false;
 }
 
 const std::string& Door::get_class() const {
@@ -22,7 +23,9 @@ void Door::update(float dt) {
 }
 
 void Door::draw() {
-	animation.draw_frame(Vector2{bounds.x, bounds.y});
+	if (visible) {
+		animation.draw_frame(Vector2{ bounds.x, bounds.y });
+	}
 }
 
 void Door::touch(const Object* from) {

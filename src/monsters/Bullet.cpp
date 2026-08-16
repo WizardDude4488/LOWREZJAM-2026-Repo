@@ -9,7 +9,7 @@
 
 Bullet::Bullet(const std::string& n, Vector2 pos, Vector2 dir, float s) {
 	name = n;
-	draw_layer = 2; // Might change later
+	draw_layer = 4;
 	bounds = Rectangle{ pos.x, pos.y, 3, 3 };
 	animation = Animation("bullet", std::vector<Rectangle>{Rectangle{0.0f, 0.0f, 3.0f, 3.0f}});
 	speed = s;

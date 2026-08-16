@@ -30,13 +30,13 @@ int main(void) {
     // Create test level
     // Game doesn't handle Room's memory so we need to delete it at application close
 
-    Tilemap* select_tile = new Tilemap("Select", 1);
+    Tilemap* select_tile = new Tilemap("Select", 5);
 
     class HighlightTile : public Object {
     protected:
         std::string class_name = "HighlightTile";
     public:
-        HighlightTile() { draw_layer = 3; name = "HighlightTile"; }
+        HighlightTile() { draw_layer = 6; name = "HighlightTile"; }
 
         // From Object.hpp
 
@@ -52,14 +52,16 @@ int main(void) {
 
     HighlightTile* highlight = new HighlightTile();
     Tilemap* floor_object = new Tilemap("Floor", 0);
-    Tilemap* collision_object = new Tilemap("Walls", 1);
-    Tilemap* prop_object = new Tilemap("Props", 2);
+    Tilemap* decal_object = new Tilemap("Decal", 1);
+    Tilemap* collision_object = new Tilemap("Walls", 2);
+    Tilemap* prop_object = new Tilemap("Props", 3);
 
     Tilemap* current_tilemap = floor_object;
     
     test_level->add_object(collision_object);
     test_level->collision_object = collision_object;
     test_level->add_object(floor_object);
+    test_level->add_object(decal_object);
     test_level->add_object(prop_object);
     test_level->add_object(select_tile);
     test_level->add_object(highlight);
@@ -113,9 +115,14 @@ int main(void) {
         }
 
 
-        if (IsKeyPressed(KEY_I)) {
+        if (IsKeyPressed(KEY_U)) {
             current_tilemap = floor_object;
             std::cout << "SELECT FLOOR\n";
+        }
+
+        if (IsKeyPressed(KEY_I)) {
+            current_tilemap = decal_object;
+            std::cout << "SELECT DECALS\n";
         }
 
         if (IsKeyPressed(KEY_O)) {
@@ -174,6 +181,9 @@ int main(void) {
 
         // Draw tilemap
         current_game->begin_draw();
+
+        DrawText(current_tilemap->get_name().c_str(), 0, 0, 8, WHITE);
+
         current_game->end_draw();
         
         //----------------------------------------------------------------------------------
@@ -193,6 +203,17 @@ int main(void) {
     for (int x = 0; x < TRUE_WIDTH; x++) {
         for (int y = 0; y < TRUE_WIDTH; y++) {
             std::cout << floor_object->get_tile(x, y) << ", ";
+            if (y == TRUE_WIDTH - 1) { std::cout << "\n"; }
+        }
+    }
+
+    std::cout << "\n";
+
+    std::cout << "DECALS\n";
+
+    for (int x = 0; x < TRUE_WIDTH; x++) {
+        for (int y = 0; y < TRUE_WIDTH; y++) {
+            std::cout << decal_object->get_tile(x, y) << ", ";
             if (y == TRUE_WIDTH - 1) { std::cout << "\n"; }
         }
     }
