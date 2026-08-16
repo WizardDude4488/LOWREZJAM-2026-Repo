@@ -85,6 +85,8 @@ void Player::update(float dt) {
     if (IsKeyPressed(KEY_COMMA)) {
         if (attack_time <= 0.0f) {
             // Attack
+            // Play swinging sound
+            PlaySound(current_game->get_sound("shoot"));
             for (Object* obj : current_game->get_list()) {
                 std::string class_name = obj->get_class();
                 if (class_name == "Crab" || class_name == "Seagull" || class_name == "Pirate") {
@@ -183,12 +185,12 @@ void Player::draw() {
 // TODO: hurt player when something like an enemy or spike calls this function
 void Player::touch(const Object* from) {
     if (from->get_class() == "Crab") {
-        hurt(5); // Set damage from each class
+        hurt(4); // Set damage from each class
     }
     else if (from->get_class() == "Seagull") {
-        hurt(8);
-    } else if (from->get_class() == "Bullet") {
         hurt(12);
+    } else if (from->get_class() == "Bullet") {
+        hurt(8);
     }
 }
 
@@ -226,7 +228,9 @@ void Player::hurt(int amount) {
     // ONLY hurt if not in i frame
     if (hurt_time <= 0.0f) {
         health -= amount;
-        hurt_time = 5.0f; // Wait 5 seconds before being able to be hurt again
+        hurt_time = 3.0f; // Wait 3 seconds before being able to be hurt again
+        // Play hurt sound
+        PlaySound(current_game->get_sound("hurt"));
     }
 
     if (health <= 0) {
