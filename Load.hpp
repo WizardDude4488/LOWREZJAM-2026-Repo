@@ -24,6 +24,8 @@ void load_assets() {
 
     load_tileset("grasstiles.png", "grasstiles", rects, &count);
 
+    load_tileset("props.png", "props", rects, &count);
+
     // Add more tilesets here
 
     // Load images
