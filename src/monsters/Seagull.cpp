@@ -104,6 +104,7 @@ void Seagull::update (float dt) {
     //could have separate while loop for hover animation if needed
 
     anim_time += dt;
+    flash_time -= dt;
 
     while (anim_time >= 0.2f) {
         anim_counter = (anim_counter + 1) % 4; 
@@ -133,9 +134,13 @@ void Seagull::touch(const Object* from) {
 }
 
 void Seagull::die() {
-    return;
+    current_game->remove_object(this);
 }
 
 void Seagull::hurt(int amount) {
-    return;
+    health -= amount;
+    flash_time = 0.1f;
+    if (health <= 0.0f) {
+        die();
+    }
 }

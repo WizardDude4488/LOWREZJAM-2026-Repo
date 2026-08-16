@@ -36,6 +36,8 @@ protected:
     enum SeagullAnimationState {SIT = 0, FLY = 3};
     SeagullAnimationState anim_state = SIT;
 
+    float flash_time = 0.0f;
+
 public:
     Seagull(const std::string& n, Vector2 perch_pos, float radius);
 

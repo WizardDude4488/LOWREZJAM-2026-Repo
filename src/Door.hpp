@@ -9,7 +9,7 @@
 
 class Door : public Entity {
 protected:
-	Room* target_level = nullptr;
+	Room* target_room = nullptr;
 	bool open = true; // If true, players can pass through the door
 	static const std::string& class_name;
 public:
@@ -24,8 +24,8 @@ public:
 
 	void touch(const Object* from) override;
 
-	void set_target_level(Room* level);
-	Room* get_target_level();
+	void set_target_room(Room* room);
+	Room* get_target_room();
 
 	void open_door();
 	void close_door();

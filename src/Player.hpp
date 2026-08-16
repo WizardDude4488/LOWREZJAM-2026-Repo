@@ -20,10 +20,16 @@ protected:
     static const std::string class_name;
 
     const Vector2 sprite_size = { 13.0f, 13.0f };
-    const Vector2 bound_size = { 13.0f, 13.0f };
+    const Vector2 bound_size = { 10.0f, 10.0f };
+
+    const Vector2 attack_area = { 8.0f, 8.0f }; // Area when pointing to the right
+                                                  // Use of members may be switched depending on direction
+    Rectangle attack_rect = { 0.0f, 0.0f, 0.0f, 0.0f };
 
     float speed = 15.0f;
     float hurt_time = 0.0f;
+    float attack_time = 0.0f;
+    float attack_damage = 5.0f;
 
     float anim_time = 0.0f;
     int anim_counter = 0;

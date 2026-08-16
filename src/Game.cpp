@@ -59,11 +59,11 @@ Game::~Game() {
 
 }
 
-void Game::__unload_level() {
-    if (level != nullptr) {
+void Game::__unload_room() {
+    if (current_room != nullptr) {
 
         if (player_object != nullptr) {
-            level->player_position = player_object->get_position();
+            current_room->player_position = player_object->get_position();
         }
     }
     // No longer owns these objects -- just drop references to them
@@ -74,17 +74,17 @@ void Game::__unload_level() {
     // Don't unload assets
 }
 
-void Game::__load_level(Room* level) {
+void Game::__load_room(Room* room) {
     // Unload current level (just clears references, doesn't delete)
-    __unload_level();
+    __unload_room();
 
-    this->level = level;
+    current_room = room;
 
     // Reference the level's objects directly; no copying needed since we don't own them
-    collision_object = level->collision_object;
+    collision_object = current_room->collision_object;
 
     if (player_object != nullptr) {
-        player_object->set_position(level->player_position);
+        player_object->set_position(current_room->player_position);
         objects.push_back(player_object);
         //std::cout << "Added player object to level 2" << std::endl;
     }
@@ -95,7 +95,7 @@ void Game::__load_level(Room* level) {
     }
 
     // Add other objects, excluding player and collision
-    for (Object* object : level->objects) {
+    for (Object* object : current_room->objects) {
 
         if (object == nullptr) { continue; } // Skip invalid objects
 
@@ -109,7 +109,7 @@ void Game::__load_level(Room* level) {
     }
 }
 
-void Game::switch_level(Room* level) {
+void Game::switch_room(Room* level) {
     command_queue.push_back(
         GameQueueCommand{GameQueueCommand::SWITCH_LEVEL, level}
     );
@@ -197,15 +197,7 @@ void Game::update() {
 }
 
 void Game::reset() {
-    // Reset first level
-    first_level->objects.clear();
-    //first_level->init();
-
-    // Set player back to full health
-    player_object->set_health(player_object->get_max_health());
-
-    // Load level
-    __load_level(first_level);
+    command_queue.push_back(GameQueueCommand{GameQueueCommand::RESET, nullptr});
 }
 
 void Game::begin_draw() {
@@ -289,10 +281,21 @@ void Game::empty_queue() {
             }
         } else if (command.type == GameQueueCommand::SWITCH_LEVEL) {
             lvl = static_cast<Room*>(command.target);
-            this->__load_level(lvl);
+            this->__load_room(lvl);
+        } else if (command.type == GameQueueCommand::RESET) {
+            // Delete old player object
+            // First remove reference from list of objects
+            auto obj = std::find(objects.begin(), objects.end(), player_object);
+            if (obj != objects.end()) {
+                objects.erase(obj);
+            }
+            delete player_object; // Clear its memory
+            player_object = current_level->reset(); // Get a new player from the level
+            objects.push_back(player_object); // Add new player object to list of players
+            this->__load_room(current_level->get_room(0)); // Go to the first room
+            player_object->set_position(current_room->player_position); // Make sure we start at the right place
+            command_queue.clear(); return;
         }
-        
-        command_queue.clear();
 
         /* auto at = std::find(objects.begin(), objects.end(), obj);
 
@@ -301,6 +304,8 @@ void Game::empty_queue() {
              objects.erase(at);
         } */
     }
+
+    command_queue.clear();
 }
 
 int Game::find_object(const std::string& name) const {

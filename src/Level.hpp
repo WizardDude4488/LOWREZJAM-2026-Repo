@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Tilemap.hpp"
 #include "Player.hpp"
 

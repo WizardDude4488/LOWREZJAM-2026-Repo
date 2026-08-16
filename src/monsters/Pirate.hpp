@@ -4,6 +4,9 @@ class Pirate : public Character {
 protected:
 	static const std::string class_name;
 
+	const Vector2 sprite_size = { 12.0f, 12.0f };
+	const Vector2 bound_size = { 10.0f, 10.0f };
+
 	float walk_speed = 6.5f;
 	float target_radius;
 	float state_time = 0.0f;
@@ -21,6 +24,8 @@ protected:
 	State anim_state = IDLE;
 	State last_anim_state = IDLE;
 
+
+	float flash_time = 0.0f;
 	// TODO: add animation state
 public:
 	Pirate(const std::string& n, Vector2 pos, float radius);
