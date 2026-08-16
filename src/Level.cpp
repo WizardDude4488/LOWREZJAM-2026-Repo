@@ -9,6 +9,8 @@ Player* Level::reset() {
 	// Change when proper level design is introduced
 	rooms.clear();
 
+	 // Level 1
+
 	Room* beach1 = new Room();
 	beach1->add_object(new Tilemap("floor", 0, std::vector<int>{
 		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
