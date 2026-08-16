@@ -29,6 +29,9 @@ protected:
     enum Direction { RIGHT = 5, FORWARD = 7, LEFT = 10, BACK = 7 };
     Direction anim_direction = FORWARD;
 
+    // Indicates if the enemy was recently attacked
+    float flash_time = 0.0f;
+
 public:
     Crab(const std::string& n, Vector2 start_pos, Vector2 end_pos, float s);
 

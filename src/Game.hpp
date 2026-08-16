@@ -11,6 +11,7 @@
 #include "Player.hpp"
 #include "NullObject.hpp"
 #include "Tilemap.hpp"
+#include "Level.hpp"
 
 // NOTE TO SELF: Don't include Game.hpp in other .hpp files unless it needs it. This can cause circular dependencies.
 
@@ -20,7 +21,7 @@ void begin_game();
 void end_game();
 
 struct GameQueueCommand {
-    enum QueueCommandType { ADD_OBJ, DEL_OBJ, SWITCH_LEVEL };
+    enum QueueCommandType { ADD_OBJ, DEL_OBJ, SWITCH_LEVEL, RESET };
     QueueCommandType type;
     // If ADD_OBJ or DEL_OBJ, then void* is Object*; If SWITCH_LEVEL, then void* Room*
     void* target;
@@ -33,7 +34,6 @@ protected:
 
     std::vector<GameQueueCommand> command_queue;
     Tilemap* collision_object; // Current layer considered for wall collision
-    Room* level = nullptr;
     float dt;
 
     // Assets
@@ -52,6 +52,9 @@ protected:
     int current_layer = 0;
 public:
     Player* player_object;
+
+    Room* current_room = nullptr;
+    Level* current_level = nullptr;
     Room* first_level = nullptr;
 
     Game();
@@ -62,10 +65,10 @@ public:
                          // Use copy_level instead
     //void copy_level(Room* level); // Need to explicitly call delete_level afterwards (IF NEEDED)
 
-    void __unload_level();
-    void __load_level(Room* level);
+    void __unload_room();
+    void __load_room(Room* room);
 
-    void switch_level(Room* level);
+    void switch_room(Room* room);
 
     void update();
     //void draw();

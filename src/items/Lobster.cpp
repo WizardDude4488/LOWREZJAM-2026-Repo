@@ -20,8 +20,7 @@ const std::string& Lobster::get_class() const {
 
 Lobster::Lobster(const std::string& n, Vector2 Pos) {
     name = n;
-    //should be higher than player
-    draw_layer = 6; 
+    draw_layer = 5; 
     bounds = {Pos.x, Pos.y, 11, 14};
     animation = Animation("lobster", create_spritesheet_frames(11, 14, 11, 42, 3));
     

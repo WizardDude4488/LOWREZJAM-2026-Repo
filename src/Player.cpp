@@ -15,9 +15,9 @@ Player::Player(const std::string& n, Vector2 Pos) {
 
     name = n;
     draw_layer = 5;
-    bounds = {Pos.x, Pos.y, 13, 13};
+    bounds = {Pos.x, Pos.y, bound_size.x, bound_size.y};
     animation = Animation("player", create_spritesheet_frames(13, 13, 143, 143, 84));
-    max_health = 20;
+    max_health = 35;
     health = max_health;
 }
 
@@ -31,39 +31,76 @@ const std::string& Player::get_class() const {
 
 void Player::update(float dt) {
 
-    Vector2 direction = Vector2{0.0f, 0.0f};
+    // Don't move while attacking
+    if (attack_time <= 0.0f) {
+        Vector2 direction = Vector2{0.0f, 0.0f};
+    
+        bool a = IsKeyDown(KEY_A);
+        bool d = IsKeyDown(KEY_D);
+        bool w = IsKeyDown(KEY_W);
+        bool s = IsKeyDown(KEY_S);
+    
+        if (a) { direction.x -= 1; anim_direction = LEFT;        anim_state = WALK; }
+        if (d) { direction.x += 1; anim_direction = RIGHT;       anim_state = WALK; }
+        if (w) { direction.y -= 1; anim_direction = BACKWARD;    anim_state = WALK; }
+        if (s) { direction.y += 1; anim_direction = FORWARD;     anim_state = WALK; }
+    
+        if (!(a || d || w || s)) {
+            anim_state = IDLE;
+        }
 
-    bool a = IsKeyDown(KEY_A);
-    bool d = IsKeyDown(KEY_D);
-    bool w = IsKeyDown(KEY_W);
-    bool s = IsKeyDown(KEY_S);
+        Vector2 delta = Vector2Scale(Vector2Normalize(direction), speed * dt);
 
-    if (a) { direction.x -= 1; anim_direction = LEFT;        anim_state = WALK; }
-    if (d) { direction.x += 1; anim_direction = RIGHT;       anim_state = WALK; }
-    if (w) { direction.y -= 1; anim_direction = BACKWARD;    anim_state = WALK; }
-    if (s) { direction.y += 1; anim_direction = FORWARD;     anim_state = WALK; }
+        // Set intended position
 
-    if (!(a || d || w || s)) {
-        anim_state = IDLE;
+        set_position(get_position() + delta);
+
+        // Calculate collision; try on each axis (TODO: Move this functionality into calculate_tile_collision)
+
+        // X first
+        Vector2 collision = Helper::calculate_tile_collision(get_bounds(), current_game->get_collision_object());
+        /*bounds.x = collision.x;
+
+        // Then Y
+        collision = Helper::calculate_tile_collision(get_bounds(), current_game->get_collision_object());
+        bounds.y = collision.y; */
+
+        set_position(collision);
+    }    
+
+    // Remember that a rect starts from its top-left corner
+    if (anim_direction == FORWARD) {
+        attack_rect = Rectangle{ bounds.x + ((sprite_size.x - attack_area.y) / 2.0f) , bounds.y + bounds.height, attack_area.y, attack_area.x }; // Facing up
+    }
+    else if (anim_direction == BACKWARD) {
+        attack_rect = Rectangle{ bounds.x + ((sprite_size.x - attack_area.y) / 2.0f), bounds.y - attack_area.x, attack_area.y, attack_area.x}; // Facing down
+    }
+    else if (anim_direction == RIGHT) {
+        attack_rect = Rectangle{ bounds.x + bounds.width, bounds.y + ((sprite_size.y - attack_area.y)/2.0f), attack_area.x, attack_area.y }; // Right
+    }
+    else if (anim_direction == LEFT) {
+        attack_rect = Rectangle{ bounds.x - attack_area.x, bounds.y + ((sprite_size.y - attack_area.y) / 2.0f), attack_area.x, attack_area.y }; // Left
     }
 
-    Vector2 delta = Vector2Scale(Vector2Normalize(direction), speed * dt);
+    if (IsKeyPressed(KEY_COMMA)) {
+        if (attack_time <= 0.0f) {
+            // Attack
+            // Play swinging sound
+            PlaySound(current_game->get_sound("shoot"));
+            for (Object* obj : current_game->get_list()) {
+                std::string class_name = obj->get_class();
+                if (class_name == "Crab" || class_name == "Seagull" || class_name == "Pirate") {
+                    Character* char_obj = static_cast<Character*>(obj);
+                    if (CheckCollisionRecs(char_obj->get_bounds(), attack_rect)) {
+                        char_obj->hurt(attack_damage);
+                    }
+                }
+            }
 
-    // Set intended position
-
-    set_position(get_position() + delta);
-
-    // Calculate collision; try on each axis (TODO: Move this functionality into calculate_tile_collision)
-
-    // X first
-    Vector2 collision = Helper::calculate_tile_collision(get_bounds(), current_game->get_collision_object());
-    /*bounds.x = collision.x;
-
-    // Then Y
-    collision = Helper::calculate_tile_collision(get_bounds(), current_game->get_collision_object());
-    bounds.y = collision.y; */
-
-    set_position(collision);
+            anim_state = ATTACK;
+            attack_time = 0.5f; // Wait for 1/4 sec until player can attack again
+        }
+    }
 
     if (last_anim_state != anim_state) {
         anim_time = 0.0f;
@@ -72,6 +109,7 @@ void Player::update(float dt) {
 
     anim_time += dt;
     hurt_time -= dt;
+    attack_time -= dt;
     
     while (anim_time >= 0.2) {
         if (anim_state == IDLE) {
@@ -130,7 +168,15 @@ void Player::update(float dt) {
 // TODO: draw animation object here
 void Player::draw() {
 
-    animation.draw_frame(get_position() + Helper::adjust_sprite_to_collider(bound_size, sprite_size), Helper::calculate_hurt_flash(hurt_time));
+    Vector2 sprite_pos = get_position() + Helper::adjust_sprite_to_collider(bound_size, sprite_size);
+    // Prevent from rendering at non-integer position, otherwise it produces distortion
+    sprite_pos.x = std::floor(sprite_pos.x);
+    sprite_pos.y = std::floor(sprite_pos.y);
+    animation.draw_frame(sprite_pos, Helper::calculate_hurt_flash(hurt_time));
+
+    // Draw hit area
+    //DrawRectanglePro(attack_rect, { 0.0f, 0.0f }, 0.0f, Color{255, 0, 255, 100});
+    //DrawRectanglePro(bounds, { 0.0f, 0.0f }, 0.0f, Color{ 255, 0, 255, 100 });
 
     // Draw rectangle for health bar
     DrawRectangle(0, 0, get_health(), 5, RED);
@@ -139,12 +185,12 @@ void Player::draw() {
 // TODO: hurt player when something like an enemy or spike calls this function
 void Player::touch(const Object* from) {
     if (from->get_class() == "Crab") {
-        hurt(5); // Set damage from each class
+        hurt(4); // Set damage from each class
     }
     else if (from->get_class() == "Seagull") {
-        hurt(8);
-    } else if (from->get_class() == "Bullet") {
         hurt(12);
+    } else if (from->get_class() == "Bullet") {
+        hurt(8);
     }
 }
 
@@ -182,7 +228,9 @@ void Player::hurt(int amount) {
     // ONLY hurt if not in i frame
     if (hurt_time <= 0.0f) {
         health -= amount;
-        hurt_time = 5.0f; // Wait 5 seconds before being able to be hurt again
+        hurt_time = 3.0f; // Wait 3 seconds before being able to be hurt again
+        // Play hurt sound
+        PlaySound(current_game->get_sound("hurt"));
     }
 
     if (health <= 0) {

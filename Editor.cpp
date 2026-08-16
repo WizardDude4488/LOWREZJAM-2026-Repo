@@ -30,13 +30,13 @@ int main(void) {
     // Create test level
     // Game doesn't handle Room's memory so we need to delete it at application close
 
-    Tilemap* select_tile = new Tilemap("Select", 1);
+    Tilemap* select_tile = new Tilemap("Select", 5);
 
     class HighlightTile : public Object {
     protected:
         std::string class_name = "HighlightTile";
     public:
-        HighlightTile() { draw_layer = 3; name = "HighlightTile"; }
+        HighlightTile() { draw_layer = 6; name = "HighlightTile"; }
 
         // From Object.hpp
 
@@ -51,10 +51,18 @@ int main(void) {
     Room* test_level = new Room();
 
     HighlightTile* highlight = new HighlightTile();
-    Tilemap* collision_object = new Tilemap("Walls", 0);
+    Tilemap* floor_object = new Tilemap("Floor", 0);
+    Tilemap* decal_object = new Tilemap("Decal", 1);
+    Tilemap* collision_object = new Tilemap("Walls", 2);
+    Tilemap* prop_object = new Tilemap("Props", 3);
+
+    Tilemap* current_tilemap = floor_object;
     
     test_level->add_object(collision_object);
     test_level->collision_object = collision_object;
+    test_level->add_object(floor_object);
+    test_level->add_object(decal_object);
+    test_level->add_object(prop_object);
     test_level->add_object(select_tile);
     test_level->add_object(highlight);
 
@@ -64,7 +72,7 @@ int main(void) {
 
     // Load level
 
-    current_game->__load_level(test_level);
+    current_game->__load_room(test_level);
 
     enum EditorState {EDIT_TILEMAP = 0, EDIT_ENTITIES = 1, SELECT_TILEMAP = 2, SELECT_ENTITIES = 3};
     EditorState current_state = EDIT_TILEMAP;
@@ -106,13 +114,34 @@ int main(void) {
             std::cout << "SELECT_ENTITIES\n";
         }
 
+
+        if (IsKeyPressed(KEY_U)) {
+            current_tilemap = floor_object;
+            std::cout << "SELECT FLOOR\n";
+        }
+
+        if (IsKeyPressed(KEY_I)) {
+            current_tilemap = decal_object;
+            std::cout << "SELECT DECALS\n";
+        }
+
+        if (IsKeyPressed(KEY_O)) {
+            current_tilemap = collision_object;
+            std::cout << "SELECT WALLS\n";
+        }
+
+        if (IsKeyPressed(KEY_P)) {
+            current_tilemap = prop_object;
+            std::cout << "SELECT PROPS\n";
+        }
+
         if (current_state == EDIT_TILEMAP) {
             if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) { // Set
-                tilemap->set_tile(tile_x, tile_y, copied_tile);
+                current_tilemap->set_tile(tile_x, tile_y, copied_tile);
             }
 
             if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) { // Clear
-                tilemap->set_tile(tile_x, tile_y, -1);
+                current_tilemap->set_tile(tile_x, tile_y, -1);
             }
             // Make sure select tilemap is cleared
             for (int x = 1; x < TRUE_WIDTH - 1; x++) {
@@ -152,6 +181,9 @@ int main(void) {
 
         // Draw tilemap
         current_game->begin_draw();
+
+        DrawText(current_tilemap->get_name().c_str(), 0, 0, 8, WHITE);
+
         current_game->end_draw();
         
         //----------------------------------------------------------------------------------
@@ -160,13 +192,50 @@ int main(void) {
     // De-Initialization
     //--------------------------------------------------------------------------------------
 
-    current_game->__unload_level();
+    current_game->__unload_room();
+
+    // Print out each tilemap
 
     std::cout << "\n\n";
 
+    std::cout << "FLOOR\n";
+    
     for (int x = 0; x < TRUE_WIDTH; x++) {
         for (int y = 0; y < TRUE_WIDTH; y++) {
-            std::cout << test_level->collision_object->get_tile(x, y) << ", ";
+            std::cout << floor_object->get_tile(x, y) << ", ";
+            if (y == TRUE_WIDTH - 1) { std::cout << "\n"; }
+        }
+    }
+
+    std::cout << "\n";
+
+    std::cout << "DECALS\n";
+
+    for (int x = 0; x < TRUE_WIDTH; x++) {
+        for (int y = 0; y < TRUE_WIDTH; y++) {
+            std::cout << decal_object->get_tile(x, y) << ", ";
+            if (y == TRUE_WIDTH - 1) { std::cout << "\n"; }
+        }
+    }
+
+    std::cout << "\n";
+
+    std::cout << "WALLS\n";
+
+    for (int x = 0; x < TRUE_WIDTH; x++) {
+        for (int y = 0; y < TRUE_WIDTH; y++) {
+            std::cout << collision_object->get_tile(x, y) << ", ";
+            if (y == TRUE_WIDTH - 1) { std::cout << "\n"; }
+        }
+    }
+
+    std::cout << "\n";
+
+    std::cout << "PROPS\n";
+
+    for (int x = 0; x < TRUE_WIDTH; x++) {
+        for (int y = 0; y < TRUE_WIDTH; y++) {
+            std::cout << prop_object->get_tile(x, y) << ", ";
             if (y == TRUE_WIDTH - 1) { std::cout << "\n"; }
         }
     }

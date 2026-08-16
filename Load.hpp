@@ -24,6 +24,8 @@ void load_assets() {
 
     load_tileset("grasstiles.png", "grasstiles", rects, &count);
 
+    load_tileset("props.png", "props", rects, &count);
+
     // Add more tilesets here
 
     // Load images
@@ -49,6 +51,12 @@ void load_assets() {
     // Load sounds
 
     current_game->load_sound("snd-test", "crab.ogg");
+
+    current_game->load_sound("shoot", "crab.ogg");
+
+    current_game->load_sound("hurt", "hurt.ogg");
+
+    current_game->load_sound("aggro", "bird-attack.ogg");
 
     // Load music
 

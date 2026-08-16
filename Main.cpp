@@ -55,8 +55,9 @@ int main(void) {
     Level* level = new Level();
 
     current_game->player_object = level->reset();
+    current_game->current_level = level;
 
-    current_game->__load_level(level->get_room(0));
+    current_game->__load_room(level->get_room(0));
 
     // Disable quitting game by pressing esc
     SetExitKey(KEY_NULL);
