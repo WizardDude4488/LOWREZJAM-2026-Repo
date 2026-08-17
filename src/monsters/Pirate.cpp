@@ -114,8 +114,6 @@ void Pirate::update(float dt) {
 	animation.set_frame(anim_direction + anim_state + anim_counter);
 
 	last_anim_state = anim_state;
-
-	std::cout << anim_time << "\n";
 }
 
 void Pirate::draw() {

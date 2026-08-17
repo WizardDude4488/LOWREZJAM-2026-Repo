@@ -185,9 +185,9 @@ void Player::touch(const Object* from) {
         hurt(4); // Set damage from each class
     }
     else if (from->get_class() == "Seagull") {
-        hurt(12);
+        hurt(9);
     } else if (from->get_class() == "Bullet") {
-        hurt(8);
+        hurt(7);
     }
 }
 

@@ -155,7 +155,17 @@ int main(void) {
         current_game->begin_draw();
 
         // Draw player healthbar
-        DrawRectangle(0, 0, current_game->get_player_object()->get_health(), 5, RED);
+
+        if (!current_game->win) {
+            DrawRectangle(0, 0, current_game->get_player_object()->get_health(), 5, RED);
+        }
+
+        if (current_game->win) {
+            DrawText(" Thanks for", 0.0f, 0.0f, 8, WHITE);
+            DrawText(" playing! :) ...", 0.0f, 10.0f, 8, WHITE);
+            DrawText(" ... until next", 0.0f, 20.0f, 8, WHITE);
+            DrawText(" time?", 0.0f, 30.0f, 8, WHITE);
+        }
 
         switch (current_state) {
         case PAUSEM: { ExecMainPauseMenu(); break; }
