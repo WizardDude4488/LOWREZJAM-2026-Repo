@@ -177,9 +177,6 @@ void Player::draw() {
     // Draw hit area
     //DrawRectanglePro(attack_rect, { 0.0f, 0.0f }, 0.0f, Color{255, 0, 255, 100});
     //DrawRectanglePro(bounds, { 0.0f, 0.0f }, 0.0f, Color{ 255, 0, 255, 100 });
-
-    // Draw rectangle for health bar
-    DrawRectangle(0, 0, get_health(), 5, RED);
 }
 
 // TODO: hurt player when something like an enemy or spike calls this function
@@ -188,9 +185,9 @@ void Player::touch(const Object* from) {
         hurt(4); // Set damage from each class
     }
     else if (from->get_class() == "Seagull") {
-        hurt(12);
+        hurt(9);
     } else if (from->get_class() == "Bullet") {
-        hurt(8);
+        hurt(7);
     }
 }
 

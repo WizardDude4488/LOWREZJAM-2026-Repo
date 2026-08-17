@@ -51,6 +51,8 @@ protected:
     RenderTexture2D canvas;
     int current_layer = 0;
 public:
+    bool win = false;
+
     Player* player_object;
 
     Room* current_room = nullptr;

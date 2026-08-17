@@ -107,6 +107,11 @@ void Game::__load_room(Room* room) {
         objects.push_back(object);
         //std::cout << object->get_class() << std::endl;
     }
+
+    // Win condition code
+    if (current_room == current_level->get_room(6)) {
+        win = true;
+    }
 }
 
 void Game::switch_room(Room* level) {
