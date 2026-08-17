@@ -126,7 +126,6 @@ void Seagull::update (float dt) {
 
 void Seagull::draw() {
     animation.draw_frame(get_position() + Helper::adjust_sprite_to_collider(bound_size, sprite_size));
-    DrawRectanglePro(bounds, { 0.0f, 0.0f }, 0.0f, { 255, 0, 255, 100 });
 }
 
 void Seagull::touch(const Object* from) {

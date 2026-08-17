@@ -53,7 +53,12 @@ int main(void) {
     HighlightTile* highlight = new HighlightTile();
     Tilemap* floor_object = new Tilemap("Floor", 0);
     Tilemap* decal_object = new Tilemap("Decal", 1);
+
     Tilemap* collision_object = new Tilemap("Walls", 2);
+    
+    // Add invisible wall border to each level so that the player can't walk off the map
+    collision_object->set_square(0, 0, TRUE_WIDTH - 1, TRUE_WIDTH - 1, -2);
+    
     Tilemap* prop_object = new Tilemap("Props", 3);
 
     Tilemap* current_tilemap = floor_object;
